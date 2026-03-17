@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:pokerstake.com)",
+      "WebSearch",
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(npx --version)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm)",
+      "Read(//c/Users/cpnlee/**)",
+      "Bash(npx create-next-app@latest snapallin-temp --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm)",
+      "Bash(npx create-next-app@latest snapallin-temp --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(cp -r /c/Users/cpnlee/snapallin-temp/. /c/Users/cpnlee/SnapAllin/)",
+      "Bash(rm -rf /c/Users/cpnlee/snapallin-temp)",
+      "Bash(xcopy \"C:\\\\Users\\\\cpnlee\\\\snapallin-temp\\\\*\" \"C:\\\\Users\\\\cpnlee\\\\SnapAllin\"\" /E /H /Y /Q)",
+      "Bash(for f in README.md eslint.config.mjs next-env.d.ts next.config.ts package-lock.json package.json postcss.config.mjs tsconfig.json)",
+      "Bash(do cp \"$f\" /c/Users/cpnlee/SnapAllin/)",
+      "Bash(done)",
+      "Bash(cp -r src /c/Users/cpnlee/SnapAllin/)",
+      "Bash(cp -r public /c/Users/cpnlee/SnapAllin/)",
+      "Bash(cp -r .git /c/Users/cpnlee/SnapAllin/)",
+      "Bash(npm install next-intl framer-motion lucide-react)",
+      "Bash(npx shadcn@latest init -d)"
+    ]
+  }
+}
