@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import type { Database } from './types';
 
@@ -34,28 +35,10 @@ export async function createClient() {
 }
 
 // Admin client with service role (bypasses RLS) — use only in API routes
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function createAdminClient(): Promise<ReturnType<typeof createServerClient<any>>> {
-  const cookieStore = await cookies();
-
-  return createServerClient(
-    SUPABASE_URL,
-    SUPABASE_SERVICE_KEY,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // Ignored in Server Components
-          }
-        },
-      },
-    }
-  );
+// Uses @supabase/supabase-js directly (not SSR) so the service role key
+// is always used for Authorization, avoiding cookie session interference.
+export async function createAdminClient() {
+  return createSupabaseClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
 }
