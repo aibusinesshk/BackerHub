@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { Progress } from '@/components/ui/progress';
+import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
 import { CheckCircle, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2 } from 'lucide-react';
@@ -67,30 +67,41 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          {/* Player Header */}
-          <Card className="border-white/[0.06] bg-[#111318]">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <PlayerAvatar
+          {/* Player Header with Large Photo */}
+          <Card className="border-white/[0.06] bg-[#111318] overflow-hidden">
+            <div className="relative h-56 sm:h-64 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
+              {player.avatarUrl ? (
+                <Image
                   src={player.avatarUrl}
-                  name={player.displayName}
-                  className="h-16 w-16 border-2 border-gold-500/30"
-                  fallbackClassName="bg-gold-500/10 text-gold-400 text-xl font-bold"
+                  alt={name}
+                  fill
+                  className="object-cover object-[center_30%]"
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  priority
                 />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-2xl font-bold text-white">{name}</h1>
-                    {player.isVerified ? (
-                      <Badge className="border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs"><CheckCircle className="mr-1 h-3 w-3" />{t('verified')}</Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-xs border-white/10 text-white/40">{t('unverified')}</Badge>
-                    )}
-                  </div>
-                  <p className="text-sm text-white/40">
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-6xl font-bold text-gold-500/30">
+                    {player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </span>
+                </div>
+              )}
+              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#111318] to-transparent" />
+              <div className="absolute bottom-4 left-6 right-6">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">{name}</h1>
+                  {player.isVerified ? (
+                    <Badge className="border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs backdrop-blur-sm"><CheckCircle className="mr-1 h-3 w-3" />{t('verified')}</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs border-white/10 text-white/40 backdrop-blur-sm">{t('unverified')}</Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 mt-1">
+                  <p className="text-sm text-white/60">
                     {player.region === 'TW' ? '🇹🇼' : '🇭🇰'} · {t('memberSince', { date: formatDate(player.memberSince, locale) })}
                   </p>
                   {reviews.length > 0 && (
-                    <div className="flex items-center gap-1 mt-1">
+                    <div className="flex items-center gap-1">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star key={i} className={`h-3.5 w-3.5 ${i < Math.round(avgRating) ? 'text-gold-400 fill-gold-400' : 'text-white/20'}`} />
                       ))}
@@ -99,8 +110,12 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
                   )}
                 </div>
               </div>
-              <p className="mt-4 text-sm text-white/60">{bio}</p>
-            </CardContent>
+            </div>
+            {bio && (
+              <CardContent className="pt-4 pb-5">
+                <p className="text-sm text-white/60">{bio}</p>
+              </CardContent>
+            )}
           </Card>
 
           {/* Stats Grid */}

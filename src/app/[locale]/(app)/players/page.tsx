@@ -125,7 +125,7 @@ export default function PlayersPage() {
                       src={player.avatarUrl}
                       alt={playerName}
                       fill
-                      className="object-cover object-top"
+                      className="object-cover object-[center_30%]"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
