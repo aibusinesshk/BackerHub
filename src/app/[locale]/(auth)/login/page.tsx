@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link, useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,6 @@ import { Spade, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
-  const router = useRouter();
   const { login, loginWithGoogle, loginWithLINE } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +26,8 @@ export default function LoginPage() {
     try {
       const result = await login(email, password);
       if (result.success) {
-        router.push('/dashboard/investor');
+        // Hard navigation so middleware picks up the new session cookie
+        window.location.href = '/dashboard/investor';
       } else {
         setError(result.error || 'Invalid credentials');
       }
