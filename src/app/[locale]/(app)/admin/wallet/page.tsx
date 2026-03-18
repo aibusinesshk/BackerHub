@@ -154,9 +154,9 @@ export default function AdminWalletPage() {
                       </div>
                       {tx.type === 'withdrawal' && tx.bankAccountInfo && (
                         <div className="text-xs text-white/40 space-x-3">
-                          <span>{tx.bankAccountInfo.bankName}</span>
-                          <span className="font-mono">****{tx.bankAccountInfo.accountNumber?.slice(-4)}</span>
-                          <span>{tx.bankAccountInfo.accountHolder}</span>
+                          <span className="uppercase font-semibold text-gold-400">{tx.bankAccountInfo.coin || tx.bankAccountInfo.bankName}</span>
+                          <span className="font-mono">{tx.bankAccountInfo.walletAddress || tx.bankAccountInfo.accountNumber}</span>
+                          {tx.bankAccountInfo.network && <span>({tx.bankAccountInfo.network})</span>}
                         </div>
                       )}
                     </div>

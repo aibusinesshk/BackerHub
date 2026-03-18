@@ -11,15 +11,19 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { amount, bankAccountInfo } = body;
+  const { amount, coin, walletAddress } = body;
 
-  if (!amount || !bankAccountInfo) {
+  if (!amount || !coin || !walletAddress) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  const { bankCode, bankName, accountNumber, accountHolder } = bankAccountInfo;
-  if (!bankCode || !bankName || !accountNumber || !accountHolder) {
-    return NextResponse.json({ error: 'Incomplete bank account info' }, { status: 400 });
+  const validCoins = ['usdt', 'usdc'];
+  if (!validCoins.includes(coin)) {
+    return NextResponse.json({ error: 'Invalid coin. Use usdt or usdc.' }, { status: 400 });
+  }
+
+  if (!walletAddress || walletAddress.length < 10) {
+    return NextResponse.json({ error: 'Invalid wallet address' }, { status: 400 });
   }
 
   const numAmount = Number(amount);
@@ -70,6 +74,7 @@ export async function POST(request: Request) {
 
   // Create pending withdrawal transaction
   const referenceNumber = `WD-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+  const coinName = coin.toUpperCase();
 
   const { data: transaction, error: txError } = await (supabase.from('transactions') as any)
     .insert({
@@ -77,12 +82,12 @@ export async function POST(request: Request) {
       type: 'withdrawal',
       amount: Math.round(numAmount * 100) / 100,
       currency: 'USD',
-      payment_method: 'bank-transfer',
+      payment_method: coin,
       status: 'pending',
       reference_number: referenceNumber,
-      bank_account_info: { bankCode, bankName, accountNumber, accountHolder },
-      description: `Withdrawal to ${bankName} ****${accountNumber.slice(-4)}`,
-      description_zh: `提款至 ${bankName} ****${accountNumber.slice(-4)}`,
+      bank_account_info: { coin, walletAddress, network: 'TRC-20' },
+      description: `Withdrawal via ${coinName} to ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
+      description_zh: `透過 ${coinName} 提款至 ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
     })
     .select()
     .single();

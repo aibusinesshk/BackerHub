@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
-import { MIN_DEPOSIT, MAX_DEPOSIT, PLATFORM_BANK_DETAILS } from '@/lib/constants';
-import { buildPaymentForm } from '@/lib/payments/ecpay';
+import { MIN_DEPOSIT, MAX_DEPOSIT, PLATFORM_WALLET } from '@/lib/constants';
 
 function generateReferenceNumber(): string {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -19,10 +17,16 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { amount, paymentMethod, currency = 'USD' } = body;
+  const { amount, paymentMethod } = body;
+  const currency = 'USD';
 
   if (!amount || !paymentMethod) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+  }
+
+  const validCoins = ['usdt', 'usdc'];
+  if (!validCoins.includes(paymentMethod)) {
+    return NextResponse.json({ error: 'Invalid payment method. Use usdt or usdc.' }, { status: 400 });
   }
 
   const numAmount = Number(amount);
@@ -33,8 +37,8 @@ export async function POST(request: Request) {
   }
 
   const referenceNumber = generateReferenceNumber();
+  const coinName = paymentMethod.toUpperCase();
 
-  // Create pending deposit transaction
   const { data: transaction, error: txError } = await (supabase.from('transactions') as any)
     .insert({
       user_id: user.id,
@@ -44,8 +48,8 @@ export async function POST(request: Request) {
       payment_method: paymentMethod,
       status: 'pending',
       reference_number: referenceNumber,
-      description: `Deposit via ${paymentMethod}`,
-      description_zh: `透過 ${paymentMethod} 儲值`,
+      description: `Deposit via ${coinName} (TRC-20)`,
+      description_zh: `透過 ${coinName} (TRC-20) 儲值`,
     })
     .select()
     .single();
@@ -54,41 +58,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: txError.message }, { status: 500 });
   }
 
-  if (paymentMethod === 'bank-tw') {
-    return NextResponse.json({
-      transactionId: transaction.id,
-      referenceNumber,
-      bankDetails: PLATFORM_BANK_DETAILS,
-      status: 'pending',
-      message: 'Please transfer to the bank account and include the reference number in the memo.',
-    });
-  }
-
-  if (paymentMethod === 'ecpay') {
-    const headersList = await headers();
-    const host = headersList.get('host') || 'localhost:3001';
-    const protocol = host.includes('localhost') ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
-
-    const { actionUrl, params } = buildPaymentForm(
-      numAmount,
-      referenceNumber,
-      `${baseUrl}/api/wallet/deposit/ecpay-callback`,
-      `${baseUrl}/en/dashboard/investor`,
-    );
-
-    return NextResponse.json({
-      transactionId: transaction.id,
-      referenceNumber,
-      paymentMethod: 'ecpay',
-      status: 'pending',
-      ecpayFormData: { actionUrl, params },
-    });
-  }
-
   return NextResponse.json({
     transactionId: transaction.id,
     referenceNumber,
+    walletAddress: PLATFORM_WALLET.address,
+    network: PLATFORM_WALLET.networkShort,
+    coin: paymentMethod,
     status: 'pending',
   });
 }

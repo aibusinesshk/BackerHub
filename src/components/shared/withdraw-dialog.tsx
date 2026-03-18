@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { TW_BANKS, MIN_WITHDRAWAL } from '@/lib/constants';
+import { CRYPTO_COINS, MIN_WITHDRAWAL } from '@/lib/constants';
 import { formatCurrency } from '@/lib/format';
 import { Loader2, Check } from 'lucide-react';
 
@@ -22,20 +22,17 @@ interface WithdrawDialogProps {
 
 export function WithdrawDialog({ open, onOpenChange, balance, currency, onSuccess }: WithdrawDialogProps) {
   const t = useTranslations('wallet');
-  const locale = useLocale();
   const [amount, setAmount] = useState('');
-  const [bankCode, setBankCode] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [accountHolder, setAccountHolder] = useState('');
+  const [coin, setCoin] = useState<'usdt' | 'usdc'>('usdt');
+  const [walletAddress, setWalletAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   const reset = () => {
     setAmount('');
-    setBankCode('');
-    setAccountNumber('');
-    setAccountHolder('');
+    setCoin('usdt');
+    setWalletAddress('');
     setLoading(false);
     setError('');
     setSuccess(false);
@@ -45,11 +42,6 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
     if (!open) reset();
     onOpenChange(open);
   };
-
-  const selectedBank = TW_BANKS.find((b) => b.code === bankCode);
-  const bankName = selectedBank
-    ? (locale === 'zh-TW' ? selectedBank.name : selectedBank.nameEn)
-    : '';
 
   const handleSubmit = async () => {
     const numAmount = Number(amount);
@@ -61,8 +53,8 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
       setError(t('insufficientFunds'));
       return;
     }
-    if (!bankCode || !accountNumber || !accountHolder) {
-      setError(t('completeBankInfo'));
+    if (!walletAddress || walletAddress.length < 10) {
+      setError(t('invalidWalletAddress'));
       return;
     }
 
@@ -75,12 +67,8 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: numAmount,
-          bankAccountInfo: {
-            bankCode,
-            bankName: selectedBank ? `${selectedBank.name} (${selectedBank.nameEn})` : bankCode,
-            accountNumber,
-            accountHolder,
-          },
+          coin,
+          walletAddress,
         }),
       });
 
@@ -100,6 +88,7 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
   };
 
   const setMax = () => setAmount(String(balance));
+  const selectedCoin = CRYPTO_COINS.find((c) => c.id === coin);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -136,9 +125,41 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
               <span className="text-sm font-semibold text-gold-400">{formatCurrency(balance, currency)}</span>
             </div>
 
+            {/* Coin Selection */}
+            <div>
+              <label className="text-xs text-white/50 mb-2 block">{t('selectCoin')}</label>
+              <div className="grid grid-cols-2 gap-3">
+                {(['usdt', 'usdc'] as const).map((c) => {
+                  const coinData = CRYPTO_COINS.find((x) => x.id === c)!;
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setCoin(c)}
+                      className={`flex items-center gap-2 rounded-xl border p-3 transition-all ${
+                        coin === c
+                          ? 'border-gold-500/50 bg-gold-500/10'
+                          : 'border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <span className={`text-lg font-bold ${coin === c ? 'text-gold-400' : 'text-white/40'}`}>
+                        {coinData.icon}
+                      </span>
+                      <div className="text-left">
+                        <span className={`text-xs font-medium block ${coin === c ? 'text-gold-400' : 'text-white/60'}`}>
+                          {coinData.name}
+                        </span>
+                        <span className="text-[10px] text-white/30">{coinData.network}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Amount */}
             <div>
-              <label className="text-xs text-white/50 mb-1 block">{t('amount')}</label>
+              <label className="text-xs text-white/50 mb-1 block">{t('amount')} (USD)</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
                 <Input
@@ -160,44 +181,17 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
               </div>
             </div>
 
-            {/* Bank Selection */}
+            {/* Wallet Address */}
             <div>
-              <label className="text-xs text-white/50 mb-1 block">{t('selectBank')}</label>
-              <select
-                value={bankCode}
-                onChange={(e) => setBankCode(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white appearance-none"
-              >
-                <option value="" className="bg-[#111318]">{t('selectBankPlaceholder')}</option>
-                {TW_BANKS.map((bank) => (
-                  <option key={bank.code} value={bank.code} className="bg-[#111318]">
-                    {locale === 'zh-TW' ? `${bank.name} (${bank.code})` : `${bank.nameEn} (${bank.code})`}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Account Number */}
-            <div>
-              <label className="text-xs text-white/50 mb-1 block">{t('accountNumber')}</label>
+              <label className="text-xs text-white/50 mb-1 block">
+                {t('walletAddress')} ({selectedCoin?.network})
+              </label>
               <Input
                 type="text"
-                placeholder="0000-0000-0000-0000"
-                value={accountNumber}
-                onChange={(e) => { setAccountNumber(e.target.value); setError(''); }}
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/30 font-mono"
-              />
-            </div>
-
-            {/* Account Holder Name */}
-            <div>
-              <label className="text-xs text-white/50 mb-1 block">{t('accountHolder')}</label>
-              <Input
-                type="text"
-                placeholder={t('accountHolderPlaceholder')}
-                value={accountHolder}
-                onChange={(e) => { setAccountHolder(e.target.value); setError(''); }}
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                placeholder="T..."
+                value={walletAddress}
+                onChange={(e) => { setWalletAddress(e.target.value); setError(''); }}
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/30 font-mono text-sm"
               />
             </div>
 
@@ -205,7 +199,7 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
 
             <Button
               onClick={handleSubmit}
-              disabled={loading || !amount || !bankCode || !accountNumber || !accountHolder}
+              disabled={loading || !amount || !walletAddress}
               className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400"
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

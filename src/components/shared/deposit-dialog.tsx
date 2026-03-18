@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { PLATFORM_BANK_DETAILS, MIN_DEPOSIT } from '@/lib/constants';
-import { Loader2, Copy, Check, Building2, CreditCard } from 'lucide-react';
+import { CRYPTO_COINS, PLATFORM_WALLET, MIN_DEPOSIT } from '@/lib/constants';
+import { Loader2, Copy, Check, QrCode } from 'lucide-react';
 
 interface DepositDialogProps {
   open: boolean;
@@ -17,27 +17,28 @@ interface DepositDialogProps {
   onSuccess: () => void;
 }
 
-type Step = 'form' | 'bank-details' | 'ecpay-redirect';
+type Step = 'form' | 'address';
 
 export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogProps) {
   const t = useTranslations('wallet');
-  const locale = useLocale();
   const [step, setStep] = useState<Step>('form');
   const [amount, setAmount] = useState('');
-  const [method, setMethod] = useState<'bank-tw' | 'ecpay'>('bank-tw');
+  const [coin, setCoin] = useState<'usdt' | 'usdc'>('usdt');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [referenceNumber, setReferenceNumber] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [copiedAddr, setCopiedAddr] = useState(false);
+  const [copiedRef, setCopiedRef] = useState(false);
 
   const reset = () => {
     setStep('form');
     setAmount('');
-    setMethod('bank-tw');
+    setCoin('usdt');
     setLoading(false);
     setError('');
     setReferenceNumber('');
-    setCopied(false);
+    setCopiedAddr(false);
+    setCopiedRef(false);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -59,7 +60,7 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
       const res = await fetch('/api/wallet/deposit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: numAmount, paymentMethod: method, currency: 'USD' }),
+        body: JSON.stringify({ amount: numAmount, paymentMethod: coin, currency: 'USD' }),
       });
 
       const data = await res.json();
@@ -69,13 +70,7 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
       }
 
       setReferenceNumber(data.referenceNumber);
-
-      if (method === 'bank-tw') {
-        setStep('bank-details');
-      } else {
-        // ECPay — for now show pending message (ECPay form redirect added later)
-        setStep('ecpay-redirect');
-      }
+      setStep('address');
     } catch {
       setError('Network error');
     } finally {
@@ -83,14 +78,19 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
     }
   };
 
-  const copyReference = () => {
-    navigator.clipboard.writeText(referenceNumber);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copyAddress = () => {
+    navigator.clipboard.writeText(PLATFORM_WALLET.address);
+    setCopiedAddr(true);
+    setTimeout(() => setCopiedAddr(false), 2000);
   };
 
-  const bankName = locale === 'zh-TW' ? PLATFORM_BANK_DETAILS.bankName : PLATFORM_BANK_DETAILS.bankNameEn;
-  const holderName = locale === 'zh-TW' ? PLATFORM_BANK_DETAILS.accountHolderZh : PLATFORM_BANK_DETAILS.accountHolder;
+  const copyReference = () => {
+    navigator.clipboard.writeText(referenceNumber);
+    setCopiedRef(true);
+    setTimeout(() => setCopiedRef(false), 2000);
+  };
+
+  const selectedCoin = CRYPTO_COINS.find((c) => c.id === coin);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -104,41 +104,39 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
 
         {step === 'form' && (
           <div className="space-y-4">
-            {/* Payment Method Selection */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setMethod('bank-tw')}
-                className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition-all ${
-                  method === 'bank-tw'
-                    ? 'border-gold-500/50 bg-gold-500/10'
-                    : 'border-white/10 hover:border-white/20'
-                }`}
-              >
-                <Building2 className={`h-5 w-5 ${method === 'bank-tw' ? 'text-gold-400' : 'text-white/40'}`} />
-                <span className={`text-xs font-medium ${method === 'bank-tw' ? 'text-gold-400' : 'text-white/60'}`}>
-                  {t('bankTransfer')}
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setMethod('ecpay')}
-                className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition-all ${
-                  method === 'ecpay'
-                    ? 'border-gold-500/50 bg-gold-500/10'
-                    : 'border-white/10 hover:border-white/20'
-                }`}
-              >
-                <CreditCard className={`h-5 w-5 ${method === 'ecpay' ? 'text-gold-400' : 'text-white/40'}`} />
-                <span className={`text-xs font-medium ${method === 'ecpay' ? 'text-gold-400' : 'text-white/60'}`}>
-                  ECPay
-                </span>
-              </button>
+            {/* Coin Selection */}
+            <div>
+              <label className="text-xs text-white/50 mb-2 block">{t('selectCoin')}</label>
+              <div className="grid grid-cols-2 gap-3">
+                {(['usdt', 'usdc'] as const).map((c) => {
+                  const coinData = CRYPTO_COINS.find((x) => x.id === c)!;
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setCoin(c)}
+                      className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition-all ${
+                        coin === c
+                          ? 'border-gold-500/50 bg-gold-500/10'
+                          : 'border-white/10 hover:border-white/20'
+                      }`}
+                    >
+                      <span className={`text-lg font-bold ${coin === c ? 'text-gold-400' : 'text-white/40'}`}>
+                        {coinData.icon}
+                      </span>
+                      <span className={`text-xs font-medium ${coin === c ? 'text-gold-400' : 'text-white/60'}`}>
+                        {coinData.name}
+                      </span>
+                      <span className="text-[10px] text-white/30">{coinData.network}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Amount Input */}
             <div>
-              <label className="text-xs text-white/50 mb-1 block">{t('amount')}</label>
+              <label className="text-xs text-white/50 mb-1 block">{t('amount')} (USD)</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">$</span>
                 <Input
@@ -165,62 +163,53 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
           </div>
         )}
 
-        {step === 'bank-details' && (
+        {step === 'address' && (
           <div className="space-y-4">
-            <div className="rounded-xl bg-gold-500/5 border border-gold-500/20 p-4 space-y-3">
+            {/* Reference Number */}
+            <div className="rounded-xl bg-gold-500/5 border border-gold-500/20 p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-white/50">{t('referenceNumber')}</span>
                 <button onClick={copyReference} className="flex items-center gap-1 text-gold-400 text-xs hover:text-gold-300">
-                  {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                  {copied ? t('copied') : t('copy')}
+                  {copiedRef ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  {copiedRef ? t('copied') : t('copy')}
                 </button>
               </div>
-              <p className="text-lg font-mono font-bold text-gold-400">{referenceNumber}</p>
+              <p className="text-sm font-mono font-bold text-gold-400">{referenceNumber}</p>
             </div>
 
-            <div className="rounded-xl bg-white/[0.03] p-4 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-white/50">{t('bankName')}</span>
-                <span className="text-white">{bankName} ({PLATFORM_BANK_DETAILS.bankCode})</span>
+            {/* Wallet Address */}
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3">
+              <div className="flex items-center justify-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-white p-2">
+                  <QrCode className="h-14 w-14 text-black" />
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white/50">{t('accountNumber')}</span>
-                <span className="text-white font-mono">{PLATFORM_BANK_DETAILS.accountNumber}</span>
+
+              <div className="text-center">
+                <p className="text-xs text-white/40 mb-1">{t('sendTo')} ({selectedCoin?.name} - {PLATFORM_WALLET.networkShort})</p>
+                <div className="flex items-center gap-2 bg-white/5 rounded-lg p-2">
+                  <code className="flex-1 text-xs text-white/80 break-all font-mono">{PLATFORM_WALLET.address}</code>
+                  <button onClick={copyAddress} className="flex-shrink-0 text-gold-400 hover:text-gold-300">
+                    {copiedAddr ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white/50">{t('accountHolder')}</span>
-                <span className="text-white">{holderName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/50">{t('amount')}</span>
-                <span className="text-gold-400 font-semibold">${amount}</span>
+
+              <div className="flex justify-between text-sm pt-2 border-t border-white/[0.06]">
+                <span className="text-white/50">{t('sendExactAmount')}</span>
+                <span className="text-gold-400 font-semibold">${amount} {selectedCoin?.name}</span>
               </div>
             </div>
 
+            {/* Instructions */}
             <div className="rounded-xl bg-blue-500/10 border border-blue-500/20 p-3">
-              <p className="text-xs text-blue-300">{t('bankTransferInstructions')}</p>
+              <p className="text-xs text-blue-300">{t('cryptoDepositInstructions')}</p>
             </div>
 
             <Badge variant="outline" className="w-full justify-center border-yellow-500/30 text-yellow-400 py-1">
               {t('pendingConfirmation')}
             </Badge>
 
-            <Button
-              variant="outline"
-              onClick={() => { handleOpenChange(false); onSuccess(); }}
-              className="w-full border-white/10 text-white/60 hover:text-white"
-            >
-              {t('done')}
-            </Button>
-          </div>
-        )}
-
-        {step === 'ecpay-redirect' && (
-          <div className="space-y-4 text-center py-4">
-            <Badge variant="outline" className="border-yellow-500/30 text-yellow-400 py-1">
-              {t('pendingConfirmation')}
-            </Badge>
-            <p className="text-sm text-white/50">{t('ecpayPending')}</p>
             <Button
               variant="outline"
               onClick={() => { handleOpenChange(false); onSuccess(); }}

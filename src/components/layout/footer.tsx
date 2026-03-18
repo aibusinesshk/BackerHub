@@ -2,17 +2,13 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { PAYMENT_METHODS } from '@/lib/constants';
-import { Spade, CreditCard, Shield, Wallet } from 'lucide-react';
+import { PAYMENT_BADGES } from '@/lib/constants';
+import { Spade, Shield, Wallet } from 'lucide-react';
 
 export function Footer() {
   const t = useTranslations('footer');
 
-  const paymentIcons = [
-    ...PAYMENT_METHODS.taiwan.map((p) => p.name),
-    ...PAYMENT_METHODS.hongkong.map((p) => p.name),
-    'Visa', 'Mastercard', 'JCB',
-  ];
+  const paymentIcons = [...PAYMENT_BADGES];
 
   return (
     <footer className="border-t border-white/[0.06] bg-[#080a0e]">
@@ -55,7 +51,7 @@ export function Footer() {
                 <Shield className="h-3 w-3" /> SSL Secured
               </div>
               <div className="flex items-center gap-1 text-xs text-white/40">
-                <CreditCard className="h-3 w-3" /> PCI Compliant
+                <Shield className="h-3 w-3" /> Crypto-Native
               </div>
               <div className="flex items-center gap-1 text-xs text-white/40">
                 <Wallet className="h-3 w-3" /> Escrow Protected
