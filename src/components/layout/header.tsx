@@ -54,7 +54,7 @@ export function Header() {
             <Spade className="h-5 w-5" />
           </div>
           <span className="text-lg font-bold tracking-tight text-white">
-            Back<span className="text-gold-400">Hub</span>
+            Backer<span className="text-gold-400">Hub</span>
           </span>
         </Link>
 

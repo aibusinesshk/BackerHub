@@ -24,7 +24,7 @@ export function Footer() {
                 <Spade className="h-5 w-5" />
               </div>
               <span className="text-lg font-bold text-white">
-                Back<span className="text-gold-400">Hub</span>
+                Backer<span className="text-gold-400">Hub</span>
               </span>
             </div>
             <p className="text-sm text-white/50 max-w-xs">{t('tagline')}</p>
