@@ -231,7 +231,7 @@ async function seed() {
   // Delete auth users
   const { data: users } = await admin.auth.admin.listUsers();
   for (const u of (users?.users || [])) {
-    if (u.email?.endsWith('@backhub.demo')) {
+    if (u.email?.endsWith('@backerhub.demo')) {
       await admin.auth.admin.deleteUser(u.id);
     }
   }
@@ -245,7 +245,7 @@ async function seed() {
 
     const { error: authErr } = await admin.auth.admin.createUser({
       id: uuid,
-      email: `player${idx}@backhub.demo`,
+      email: `player${idx}@backerhub.demo`,
       password: 'demo-password-123',
       email_confirm: true,
       user_metadata: { display_name: p.displayName, role: 'player', region: p.region },
@@ -369,8 +369,8 @@ async function seed() {
   // Testimonials
   console.log('💬 Creating testimonials...');
   const testimonials = [
-    { name: 'Alex T.', nameZh: '陳偉倫', role: 'investor', avatar: '/avatars/inv1.svg', quote: 'BackHub made it incredibly easy to invest in poker talent across Asia.', quoteZh: 'BackHub讓投資亞洲撲克人才變得非常簡單。', region: 'TW' },
-    { name: 'Mei-Ling Wang', nameZh: '王美玲', role: 'player', avatar: '/avatars/p2.svg', quote: 'As a player, BackHub lets me focus on my game instead of worrying about buy-ins.', quoteZh: '作為選手，BackHub讓我專注於比賽而不用擔心買入費。', region: 'TW' },
+    { name: 'Alex T.', nameZh: '陳偉倫', role: 'investor', avatar: '/avatars/inv1.svg', quote: 'BackerHub made it incredibly easy to invest in poker talent across Asia.', quoteZh: 'BackerHub讓投資亞洲撲克人才變得非常簡單。', region: 'TW' },
+    { name: 'Mei-Ling Wang', nameZh: '王美玲', role: 'player', avatar: '/avatars/p2.svg', quote: 'As a player, BackerHub lets me focus on my game instead of worrying about buy-ins.', quoteZh: '作為選手，BackerHub讓我專注於比賽而不用擔心買入費。', region: 'TW' },
     { name: 'Robert K.', nameZh: '郭志遠', role: 'investor', avatar: '/avatars/inv3.svg', quote: 'The transparency on this platform is outstanding.', quoteZh: '這個平台的透明度非常出色。', region: 'HK' },
     { name: 'Jason Lam', nameZh: '林俊傑', role: 'player', avatar: '/avatars/p3.svg', quote: 'Finally a staking platform built for the Asian market.', quoteZh: '終於有了為亞洲市場打造的質押平台。', region: 'HK' },
     { name: 'Jenny L.', nameZh: '李佳穎', role: 'investor', avatar: '/avatars/inv2.svg', quote: 'Best alternative investment I have found.', quoteZh: '我找到的最佳另類投資。', region: 'TW' },
@@ -405,7 +405,7 @@ async function seed() {
     if (!reviewerUuid) continue;
     await admin.auth.admin.createUser({
       id: reviewerUuid,
-      email: `${r.reviewerId}@backhub.demo`,
+      email: `${r.reviewerId}@backerhub.demo`,
       password: 'demo-password-123',
       email_confirm: true,
       user_metadata: { display_name: r.reviewerName, role: 'investor', region: 'TW' },

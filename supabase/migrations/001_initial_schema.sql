@@ -1,4 +1,4 @@
--- BackHub Database Schema
+-- BackerHub Database Schema
 -- Run this in the Supabase SQL Editor (supabase.com > Your Project > SQL Editor)
 
 -- ============================================

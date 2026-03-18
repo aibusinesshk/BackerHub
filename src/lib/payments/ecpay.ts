@@ -51,7 +51,7 @@ export function buildPaymentForm(
     MerchantTradeDate: tradeDate,
     PaymentType: 'aio',
     TotalAmount: String(Math.round(amount)),
-    TradeDesc: 'BackHub Wallet Deposit',
+    TradeDesc: 'BackerHub Wallet Deposit',
     ItemName: 'Wallet Deposit',
     ReturnURL: returnUrl,
     ClientBackURL: clientBackUrl,

@@ -1,4 +1,4 @@
-export const SITE_NAME = 'BackHub';
+export const SITE_NAME = 'BackerHub';
 export const SITE_TAGLINE = 'Back Players. Share Victories.';
 export const PLATFORM_FEE_PERCENT = 2;
 
@@ -45,8 +45,8 @@ export const PLATFORM_BANK_DETAILS = {
   bankNameEn: 'Cathay United Bank',
   bankCode: '013',
   accountNumber: '0000-0000-0000-0000', // TODO: Replace with real account
-  accountHolder: 'BackHub Co., Ltd.',
-  accountHolderZh: 'BackHub 有限公司',
+  accountHolder: 'BackerHub Co., Ltd.',
+  accountHolderZh: 'BackerHub 有限公司',
 } as const;
 
 // Taiwan common banks for withdrawal

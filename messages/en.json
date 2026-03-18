@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "BackHub",
+    "appName": "BackerHub",
     "tagline": "Back Players. Share Victories.",
     "getStarted": "Get Started",
     "login": "Log In",
@@ -71,7 +71,7 @@
     "international": "International"
   },
   "trust": {
-    "title": "Why Trust BackHub?",
+    "title": "Why Trust BackerHub?",
     "subtitle": "Built for the Asian poker community with security and transparency at the core",
     "verified": "Verified Players",
     "verifiedDesc": "All players are identity-verified with tracked performance history",
@@ -221,8 +221,8 @@
   },
   "auth": {
     "loginTitle": "Welcome Back",
-    "loginSubtitle": "Sign in to your BackHub account",
-    "signupTitle": "Join BackHub",
+    "loginSubtitle": "Sign in to your BackerHub account",
+    "signupTitle": "Join BackerHub",
     "signupSubtitle": "Create your account to start backing players or selling action",
     "email": "Email Address",
     "password": "Password",
@@ -266,7 +266,7 @@
     "successMessage": "Your listing is now live on the marketplace."
   },
   "about": {
-    "title": "About BackHub",
+    "title": "About BackerHub",
     "subtitle": "Asia's premier player backing marketplace",
     "missionTitle": "Our Mission",
     "missionDesc": "We're bridging the gap between poker talent and smart backers across Asia. Our platform makes it simple, secure, and transparent to back poker players in tournaments or sell your action to a community that believes in your skills.",
@@ -286,15 +286,15 @@
     "q3": "What is markup?",
     "a3": "Markup is the premium a player charges above the base cost. A 1.10x markup means you pay 10% more than the base action price. Higher-rated players typically command higher markups. A $1,000 buy-in with 10% action at 1.10x markup would cost $110 instead of $100.",
     "q4": "How are winnings distributed?",
-    "a4": "When a player cashes in a tournament, BackHub verifies the results with the official tournament organizer. Winnings are then automatically distributed to all backers proportionally within 10 business days.",
+    "a4": "When a player cashes in a tournament, BackerHub verifies the results with the official tournament organizer. Winnings are then automatically distributed to all backers proportionally within 10 business days.",
     "q5": "What payment methods do you support?",
     "a5": "We support a wide range of payment methods including ECPay, LINE Pay, JKoPay (Taiwan), AlipayHK, Octopus, PayMe, FPS (Hong Kong), major credit cards (Visa, Mastercard, JCB), and cryptocurrency (BTC, ETH, USDT).",
     "q6": "Is my backing safe?",
-    "a6": "All players on BackHub are identity-verified. We track performance history and verify tournament results through official sources. Funds are held in escrow until tournament completion. However, poker tournaments are inherently variable — not every tournament entry results in a cash.",
+    "a6": "All players on BackerHub are identity-verified. We track performance history and verify tournament results through official sources. Funds are held in escrow until tournament completion. However, poker tournaments are inherently variable — not every tournament entry results in a cash.",
     "q7": "Is this gambling?",
-    "a7": "No. BackHub is a player sponsorship platform for competitive mind sport events. Poker tournaments (MTT) are recognized as skill-based mind sport competitions in Taiwan. Our platform facilitates sponsorship of tournament players — backers fund a player's entry and share in any prize winnings. This is fundamentally different from gambling, as outcomes are determined by player skill in a competitive setting.",
+    "a7": "No. BackerHub is a player sponsorship platform for competitive mind sport events. Poker tournaments (MTT) are recognized as skill-based mind sport competitions in Taiwan. Our platform facilitates sponsorship of tournament players — backers fund a player's entry and share in any prize winnings. This is fundamentally different from gambling, as outcomes are determined by player skill in a competitive setting.",
     "q8": "Is poker staking legal in Taiwan?",
-    "a8": "Yes. Multi-table poker tournaments (MTT) are recognized as competitive mind sport events in Taiwan and are legally operated by registered associations such as CTP. BackHub facilitates player sponsorship for these legal tournament events. We do not support cash games, which remain prohibited. Our platform operates as a sponsorship and escrow service, not a gambling platform."
+    "a8": "Yes. Multi-table poker tournaments (MTT) are recognized as competitive mind sport events in Taiwan and are legally operated by registered associations such as CTP. BackerHub facilitates player sponsorship for these legal tournament events. We do not support cash games, which remain prohibited. Our platform operates as a sponsorship and escrow service, not a gambling platform."
   },
   "footer": {
     "about": "About",
@@ -307,12 +307,12 @@
     "newsletterSubtitle": "Get the latest staking opportunities and platform updates",
     "emailPlaceholder": "Enter your email",
     "subscribe": "Subscribe",
-    "copyright": "2026 BackHub. All rights reserved.",
+    "copyright": "2026 BackerHub. All rights reserved.",
     "tagline": "Back Players. Share Victories.",
     "platform": "Platform",
     "company": "Company",
     "legal": "Legal",
-    "disclaimer": "BackHub is a player sponsorship platform for skill-based mind sport competition. Tournament poker (MTT) is recognized as a competitive mind sport in Taiwan. This is not a gambling or securities platform."
+    "disclaimer": "BackerHub is a player sponsorship platform for skill-based mind sport competition. Tournament poker (MTT) is recognized as a competitive mind sport in Taiwan. This is not a gambling or securities platform."
   },
   "notFound": {
     "title": "Page Not Found",
@@ -476,7 +476,7 @@
   },
   "aboutPage": {
     "badge": "About Us",
-    "title": "About BackHub",
+    "title": "About BackerHub",
     "subtitle": "Asia's most trusted player backing platform",
     "missionTitle": "Our Mission",
     "missionDescription": "We're building the infrastructure of trust for competitive poker. By combining escrow-protected staking with transparent verification at every step, we make it possible for talented players to access backing and for backers to participate in tournament poker — all with institutional-grade risk management.",
@@ -487,14 +487,14 @@
       "member1": {
         "name": "Co-Founder",
         "role": "Investment Banking & Audit",
-        "background": "Former auditor at a Big Four accounting firm with extensive experience in investment banking compliance, financial controls, and risk management. Brings deep expertise in building trustworthy financial systems, regulatory compliance, and escrow fund management to ensure every dollar on BackHub is accounted for.",
+        "background": "Former auditor at a Big Four accounting firm with extensive experience in investment banking compliance, financial controls, and risk management. Brings deep expertise in building trustworthy financial systems, regulatory compliance, and escrow fund management to ensure every dollar on BackerHub is accounted for.",
         "expertise": ["Financial Audit", "Risk Management", "Compliance", "Escrow Design", "Fund Accounting"],
-        "quote": "Trust is built through transparency and accountability. Every transaction on BackHub goes through the same rigor I'd apply to an institutional audit."
+        "quote": "Trust is built through transparency and accountability. Every transaction on BackerHub goes through the same rigor I'd apply to an institutional audit."
       },
       "member2": {
         "name": "Co-Founder",
         "role": "AI Engineering & Quantitative Systems",
-        "background": "Former AI engineer at a quantitative hedge fund, building machine learning models for market analysis and automated trading systems. Applies the same data-driven, systematic approach to platform architecture, player analytics, and risk scoring algorithms that power BackHub's reliability metrics.",
+        "background": "Former AI engineer at a quantitative hedge fund, building machine learning models for market analysis and automated trading systems. Applies the same data-driven, systematic approach to platform architecture, player analytics, and risk scoring algorithms that power BackerHub's reliability metrics.",
         "expertise": ["AI/ML Engineering", "Quantitative Analysis", "System Architecture", "Data Analytics", "Algorithm Design"],
         "quote": "The best systems are the ones that make the right thing easy and the wrong thing hard. That's what we've built into every step of the staking flow."
       }
@@ -518,7 +518,7 @@
         "description": "Combining finance-grade compliance with cutting-edge technology. Every process is designed, tested, and continuously improved."
       }
     },
-    "whyTitle": "Why Choose BackHub?",
+    "whyTitle": "Why Choose BackerHub?",
     "whyDescription": "We're the only poker staking platform that combines escrow-protected fund management, multi-step admin verification, player reliability scoring, and enforced settlement deadlines into a single seamless experience. Whether you're a player looking for backing or a backer looking for exposure to tournament poker, we've built the safest way to do it.",
     "ctaHowItWorks": "See How It Works",
     "ctaContact": "Contact Us",
@@ -695,22 +695,22 @@
     "termsTitle": "Terms of Service",
     "termsLastUpdated": "Last updated: March 2026",
     "aboutPlatform": "About This Platform",
-    "disclaimerBanner": "BackHub is a player sponsorship platform for skill-based mind sport competition. Not a gambling or securities platform.",
+    "disclaimerBanner": "BackerHub is a player sponsorship platform for skill-based mind sport competition. Not a gambling or securities platform.",
     "checkoutDisclaimer": "By completing this purchase, you are sponsoring a player's tournament entry. Returns are based on tournament results and are not guaranteed. This is not a securities offering or gambling transaction.",
     "mindSportNotice": "Poker tournaments (MTT) are recognized as competitive mind sport events in Taiwan.",
     "riskDisclaimer": "Sponsoring tournament players involves risk. Past performance does not guarantee future results. You may lose some or all of your sponsorship amount.",
-    "platformDescription": "BackHub is a player sponsorship platform that connects skilled poker tournament players with backers. We facilitate the staking process for legally sanctioned multi-table tournament (MTT) events recognized as competitive mind sport competitions.",
+    "platformDescription": "BackerHub is a player sponsorship platform that connects skilled poker tournament players with backers. We facilitate the staking process for legally sanctioned multi-table tournament (MTT) events recognized as competitive mind sport competitions.",
     "natureOfService": "Nature of Service",
-    "natureOfServiceDesc": "BackHub provides a marketplace for poker tournament staking — a standard practice in professional poker where backers fund a player's tournament entry in exchange for a proportional share of any prize winnings. This is player sponsorship, not gambling, securities trading, or financial investment advice.",
+    "natureOfServiceDesc": "BackerHub provides a marketplace for poker tournament staking — a standard practice in professional poker where backers fund a player's tournament entry in exchange for a proportional share of any prize winnings. This is player sponsorship, not gambling, securities trading, or financial investment advice.",
     "userResponsibilities": "User Responsibilities",
     "userResponsibilitiesDesc": "Users must be at least 18 years of age. Backers acknowledge that tournament results are variable and that backing a player does not guarantee returns. Players must participate in listed tournaments in good faith and report results accurately.",
     "riskDisclosure": "Risk Disclosure",
-    "riskDisclosureDesc": "Poker tournaments involve inherent variance. Even highly skilled players may not cash in any given tournament. Backers should only use funds they can afford to lose. Past player performance does not guarantee future results. BackHub does not provide financial or investment advice.",
+    "riskDisclosureDesc": "Poker tournaments involve inherent variance. Even highly skilled players may not cash in any given tournament. Backers should only use funds they can afford to lose. Past player performance does not guarantee future results. BackerHub does not provide financial or investment advice.",
     "escrowTerms": "Escrow & Prize Distribution",
-    "escrowTermsDesc": "All backing funds are held in escrow by BackHub until tournament completion. Prize winnings are verified through official tournament sources and distributed proportionally to backers within 10 business days. In case of tournament cancellation, escrowed funds are returned in full.",
+    "escrowTermsDesc": "All backing funds are held in escrow by BackerHub until tournament completion. Prize winnings are verified through official tournament sources and distributed proportionally to backers within 10 business days. In case of tournament cancellation, escrowed funds are returned in full.",
     "governingLaw": "Governing Law",
-    "governingLawDesc": "These terms are governed by the laws of Taiwan (R.O.C.). BackHub operates in compliance with applicable regulations governing competitive mind sport events and player sponsorship. We do not support or facilitate cash games, online gambling, or any activities prohibited under Taiwan law.",
+    "governingLawDesc": "These terms are governed by the laws of Taiwan (R.O.C.). BackerHub operates in compliance with applicable regulations governing competitive mind sport events and player sponsorship. We do not support or facilitate cash games, online gambling, or any activities prohibited under Taiwan law.",
     "mttOnly": "Tournament Only Policy",
-    "mttOnlyDesc": "BackHub exclusively supports multi-table tournament (MTT) poker events operated by legally registered associations and organizations. Cash games are not supported on this platform under any circumstances."
+    "mttOnlyDesc": "BackerHub exclusively supports multi-table tournament (MTT) poker events operated by legally registered associations and organizations. Cash games are not supported on this platform under any circumstances."
   }
 }

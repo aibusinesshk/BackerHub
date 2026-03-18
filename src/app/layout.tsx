@@ -23,8 +23,8 @@ const notoSansTC = Noto_Sans_TC({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | BackHub',
-    default: 'BackHub - Back Players. Share Victories.',
+    template: '%s | BackerHub',
+    default: 'BackerHub - Back Players. Share Victories.',
   },
   description:
     'Invest in poker players or sell your tournament action. The first poker staking platform built for the Asian market.',

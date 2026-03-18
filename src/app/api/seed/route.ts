@@ -20,7 +20,7 @@ export async function GET() {
 // Protected: requires SEED_SECRET header to prevent accidental/malicious data deletion
 export async function DELETE(request: Request) {
   const seedSecret = request.headers.get('x-seed-secret');
-  if (!seedSecret || seedSecret !== (process.env.SEED_SECRET || 'backhub-admin-2026')) {
+  if (!seedSecret || seedSecret !== (process.env.SEED_SECRET || 'backerhub-admin-2026')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   const admin = await createAdminClient();
@@ -39,7 +39,7 @@ export async function DELETE(request: Request) {
   // Delete auth users
   const { data: users } = await admin.auth.admin.listUsers();
   for (const u of (users?.users || [])) {
-    if (u.email?.endsWith('@backhub.demo')) {
+    if (u.email?.endsWith('@backerhub.demo')) {
       await admin.auth.admin.deleteUser(u.id);
     }
   }
@@ -50,7 +50,7 @@ export async function DELETE(request: Request) {
 // Protected: requires SEED_SECRET header
 export async function POST(request: Request) {
   const seedSecret = request.headers.get('x-seed-secret');
-  if (!seedSecret || seedSecret !== (process.env.SEED_SECRET || 'backhub-admin-2026')) {
+  if (!seedSecret || seedSecret !== (process.env.SEED_SECRET || 'backerhub-admin-2026')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   const admin = await createAdminClient();
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
     const idx = parseInt(key.replace('p', ''));
     await admin.auth.admin.createUser({
       id: uuid,
-      email: `player${idx}@backhub.demo`,
+      email: `player${idx}@backerhub.demo`,
       password: 'demo-password-123',
       email_confirm: true,
       user_metadata: {
@@ -223,7 +223,7 @@ export async function POST(request: Request) {
       // Try creating the auth user (will fail silently if exists)
       await admin.auth.admin.createUser({
         id: reviewerUuid,
-        email: `${r.reviewerId}@backhub.demo`,
+        email: `${r.reviewerId}@backerhub.demo`,
         password: 'demo-password-123',
         email_confirm: true,
         user_metadata: {
@@ -545,8 +545,8 @@ const listings = [
 ];
 
 const testimonials = [
-  { name: 'Alex T.', nameZh: '陳偉倫', role: 'investor', avatar: '/avatars/inv1.svg', quote: "BackHub made it incredibly easy to invest in poker talent across Asia. I've seen consistent returns backing verified players.", quoteZh: 'BackHub讓投資亞洲撲克人才變得非常簡單。支持經過驗證的選手，我看到了穩定的回報。', region: 'TW' },
-  { name: 'Mei-Ling Wang', nameZh: '王美玲', role: 'player', avatar: '/avatars/p2.svg', quote: 'As a player, BackHub lets me focus on my game instead of worrying about buy-ins. The investor community here is amazing.', quoteZh: '作為選手，BackHub讓我專注於比賽而不用擔心買入費。這裡的投資者社群非常棒。', region: 'TW' },
+  { name: 'Alex T.', nameZh: '陳偉倫', role: 'investor', avatar: '/avatars/inv1.svg', quote: "BackerHub made it incredibly easy to invest in poker talent across Asia. I've seen consistent returns backing verified players.", quoteZh: 'BackerHub讓投資亞洲撲克人才變得非常簡單。支持經過驗證的選手，我看到了穩定的回報。', region: 'TW' },
+  { name: 'Mei-Ling Wang', nameZh: '王美玲', role: 'player', avatar: '/avatars/p2.svg', quote: 'As a player, BackerHub lets me focus on my game instead of worrying about buy-ins. The investor community here is amazing.', quoteZh: '作為選手，BackerHub讓我專注於比賽而不用擔心買入費。這裡的投資者社群非常棒。', region: 'TW' },
   { name: 'Robert K.', nameZh: '郭志遠', role: 'investor', avatar: '/avatars/inv3.svg', quote: 'The transparency on this platform is outstanding. Detailed player stats, verified results, and prompt payouts every time.', quoteZh: '這個平台的透明度非常出色。詳細的選手數據、經過驗證的結果，每次都能及時派彩。', region: 'HK' },
   { name: 'Jason Lam', nameZh: '林俊傑', role: 'player', avatar: '/avatars/p3.svg', quote: 'Finally a staking platform built for the Asian market. Local payment methods and bilingual support make all the difference.', quoteZh: '終於有了為亞洲市場打造的質押平台。本地支付方式和雙語支持使一切都不同了。', region: 'HK' },
   { name: 'Jenny L.', nameZh: '李佳穎', role: 'investor', avatar: '/avatars/inv2.svg', quote: "I started with small investments and now have a diversified portfolio of poker players. Best alternative investment I've found.", quoteZh: '我從小額投資開始，現在已經擁有多元化的撲克選手投資組合。我找到的最佳另類投資。', region: 'TW' },
@@ -557,7 +557,7 @@ const reviews = [
   { id: 'r2', playerId: 'p1', reviewerId: 'inv2', reviewerName: 'Jenny L.', reviewerAvatar: '/avatars/inv2.svg', rating: 4, comment: 'Solid player with a good track record. Communication could be a bit better after tournaments.', commentZh: '實力堅固的選手，成績良好。賽後溝通可以更好一些。', createdAt: '2026-01-28T14:30:00Z' },
   { id: 'r3', playerId: 'p2', reviewerId: 'inv3', reviewerName: 'Robert K.', reviewerAvatar: '/avatars/inv3.svg', rating: 5, comment: "Mei-Ling is a phenomenal player. Her aggressive style leads to big wins. Best investment I've made on the platform.", commentZh: '美玲是非凡的選手。她積極的風格帶來大勝。我在平台上最好的投資。', createdAt: '2026-03-01T09:15:00Z' },
   { id: 'r4', playerId: 'p3', reviewerId: 'inv1', reviewerName: 'Alex T.', reviewerAvatar: '/avatars/inv1.svg', rating: 4, comment: 'Jason is a veteran with deep tournament experience. Very reliable and transparent with updates.', commentZh: 'Jason是經驗豐富的老將。非常可靠，更新透明。', createdAt: '2026-02-20T16:45:00Z' },
-  { id: 'r5', playerId: 'p4', reviewerId: 'inv4', reviewerName: 'Mike W.', reviewerAvatar: '/avatars/inv4.svg', rating: 5, comment: "Sophie's ROI speaks for itself. One of the best investments on BackHub. Will keep backing her.", commentZh: "Sophie的ROI不言自明。BackHub上最好的投資之一。會繼續支持她。", createdAt: '2026-03-05T11:30:00Z' },
+  { id: 'r5', playerId: 'p4', reviewerId: 'inv4', reviewerName: 'Mike W.', reviewerAvatar: '/avatars/inv4.svg', rating: 5, comment: "Sophie's ROI speaks for itself. One of the best investments on BackerHub. Will keep backing her.", commentZh: "Sophie的ROI不言自明。BackerHub上最好的投資之一。會繼續支持她。", createdAt: '2026-03-05T11:30:00Z' },
   { id: 'r6', playerId: 'p9', reviewerId: 'inv2', reviewerName: 'Jenny L.', reviewerAvatar: '/avatars/inv2.svg', rating: 5, comment: 'Michael is a true professional. Multiple WSOP rings and always keeps backers informed.', commentZh: 'Michael是真正的職業選手。多枚WSOP戒指，總是讓支持者了解最新情況。', createdAt: '2026-02-10T08:00:00Z' },
   { id: 'r7', playerId: 'p6', reviewerId: 'inv3', reviewerName: 'Robert K.', reviewerAvatar: '/avatars/inv3.svg', rating: 4, comment: 'Raymond is excellent in PLO and mixed games. A unique offering on the platform.', commentZh: 'Raymond在PLO和混合賽事中表現出色。平台上的獨特選擇。', createdAt: '2026-01-15T13:00:00Z' },
   { id: 'r8', playerId: 'p10', reviewerId: 'inv4', reviewerName: 'Mike W.', reviewerAvatar: '/avatars/inv4.svg', rating: 4, comment: 'Tony consistently delivers positive returns. His Macau experience gives him an edge in live events.', commentZh: 'Tony持續提供正回報。他的澳門經驗使他在現場賽事中佔優勢。', createdAt: '2026-02-28T19:00:00Z' },

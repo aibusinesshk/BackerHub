@@ -52,7 +52,7 @@ function addFooter(slide, pres, isGold) {
     slide.addText("CONFIDENTIAL", { x: 0, y: 5.405, w: 10, h: 0.22, fontSize: 8, fontFace: FONT_B, color: C.bg, align: "center", valign: "middle", bold: true, charSpacing: 5, margin: 0 });
   } else {
     slide.addShape(pres.shapes.LINE, { x: 0.6, y: 5.32, w: 8.8, h: 0, line: { color: C.line, width: 0.5 } });
-    slide.addText("BackHub  |  Investor Presentation 2026", { x: 0.6, y: 5.35, w: 8.8, h: 0.25, fontSize: 8, fontFace: FONT_L, color: C.grayDim, margin: 0 });
+    slide.addText("BackerHub  |  Investor Presentation 2026", { x: 0.6, y: 5.35, w: 8.8, h: 0.25, fontSize: 8, fontFace: FONT_L, color: C.grayDim, margin: 0 });
   }
 }
 
@@ -67,8 +67,8 @@ function card(slide, pres, x, y, w, h) {
 async function main() {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_16x9";
-  pres.author = "BackHub";
-  pres.title = "BackHub - Investor Presentation 2026";
+  pres.author = "BackerHub";
+  pres.title = "BackerHub - Investor Presentation 2026";
 
   // Pre-render icons
   const icons = {};
@@ -94,7 +94,7 @@ async function main() {
   s1.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 4.25, y: 1.4, w: 0.6, h: 0.6, fill: { color: C.gold }, rectRadius: 0.1 });
   s1.addText("\u2660", { x: 4.25, y: 1.4, w: 0.6, h: 0.6, fontSize: 24, color: C.bg, align: "center", valign: "middle", fontFace: FONT_B, margin: 0 });
   s1.addText([
-    { text: "Back", options: { color: C.white, bold: true, fontSize: 34, fontFace: FONT_H } },
+    { text: "Backer", options: { color: C.white, bold: true, fontSize: 34, fontFace: FONT_H } },
     { text: "Hub", options: { color: C.gold, bold: true, fontSize: 34, fontFace: FONT_H } }
   ], { x: 4.95, y: 1.4, w: 2.5, h: 0.6, valign: "middle", margin: 0 });
   // Tagline
@@ -133,7 +133,7 @@ async function main() {
   let s3 = pres.addSlide();
   s3.background = { color: C.bg };
   addHeader(s3, "THE SOLUTION");
-  s3.addText("BackHub: Trust-First Player Backing", { x: 0.7, y: 0.75, w: 9, h: 0.6, fontSize: 28, fontFace: FONT_H, color: C.white, margin: 0 });
+  s3.addText("BackerHub: Trust-First Player Backing", { x: 0.7, y: 0.75, w: 9, h: 0.6, fontSize: 28, fontFace: FONT_H, color: C.white, margin: 0 });
   s3.addText("The first poker player sponsorship marketplace built for Asia \u2014 with escrow protection, admin verification, and local payment methods.", {
     x: 0.7, y: 1.35, w: 8.6, h: 0.4, fontSize: 12, fontFace: FONT_L, color: C.gray, margin: 0
   });
@@ -303,7 +303,7 @@ async function main() {
     { label: "Markup (1.15x)", value: "$750" },
     { label: "Platform Fee (2%)", value: "$115" },
     { label: "Backer Total Cost", value: "$5,865" },
-    { label: "BackHub Revenue", value: "$115 per listing" },
+    { label: "BackerHub Revenue", value: "$115 per listing" },
   ];
   for (let i = 0; i < econ.length; i++) {
     const ey = 2.55 + i * 0.43;
@@ -325,7 +325,7 @@ async function main() {
   const tFont = FONT_B;
   const headers = [
     { text: "Feature", options: { fill: { color: C.gold }, color: C.bg, bold: true, fontSize: 10, fontFace: tFont, align: "left" } },
-    { text: "BackHub", options: { fill: { color: C.gold }, color: C.bg, bold: true, fontSize: 10, fontFace: tFont, align: "center" } },
+    { text: "BackerHub", options: { fill: { color: C.gold }, color: C.bg, bold: true, fontSize: 10, fontFace: tFont, align: "center" } },
     { text: "StakeKings", options: { fill: { color: C.bgCard2 }, color: C.grayLight, bold: true, fontSize: 10, fontFace: tFont, align: "center" } },
     { text: "PokerStake", options: { fill: { color: C.bgCard2 }, color: C.grayLight, bold: true, fontSize: 10, fontFace: tFont, align: "center" } },
     { text: "GGPoker", options: { fill: { color: C.bgCard2 }, color: C.grayLight, bold: true, fontSize: 10, fontFace: tFont, align: "center" } },
@@ -572,14 +572,14 @@ async function main() {
   s14.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 4.15, y: 4.6, w: 0.5, h: 0.5, fill: { color: C.gold }, rectRadius: 0.08 });
   s14.addText("\u2660", { x: 4.15, y: 4.6, w: 0.5, h: 0.5, fontSize: 20, color: C.bg, align: "center", valign: "middle", fontFace: FONT_B, margin: 0 });
   s14.addText([
-    { text: "Back", options: { bold: true, fontSize: 18, color: C.white, fontFace: FONT_H } },
+    { text: "Backer", options: { bold: true, fontSize: 18, color: C.white, fontFace: FONT_H } },
     { text: "Hub", options: { bold: true, fontSize: 18, color: C.gold, fontFace: FONT_H } },
   ], { x: 4.7, y: 4.6, w: 2.0, h: 0.5, valign: "middle", margin: 0 });
-  s14.addText("support@backhub.com  \u00b7  Taipei, Taiwan", { x: 1, y: 5.12, w: 8, h: 0.2, fontSize: 11, fontFace: FONT_L, color: C.grayDim, align: "center", margin: 0 });
+  s14.addText("support@backerhub.com  \u00b7  Taipei, Taiwan", { x: 1, y: 5.12, w: 8, h: 0.2, fontSize: 11, fontFace: FONT_L, color: C.grayDim, align: "center", margin: 0 });
   addFooter(s14, pres, true);
 
   // Write file
-  await pres.writeFile({ fileName: "D:\\SnapAllin-master\\SnapAllin-master\\BackHub_Pitch_Deck_2026.pptx" });
+  await pres.writeFile({ fileName: "D:\\SnapAllin-master\\SnapAllin-master\\BackerHub_Pitch_Deck_2026.pptx" });
   console.log("Pitch deck created successfully!");
 }
 
