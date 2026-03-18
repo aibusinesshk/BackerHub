@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useAuth } from '@/providers/auth-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,8 +9,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
+import { AvatarCropModal } from '@/components/shared/avatar-crop-modal';
 import { formatDate } from '@/lib/format';
-import { Loader2, CheckCircle, Shield, User, MapPin, Calendar } from 'lucide-react';
+import {
+  Loader2, CheckCircle, Shield, User, MapPin, Calendar,
+  Camera, Upload, FileCheck, AlertTriangle,
+} from 'lucide-react';
+
+const KYC_DOCS = ['id-front', 'id-back', 'selfie', 'proof-of-address'] as const;
 
 export default function ProfilePage() {
   const t = useTranslations('profile');
@@ -37,6 +43,19 @@ export default function ProfilePage() {
   const [isVerified, setIsVerified] = useState(false);
   const [kycStatus, setKycStatus] = useState('none');
   const [memberSince, setMemberSince] = useState('');
+
+  // Avatar upload
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [selectedImageSrc, setSelectedImageSrc] = useState('');
+  const [uploading, setUploading] = useState(false);
+
+  // KYC
+  const [kycFiles, setKycFiles] = useState<Record<string, File | null>>({
+    'id-front': null, 'id-back': null, 'selfie': null, 'proof-of-address': null,
+  });
+  const [kycSubmitting, setKycSubmitting] = useState(false);
+  const [kycError, setKycError] = useState('');
 
   useEffect(() => {
     fetch('/api/profile')
@@ -78,7 +97,6 @@ export default function ProfilePage() {
         body: JSON.stringify({
           display_name: displayName.trim(),
           display_name_zh: displayNameZh.trim() || null,
-          avatar_url: avatarUrl.trim() || null,
           bio: bio.trim() || null,
           bio_zh: bioZh.trim() || null,
           role,
@@ -99,6 +117,82 @@ export default function ProfilePage() {
       setError('Network error');
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Avatar handlers
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError(t('avatarInvalidType'));
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError(t('avatarTooLarge'));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImageSrc(reader.result as string);
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleCropped = async (blob: Blob) => {
+    setCropModalOpen(false);
+    setUploading(true);
+    setError('');
+    try {
+      const formData = new FormData();
+      formData.append('avatar', blob, 'avatar.webp');
+      const res = await fetch('/api/profile/avatar', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Upload failed');
+        return;
+      }
+      setAvatarUrl(data.avatar_url);
+      await refreshProfile();
+    } catch {
+      setError('Network error');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // KYC handlers
+  const handleKycFileChange = (docName: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setKycFiles((prev) => ({ ...prev, [docName]: file }));
+    }
+  };
+
+  const allKycFilesSelected = KYC_DOCS.every((d) => kycFiles[d] !== null);
+
+  const handleKycSubmit = async () => {
+    if (!allKycFilesSelected) return;
+    setKycSubmitting(true);
+    setKycError('');
+    try {
+      const formData = new FormData();
+      for (const docName of KYC_DOCS) {
+        formData.append(docName, kycFiles[docName]!);
+      }
+      const res = await fetch('/api/profile/kyc', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) {
+        setKycError(data.error || 'Submission failed');
+        return;
+      }
+      setKycStatus('pending');
+    } catch {
+      setKycError('Network error');
+    } finally {
+      setKycSubmitting(false);
     }
   };
 
@@ -123,6 +217,13 @@ export default function ProfilePage() {
     }
   };
 
+  const kycDocLabels: Record<string, string> = {
+    'id-front': t('kycIdFront'),
+    'id-back': t('kycIdBack'),
+    'selfie': t('kycSelfie'),
+    'proof-of-address': t('kycProofOfAddress'),
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -140,7 +241,7 @@ export default function ProfilePage() {
 
       <div className="grid gap-8 lg:grid-cols-5">
         {/* Edit Form */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 space-y-8">
           <Card className="border-white/[0.06] bg-[#111318]">
             <CardHeader>
               <CardTitle className="text-white text-sm flex items-center gap-2">
@@ -149,6 +250,43 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
+              {/* Avatar Upload */}
+              <div>
+                <label className="mb-1.5 block text-xs text-white/50">{t('avatar')}</label>
+                <div className="flex items-center gap-4">
+                  <PlayerAvatar
+                    src={avatarUrl}
+                    name={displayName || 'U'}
+                    className="h-16 w-16 border-2 border-white/10"
+                    fallbackClassName="bg-gold-500/10 text-gold-400 text-lg font-bold"
+                  />
+                  <div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-white/10 text-white/60 hover:bg-white/5"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                    >
+                      {uploading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Camera className="mr-2 h-4 w-4" />
+                      )}
+                      {uploading ? t('avatarUploading') : t('avatarUpload')}
+                    </Button>
+                    <p className="mt-1 text-[10px] text-white/30">{t('avatarHelp')}</p>
+                  </div>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={handleFileSelect}
+                />
+              </div>
+
               {/* Display Name */}
               <div>
                 <label className="mb-1.5 block text-xs text-white/50">{t('displayName')} *</label>
@@ -169,18 +307,6 @@ export default function ProfilePage() {
                   className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
                   placeholder={t('displayNameZhHelp')}
                 />
-              </div>
-
-              {/* Avatar URL */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('avatarUrl')}</label>
-                <Input
-                  value={avatarUrl}
-                  onChange={(e) => setAvatarUrl(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 font-mono text-sm"
-                  placeholder={t('avatarUrlPlaceholder')}
-                />
-                <p className="mt-1 text-[10px] text-white/30">{t('avatarUrlHelp')}</p>
               </div>
 
               <Separator className="bg-white/[0.06]" />
@@ -273,6 +399,87 @@ export default function ProfilePage() {
               </Button>
             </CardContent>
           </Card>
+
+          {/* KYC Section */}
+          <Card className="border-white/[0.06] bg-[#111318]">
+            <CardHeader>
+              <CardTitle className="text-white text-sm flex items-center gap-2">
+                <Shield className="h-4 w-4 text-gold-400" />
+                {t('kycTitle')}
+              </CardTitle>
+              <p className="text-xs text-white/40">{t('kycSubtitle')}</p>
+            </CardHeader>
+            <CardContent>
+              {kycStatus === 'approved' && (
+                <div className="flex items-center gap-3 rounded-xl bg-green-500/10 border border-green-500/20 p-4">
+                  <CheckCircle className="h-5 w-5 text-green-400 shrink-0" />
+                  <p className="text-sm text-green-300">{t('kycApprovedMessage')}</p>
+                </div>
+              )}
+
+              {kycStatus === 'pending' && (
+                <div className="flex items-center gap-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 p-4">
+                  <Loader2 className="h-5 w-5 text-yellow-400 animate-spin shrink-0" />
+                  <p className="text-sm text-yellow-300">{t('kycPendingMessage')}</p>
+                </div>
+              )}
+
+              {(kycStatus === 'none' || kycStatus === 'rejected') && (
+                <div className="space-y-4">
+                  {kycStatus === 'rejected' && (
+                    <div className="flex items-center gap-3 rounded-xl bg-red-500/10 border border-red-500/20 p-4 mb-4">
+                      <AlertTriangle className="h-5 w-5 text-red-400 shrink-0" />
+                      <p className="text-sm text-red-300">{t('kycRejectedMessage')}</p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {KYC_DOCS.map((docName) => (
+                      <label
+                        key={docName}
+                        className={`relative flex flex-col items-center gap-2 rounded-xl border-2 border-dashed p-4 cursor-pointer transition-all hover:border-gold-500/50 ${
+                          kycFiles[docName]
+                            ? 'border-green-500/40 bg-green-500/5'
+                            : 'border-white/10 bg-white/[0.02]'
+                        }`}
+                      >
+                        {kycFiles[docName] ? (
+                          <FileCheck className="h-6 w-6 text-green-400" />
+                        ) : (
+                          <Upload className="h-6 w-6 text-white/30" />
+                        )}
+                        <span className="text-xs text-white/60 text-center font-medium">
+                          {kycDocLabels[docName]}
+                        </span>
+                        {kycFiles[docName] ? (
+                          <span className="text-[10px] text-green-400">{t('kycFileSelected')}</span>
+                        ) : (
+                          <span className="text-[10px] text-white/30">{t('kycUploadHint')}</span>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp,application/pdf"
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                          onChange={(e) => handleKycFileChange(docName, e)}
+                        />
+                      </label>
+                    ))}
+                  </div>
+
+                  {kycError && <p className="text-xs text-red-400">{kycError}</p>}
+
+                  <Button
+                    onClick={handleKycSubmit}
+                    disabled={!allKycFilesSelected || kycSubmitting}
+                    className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400"
+                  >
+                    {kycSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {kycSubmitting ? t('kycSubmitting') : kycStatus === 'rejected' ? t('kycResubmit') : t('kycSubmit')}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Preview Card */}
@@ -283,7 +490,6 @@ export default function ProfilePage() {
                 <CardTitle className="text-white text-sm">{t('preview')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-5">
-                {/* Avatar + Name */}
                 <div className="flex flex-col items-center text-center">
                   <PlayerAvatar
                     src={avatarUrl}
@@ -299,7 +505,6 @@ export default function ProfilePage() {
 
                 <Separator className="bg-white/[0.06]" />
 
-                {/* Badges */}
                 <div className="flex flex-wrap justify-center gap-2">
                   <Badge variant="outline" className="border-gold-500/30 text-gold-400">
                     {roleOptions.find((r) => r.value === role)?.label}
@@ -311,7 +516,6 @@ export default function ProfilePage() {
                   </Badge>
                 </div>
 
-                {/* Verification Status */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-white/50 flex items-center gap-1">
@@ -319,13 +523,9 @@ export default function ProfilePage() {
                       {t('verified')}
                     </span>
                     {isVerified ? (
-                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px]">
-                        {t('verified')}
-                      </Badge>
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px]">{t('verified')}</Badge>
                     ) : (
-                      <Badge className="bg-white/10 text-white/40 border-white/10 text-[10px]">
-                        {t('unverified')}
-                      </Badge>
+                      <Badge className="bg-white/10 text-white/40 border-white/10 text-[10px]">{t('unverified')}</Badge>
                     )}
                   </div>
                   <div className="flex items-center justify-between text-xs">
@@ -336,7 +536,6 @@ export default function ProfilePage() {
 
                 <Separator className="bg-white/[0.06]" />
 
-                {/* Member Since */}
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-white/50 flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
@@ -345,7 +544,6 @@ export default function ProfilePage() {
                   <span className="text-white/70">{memberSince ? formatDate(memberSince, locale) : '—'}</span>
                 </div>
 
-                {/* Email (read-only) */}
                 <div className="rounded-lg bg-white/[0.03] p-3">
                   <p className="text-[10px] text-white/30 mb-1">{t('email')} ({t('readOnly')})</p>
                   <p className="text-xs text-white/60 font-mono">{email}</p>
@@ -355,6 +553,15 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {selectedImageSrc && (
+        <AvatarCropModal
+          open={cropModalOpen}
+          onOpenChange={setCropModalOpen}
+          imageSrc={selectedImageSrc}
+          onCropped={handleCropped}
+        />
+      )}
     </div>
   );
 }

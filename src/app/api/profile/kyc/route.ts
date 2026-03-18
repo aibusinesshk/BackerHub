@@ -1,0 +1,98 @@
+import { NextResponse } from 'next/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
+
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB per file
+const BUCKET = 'kyc-documents';
+const REQUIRED_DOCS = ['id-front', 'id-back', 'selfie', 'proof-of-address'] as const;
+
+export async function GET() {
+  try {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { data: profile } = await (supabase.from('profiles') as any)
+      .select('kyc_status')
+      .eq('id', user.id)
+      .single();
+
+    return NextResponse.json({
+      kyc_status: profile?.kyc_status || 'none',
+    });
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Check if already pending or approved
+    const { data: profile } = await (supabase.from('profiles') as any)
+      .select('kyc_status')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.kyc_status === 'pending') {
+      return NextResponse.json({ error: 'KYC is already pending review' }, { status: 400 });
+    }
+    if (profile?.kyc_status === 'approved') {
+      return NextResponse.json({ error: 'KYC is already approved' }, { status: 400 });
+    }
+
+    const formData = await request.formData();
+
+    // Validate all required documents are present
+    for (const docName of REQUIRED_DOCS) {
+      const file = formData.get(docName) as File | null;
+      if (!file) {
+        return NextResponse.json({ error: `Missing document: ${docName}` }, { status: 400 });
+      }
+      if (file.size > MAX_SIZE) {
+        return NextResponse.json({ error: `${docName} is too large (max 5MB)` }, { status: 400 });
+      }
+      if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+        return NextResponse.json({ error: `${docName} must be an image or PDF` }, { status: 400 });
+      }
+    }
+
+    const admin = await createAdminClient();
+
+    // Upload all documents
+    for (const docName of REQUIRED_DOCS) {
+      const file = formData.get(docName) as File;
+      const ext = file.type === 'application/pdf' ? 'pdf' : 'webp';
+      const filePath = `${user.id}/${docName}.${ext}`;
+      const buffer = Buffer.from(await file.arrayBuffer());
+
+      const { error: uploadError } = await admin.storage
+        .from(BUCKET)
+        .upload(filePath, buffer, { contentType: file.type, upsert: true });
+
+      if (uploadError) {
+        console.error(`KYC upload error (${docName}):`, uploadError);
+        return NextResponse.json({ error: `Failed to upload ${docName}` }, { status: 500 });
+      }
+    }
+
+    // Update KYC status to pending
+    await (admin.from('profiles') as any)
+      .update({
+        kyc_status: 'pending',
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', user.id);
+
+    return NextResponse.json({ success: true, kyc_status: 'pending' });
+  } catch (err) {
+    console.error('KYC submission error:', err);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
