@@ -91,6 +91,10 @@ export function Header() {
                     <LayoutDashboard className="h-4 w-4" />
                     {t('nav.dashboard')}
                 </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href={'/profile' as any} />} className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    {t('nav.profile')}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
@@ -141,6 +145,13 @@ export function Header() {
                       className="rounded-lg px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
                     >
                       {t('nav.dashboard')}
+                    </Link>
+                    <Link
+                      href={'/profile' as any}
+                      onClick={() => setMobileOpen(false)}
+                      className="rounded-lg px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
+                    >
+                      {t('nav.profile')}
                     </Link>
                     <button
                       onClick={() => { logout(); setMobileOpen(false); }}
