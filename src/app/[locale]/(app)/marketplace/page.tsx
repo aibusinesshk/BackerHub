@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
 import { Search, Filter, CheckCircle, TrendingUp, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 import type { StakingListing } from '@/types';
 
 export default function MarketplacePage() {
@@ -119,44 +119,62 @@ export default function MarketplacePage() {
             const soldPercent = (listing.actionSold / listing.totalActionOffered) * 100;
 
             return (
-              <Card key={listing.id} className="border-white/[0.06] bg-[#111318] transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline" className="text-[10px] border-white/10 text-white/50">{listing.tournament.type}</Badge>
-                    <Badge variant="outline" className={`text-[10px] ${statusColors[listing.status]}`}>
+              <Card key={listing.id} className="border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
+                {/* Large player photo */}
+                <div className="relative h-48 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
+                  {listing.player.avatarUrl ? (
+                    <Image
+                      src={listing.player.avatarUrl}
+                      alt={playerName}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <span className="text-4xl font-bold text-gold-500/30">
+                        {listing.player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#111318] to-transparent" />
+                  <div className="absolute top-3 left-3 flex gap-1.5">
+                    <Badge variant="outline" className="text-[10px] border-white/20 bg-black/50 text-white/70 backdrop-blur-sm">{listing.tournament.type}</Badge>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="outline" className={`text-[10px] backdrop-blur-sm bg-black/50 ${statusColors[listing.status]}`}>
                       {t(listing.status)}
                     </Badge>
                   </div>
-                  <h3 className="font-semibold text-white text-sm leading-tight">{tournamentName}</h3>
-                  <p className="text-xs text-white/40">{formatDate(listing.tournament.date, locale)} · {listing.tournament.region === 'TW' ? '🇹🇼' : listing.tournament.region === 'HK' ? '🇭🇰' : '🌐'}</p>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <PlayerAvatar
-                      src={listing.player.avatarUrl}
-                      name={listing.player.displayName}
-                      className="h-9 w-9 border border-gold-500/20"
-                      fallbackClassName="bg-gold-500/10 text-gold-400 text-xs"
-                    />
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm font-medium text-white">{playerName}</span>
-                        {listing.player.isVerified && <CheckCircle className="h-3.5 w-3.5 text-gold-400" />}
-                      </div>
-                      <span className="flex items-center gap-1 text-xs text-green-400">
+                  {/* Player name overlay at bottom */}
+                  <div className="absolute bottom-3 left-4 right-4">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-white drop-shadow-lg">{playerName}</h3>
+                      {listing.player.isVerified && <CheckCircle className="h-4 w-4 text-gold-400 drop-shadow" />}
+                    </div>
+                    <div className="flex items-center gap-3 text-xs">
+                      <span className="text-white/60">{listing.player.region === 'TW' ? '🇹🇼' : listing.player.region === 'HK' ? '🇭🇰' : '🌐'}</span>
+                      <span className="flex items-center gap-1 text-green-400">
                         <TrendingUp className="h-3 w-3" /> {formatPercent(listing.player.stats.lifetimeROI)} ROI
                       </span>
                     </div>
                   </div>
+                </div>
+
+                <CardContent className="space-y-3 pt-4">
+                  <div>
+                    <h4 className="font-semibold text-white text-sm leading-tight">{tournamentName}</h4>
+                    <p className="text-xs text-white/40 mt-0.5">{formatDate(listing.tournament.date, locale)}</p>
+                  </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="rounded-lg bg-white/[0.03] p-2">
+                    <div className="rounded-lg bg-white/[0.03] p-2.5">
                       <span className="text-white/40">{t('buyIn')}</span>
-                      <p className="font-semibold text-white">{formatCurrency(listing.tournament.buyIn)}</p>
+                      <p className="font-semibold text-white text-base">{formatCurrency(listing.tournament.buyIn)}</p>
                     </div>
-                    <div className="rounded-lg bg-white/[0.03] p-2">
+                    <div className="rounded-lg bg-white/[0.03] p-2.5">
                       <span className="text-white/40">{t('markup')}</span>
-                      <p className="font-semibold text-gold-400">{formatMarkup(listing.markup)}</p>
+                      <p className="font-semibold text-gold-400 text-base">{formatMarkup(listing.markup)}</p>
                     </div>
                   </div>
 

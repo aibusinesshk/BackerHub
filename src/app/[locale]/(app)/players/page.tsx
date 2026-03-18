@@ -6,11 +6,11 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { formatCurrency, formatPercent } from '@/lib/format';
 import {
   Search, CheckCircle, TrendingUp, Trophy, Users, Loader2, ExternalLink,
 } from 'lucide-react';
+import Image from 'next/image';
 import type { Player } from '@/types';
 
 export default function PlayersPage() {
@@ -116,77 +116,90 @@ export default function PlayersPage() {
             return (
               <div
                 key={player.id}
-                className="group rounded-2xl border border-white/[0.06] bg-[#111318] p-6 transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]"
+                className="group rounded-2xl border border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]"
               >
-                {/* Player header */}
-                <div className="flex items-center gap-4 mb-4">
-                  <PlayerAvatar
-                    src={player.avatarUrl}
-                    name={player.displayName}
-                    className="h-12 w-12 border-2 border-gold-500/30"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-white truncate">{playerName}</h3>
-                      {player.isVerified && <CheckCircle className="h-4 w-4 flex-shrink-0 text-gold-400" />}
+                {/* Large player photo */}
+                <div className="relative h-52 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
+                  {player.avatarUrl ? (
+                    <Image
+                      src={player.avatarUrl}
+                      alt={playerName}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <span className="text-5xl font-bold text-gold-500/30">
+                        {player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </span>
                     </div>
-                    <p className="text-xs text-white/40">
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111318] to-transparent" />
+                  <div className="absolute bottom-3 left-4 right-4">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-white drop-shadow-lg truncate">{playerName}</h3>
+                      {player.isVerified && <CheckCircle className="h-4 w-4 flex-shrink-0 text-gold-400 drop-shadow" />}
+                    </div>
+                    <p className="text-xs text-white/60">
                       {player.region === 'TW' ? '🇹🇼' : player.region === 'HK' ? '🇭🇰' : '🌐'}{' '}
                       {player.stats.totalTournaments} {t('tournaments')}
                     </p>
                   </div>
                 </div>
 
-                {/* Stats grid */}
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="rounded-lg bg-white/[0.03] p-3 text-center">
-                    <TrendingUp className="mx-auto h-4 w-4 text-green-400 mb-1" />
-                    <p className="text-sm font-semibold text-green-400">{formatPercent(player.stats.lifetimeROI)}</p>
-                    <p className="text-[10px] text-white/40">{t('roi')}</p>
+                <div className="p-5">
+                  {/* Stats grid */}
+                  <div className="grid grid-cols-3 gap-3 mb-4">
+                    <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+                      <TrendingUp className="mx-auto h-4 w-4 text-green-400 mb-1" />
+                      <p className="text-sm font-semibold text-green-400">{formatPercent(player.stats.lifetimeROI)}</p>
+                      <p className="text-[10px] text-white/40">{t('roi')}</p>
+                    </div>
+                    <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+                      <Trophy className="mx-auto h-4 w-4 text-gold-400 mb-1" />
+                      <p className="text-sm font-semibold text-white">{formatCurrency(player.stats.biggestWin)}</p>
+                      <p className="text-[10px] text-white/40">{t('biggestWin')}</p>
+                    </div>
+                    <div className="rounded-lg bg-white/[0.03] p-3 text-center">
+                      <p className="text-sm font-semibold text-white mt-4">{player.stats.cashRate}%</p>
+                      <p className="text-[10px] text-white/40">{t('cashRate')}</p>
+                    </div>
                   </div>
-                  <div className="rounded-lg bg-white/[0.03] p-3 text-center">
-                    <Trophy className="mx-auto h-4 w-4 text-gold-400 mb-1" />
-                    <p className="text-sm font-semibold text-white">{formatCurrency(player.stats.biggestWin)}</p>
-                    <p className="text-[10px] text-white/40">{t('biggestWin')}</p>
-                  </div>
-                  <div className="rounded-lg bg-white/[0.03] p-3 text-center">
-                    <p className="text-sm font-semibold text-white mt-4">{player.stats.cashRate}%</p>
-                    <p className="text-[10px] text-white/40">{t('cashRate')}</p>
-                  </div>
-                </div>
 
-                {/* Total earnings */}
-                {player.stats.totalStakedValue > 0 && (
-                  <div className="mb-4 rounded-lg bg-white/[0.03] px-4 py-2.5 flex items-center justify-between">
-                    <span className="text-xs text-white/40">{t('totalEarnings')}</span>
-                    <span className="text-sm font-semibold text-gold-400">
-                      {formatCurrency(player.stats.totalStakedValue)}
-                    </span>
-                  </div>
-                )}
+                  {/* Total earnings */}
+                  {player.stats.totalStakedValue > 0 && (
+                    <div className="mb-4 rounded-lg bg-white/[0.03] px-4 py-2.5 flex items-center justify-between">
+                      <span className="text-xs text-white/40">{t('totalEarnings')}</span>
+                      <span className="text-sm font-semibold text-gold-400">
+                        {formatCurrency(player.stats.totalStakedValue)}
+                      </span>
+                    </div>
+                  )}
 
-                {/* Hendon Mob link */}
-                {player.hendonMobUrl && (
-                  <a
-                    href={player.hendonMobUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mb-4 flex items-center gap-2 text-xs text-white/40 hover:text-gold-400 transition-colors"
+                  {/* Hendon Mob link */}
+                  {player.hendonMobUrl && (
+                    <a
+                      href={player.hendonMobUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mb-4 flex items-center gap-2 text-xs text-white/40 hover:text-gold-400 transition-colors"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      {t('hendonMob')}
+                    </a>
+                  )}
+
+                  {/* View Profile button */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    render={<Link href={`/player/${player.id}` as any} />}
+                    className="w-full border-gold-500/20 text-gold-400 hover:bg-gold-500/10"
                   >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                    {t('hendonMob')}
-                  </a>
-                )}
-
-                {/* View Profile button */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  render={<Link href={`/player/${player.id}` as any} />}
-                  className="w-full border-gold-500/20 text-gold-400 hover:bg-gold-500/10"
-                >
-                  {t('viewProfile')}
-                </Button>
+                    {t('viewProfile')}
+                  </Button>
+                </div>
               </div>
             );
           })}
