@@ -7,7 +7,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Spade, TrendingUp, Gamepad2, Layers, Loader2 } from 'lucide-react';
+import { Spade, TrendingUp, Gamepad2, Layers, Loader2, X } from 'lucide-react';
 import type { UserRole, Region } from '@/types';
 
 export default function SignupPage() {
@@ -55,6 +55,9 @@ export default function SignupPage() {
 
   return (
     <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">
+      <Link href="/" className="absolute right-4 top-4 rounded-full p-1.5 text-white/40 hover:bg-white/10 hover:text-white transition-colors">
+        <X className="h-5 w-5" />
+      </Link>
       <CardHeader className="text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gold-500 text-black">
           <Spade className="h-7 w-7" />

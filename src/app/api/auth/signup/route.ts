@@ -41,8 +41,36 @@ export async function POST(request: Request) {
     });
 
     if (authError) {
-      // Handle duplicate email
+      // Handle duplicate email — confirm existing unconfirmed user and update password
       if (authError.message?.includes('already been registered') || authError.message?.includes('already exists')) {
+        // Find the existing user by email
+        const { data: listData } = await admin.auth.admin.listUsers();
+        const existing = listData?.users?.find((u: { email?: string }) => u.email === email);
+        if (existing) {
+          // Update password and confirm email
+          await admin.auth.admin.updateUserById(existing.id, {
+            password,
+            email_confirm: true,
+            user_metadata: {
+              display_name: displayName,
+              role: role || 'investor',
+              region: region || 'TW',
+            },
+          });
+          // Ensure profile exists
+          await admin.from('profiles').upsert({
+            id: existing.id,
+            email,
+            display_name: displayName,
+            role: role || 'investor',
+            region: region || 'TW',
+            member_since: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'id' });
+
+          return NextResponse.json({ success: true, userId: existing.id });
+        }
         return NextResponse.json(
           { error: 'An account with this email already exists' },
           { status: 409 }
