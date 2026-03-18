@@ -36,7 +36,8 @@ export default function SignupPage() {
       const result = await signup({ displayName, email, password, role, region });
       if (result.success) {
         // Hard navigation so middleware picks up the new session cookie
-        window.location.href = '/dashboard/investor';
+        const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
+        window.location.href = `/${locale}/dashboard/investor`;
       } else {
         setError(result.error || 'Signup failed');
       }

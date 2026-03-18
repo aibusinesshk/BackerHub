@@ -27,7 +27,8 @@ export default function LoginPage() {
       const result = await login(email, password);
       if (result.success) {
         // Hard navigation so middleware picks up the new session cookie
-        window.location.href = '/dashboard/investor';
+        const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
+        window.location.href = `/${locale}/dashboard/investor`;
       } else {
         setError(result.error || 'Invalid credentials');
       }
