@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 
+// Allow up to 120s for seeding (creating 15 auth users + profiles takes time)
+export const maxDuration = 120;
+
 // GET /api/seed — Check current database counts
 export async function GET() {
   const admin = await createAdminClient();
