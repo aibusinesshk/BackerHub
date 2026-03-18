@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
@@ -70,9 +71,12 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
           <Card className="border-white/[0.06] bg-[#111318]">
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16 border-2 border-gold-500/30">
-                  <AvatarFallback className="bg-gold-500/10 text-gold-400 text-xl font-bold">{player.displayName.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <PlayerAvatar
+                  src={player.avatarUrl}
+                  name={player.displayName}
+                  className="h-16 w-16 border-2 border-gold-500/30"
+                  fallbackClassName="bg-gold-500/10 text-gold-400 text-xl font-bold"
+                />
                 <div>
                   <div className="flex items-center gap-2">
                     <h1 className="text-2xl font-bold text-white">{name}</h1>

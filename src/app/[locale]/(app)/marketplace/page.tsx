@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
 import { Search, Filter, CheckCircle, TrendingUp, Loader2 } from 'lucide-react';
@@ -132,9 +132,12 @@ export default function MarketplacePage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9 border border-gold-500/20">
-                      <AvatarFallback className="bg-gold-500/10 text-gold-400 text-xs">{listing.player.displayName.charAt(0)}</AvatarFallback>
-                    </Avatar>
+                    <PlayerAvatar
+                      src={listing.player.avatarUrl}
+                      name={listing.player.displayName}
+                      className="h-9 w-9 border border-gold-500/20"
+                      fallbackClassName="bg-gold-500/10 text-gold-400 text-xs"
+                    />
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-sm font-medium text-white">{playerName}</span>

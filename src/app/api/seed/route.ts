@@ -77,6 +77,9 @@ export async function POST(request: Request) {
     p10: '00000000-0000-0000-0000-000000000010',
     p11: '00000000-0000-0000-0000-000000000011',
     p12: '00000000-0000-0000-0000-000000000012',
+    p13: '00000000-0000-0000-0000-000000000013',
+    p14: '00000000-0000-0000-0000-000000000014',
+    p15: '00000000-0000-0000-0000-000000000015',
   };
 
   // First create auth users so profile trigger fires
@@ -269,7 +272,7 @@ export async function POST(request: Request) {
 const players = [
   {
     id: 'p1', displayName: 'Chiayun Wu', displayNameZh: '吳佳芸',
-    avatarUrl: '/avatars/p1.svg', region: 'TW', isVerified: true, memberSince: '2023-06-01',
+    avatarUrl: '/images/players/chiayun-wu.svg', region: 'TW', isVerified: true, memberSince: '2023-06-01',
     stats: { lifetimeROI: 42.8, totalTournaments: 135, cashRate: 96.3, totalStakedValue: 331865, avgFinish: 'Top 5%', biggestWin: 114935,
       monthlyROI: [
         { month: '2025-04', roi: 35.2 }, { month: '2025-05', roi: 18.7 }, { month: '2025-06', roi: -8.3 },
@@ -283,7 +286,7 @@ const players = [
   },
   {
     id: 'p2', displayName: 'Chih Feng Li', displayNameZh: '李志峰',
-    avatarUrl: '/avatars/p2.svg', region: 'TW', isVerified: true, memberSince: '2023-08-15',
+    avatarUrl: '/images/players/chih-feng-li.svg', region: 'TW', isVerified: true, memberSince: '2023-08-15',
     stats: { lifetimeROI: 35.2, totalTournaments: 89, cashRate: 97.8, totalStakedValue: 144620, avgFinish: 'Top 8%', biggestWin: 45000,
       monthlyROI: [
         { month: '2025-04', roi: 22.1 }, { month: '2025-05', roi: 15.3 }, { month: '2025-06', roi: -12.7 },
@@ -297,7 +300,7 @@ const players = [
   },
   {
     id: 'p3', displayName: 'Nevan Chang', displayNameZh: '張子龍',
-    avatarUrl: '/avatars/p3.svg', region: 'TW', isVerified: true, memberSince: '2023-03-10',
+    avatarUrl: '/images/players/nevan-chang.svg', region: 'TW', isVerified: true, memberSince: '2023-03-10',
     stats: { lifetimeROI: 58.6, totalTournaments: 58, cashRate: 69.0, totalStakedValue: 789465, avgFinish: 'Top 6%', biggestWin: 250000,
       monthlyROI: [
         { month: '2025-04', roi: 65.2 }, { month: '2025-05', roi: -18.3 }, { month: '2025-06', roi: 42.1 },
@@ -311,7 +314,7 @@ const players = [
   },
   {
     id: 'p4', displayName: 'Wayne Lam', displayNameZh: '林錦榮',
-    avatarUrl: '/avatars/p4.svg', region: 'HK', isVerified: true, memberSince: '2023-01-20',
+    avatarUrl: '/images/players/wayne-lam.svg', region: 'HK', isVerified: true, memberSince: '2023-01-20',
     stats: { lifetimeROI: 48.5, totalTournaments: 165, cashRate: 28.4, totalStakedValue: 530192, avgFinish: 'Top 7%', biggestWin: 266992,
       monthlyROI: [
         { month: '2025-04', roi: 32.4 }, { month: '2025-05', roi: 18.1 }, { month: '2025-06', roi: -15.3 },
@@ -325,7 +328,7 @@ const players = [
   },
   {
     id: 'p5', displayName: 'Zong Chi He', displayNameZh: '何宗祺',
-    avatarUrl: '/avatars/p5.svg', region: 'TW', isVerified: true, memberSince: '2023-11-05',
+    avatarUrl: '/images/players/zong-chi-he.svg', region: 'TW', isVerified: true, memberSince: '2023-11-05',
     stats: { lifetimeROI: 28.4, totalTournaments: 83, cashRate: 80.7, totalStakedValue: 201065, avgFinish: 'Top 12%', biggestWin: 55000,
       monthlyROI: [
         { month: '2025-04', roi: 18.5 }, { month: '2025-05', roi: 25.2 }, { month: '2025-06', roi: -9.8 },
@@ -339,7 +342,7 @@ const players = [
   },
   {
     id: 'p6', displayName: 'Hao Shan Huang', displayNameZh: '黃浩珊',
-    avatarUrl: '/avatars/p6.svg', region: 'TW', isVerified: true, memberSince: '2024-06-15',
+    avatarUrl: '/images/players/hao-shan-huang.svg', region: 'TW', isVerified: true, memberSince: '2024-06-15',
     stats: { lifetimeROI: 65.3, totalTournaments: 45, cashRate: 35.6, totalStakedValue: 480000, avgFinish: 'Top 5%', biggestWin: 97660,
       monthlyROI: [
         { month: '2025-04', roi: -12.1 }, { month: '2025-05', roi: 8.4 }, { month: '2025-06', roi: 22.3 },
@@ -353,7 +356,7 @@ const players = [
   },
   {
     id: 'p7', displayName: 'Chi Jen Chu', displayNameZh: '朱志仁',
-    avatarUrl: '/avatars/p7.svg', region: 'TW', isVerified: true, memberSince: '2022-09-01',
+    avatarUrl: '/images/players/chi-jen-chu.svg', region: 'TW', isVerified: true, memberSince: '2022-09-01',
     stats: { lifetimeROI: 72.1, totalTournaments: 34, cashRate: 82.4, totalStakedValue: 1106111, avgFinish: 'Top 4%', biggestWin: 350000,
       monthlyROI: [
         { month: '2025-04', roi: 85.5 }, { month: '2025-05', roi: -22.3 }, { month: '2025-06', roi: 58.7 },
@@ -367,7 +370,7 @@ const players = [
   },
   {
     id: 'p8', displayName: 'Sparrow Cheung', displayNameZh: '張鶴翔',
-    avatarUrl: '/avatars/p8.svg', region: 'HK', isVerified: true, memberSince: '2022-05-10',
+    avatarUrl: '/images/players/sparrow-cheung.svg', region: 'HK', isVerified: true, memberSince: '2022-05-10',
     stats: { lifetimeROI: 38.7, totalTournaments: 220, cashRate: 25.5, totalStakedValue: 850000, avgFinish: 'Top 10%', biggestWin: 180000,
       monthlyROI: [
         { month: '2025-04', roi: 28.6 }, { month: '2025-05', roi: -11.2 }, { month: '2025-06', roi: 42.8 },
@@ -381,7 +384,7 @@ const players = [
   },
   {
     id: 'p9', displayName: 'Elton Tsang', displayNameZh: '曾恩明',
-    avatarUrl: '/avatars/p9.svg', region: 'HK', isVerified: true, memberSince: '2022-01-15',
+    avatarUrl: '/images/players/elton-tsang.svg', region: 'HK', isVerified: true, memberSince: '2022-01-15',
     stats: { lifetimeROI: 55.8, totalTournaments: 180, cashRate: 30.2, totalStakedValue: 12000000, avgFinish: 'Top 6%', biggestWin: 1697000,
       monthlyROI: [
         { month: '2025-04', roi: 45.8 }, { month: '2025-05', roi: 62.2 }, { month: '2025-06', roi: -22.3 },
@@ -395,7 +398,7 @@ const players = [
   },
   {
     id: 'p10', displayName: 'Chih Wei Chen', displayNameZh: '陳志偉',
-    avatarUrl: '/avatars/p10.svg', region: 'TW', isVerified: true, memberSince: '2024-01-20',
+    avatarUrl: '/images/players/chih-wei-chen.svg', region: 'TW', isVerified: true, memberSince: '2024-01-20',
     stats: { lifetimeROI: 22.8, totalTournaments: 77, cashRate: 96.1, totalStakedValue: 109465, avgFinish: 'Top 14%', biggestWin: 28000,
       monthlyROI: [
         { month: '2025-04', roi: 15.2 }, { month: '2025-05', roi: 22.8 }, { month: '2025-06', roi: -8.4 },
@@ -409,7 +412,7 @@ const players = [
   },
   {
     id: 'p11', displayName: 'Li Ta Hsu', displayNameZh: '許力達',
-    avatarUrl: '/avatars/p11.svg', region: 'TW', isVerified: true, memberSince: '2024-03-10',
+    avatarUrl: '/images/players/li-ta-hsu.svg', region: 'TW', isVerified: true, memberSince: '2024-03-10',
     stats: { lifetimeROI: 18.5, totalTournaments: 72, cashRate: 93.1, totalStakedValue: 99850, avgFinish: 'Top 16%', biggestWin: 22000,
       monthlyROI: [
         { month: '2025-04', roi: 12.5 }, { month: '2025-05', roi: 18.2 }, { month: '2025-06', roi: -6.8 },
@@ -423,7 +426,7 @@ const players = [
   },
   {
     id: 'p12', displayName: 'Fung Lin', displayNameZh: '林鋒',
-    avatarUrl: '/avatars/p12.svg', region: 'HK', isVerified: true, memberSince: '2023-06-20',
+    avatarUrl: '/images/players/fung-lin.svg', region: 'HK', isVerified: true, memberSince: '2023-06-20',
     stats: { lifetimeROI: 42.3, totalTournaments: 95, cashRate: 32.6, totalStakedValue: 350000, avgFinish: 'Top 8%', biggestWin: 71994,
       monthlyROI: [
         { month: '2025-04', roi: 35.2 }, { month: '2025-05', roi: -8.4 }, { month: '2025-06', roi: 42.1 },
@@ -434,6 +437,48 @@ const players = [
     },
     bio: 'Won APT Championship 2025 Trip Saver Championship ($71,994). Hong Kong player with strong results across APT events. Rising force in the HK poker scene.',
     bioZh: '贏得2025年APT年度總冠軍旅行者冠軍賽（$71,994）。在APT賽事中成績優異的香港選手。香港撲克圈的新興力量。',
+  },
+  {
+    id: 'p13', displayName: 'Tony Lin', displayNameZh: '林仁',
+    avatarUrl: '/images/players/tony-lin.svg', region: 'TW', isVerified: true, memberSince: '2022-01-01',
+    stats: { lifetimeROI: 82.5, totalTournaments: 310, cashRate: 22.8, totalStakedValue: 18500000, avgFinish: 'Top 3%', biggestWin: 4200000,
+      monthlyROI: [
+        { month: '2025-04', roi: 75.2 }, { month: '2025-05', roi: -28.4 }, { month: '2025-06', roi: 92.1 },
+        { month: '2025-07', roi: 48.3 }, { month: '2025-08', roi: -12.8 }, { month: '2025-09', roi: 125.4 },
+        { month: '2025-10', roi: 38.7 }, { month: '2025-11', roi: 185.2 }, { month: '2025-12', roi: -22.5 },
+        { month: '2026-01', roi: 62.8 }, { month: '2026-02', roi: 95.1 }, { month: '2026-03', roi: 45.3 },
+      ],
+    },
+    bio: 'WPT Ambassador and one of Taiwan\'s most decorated poker players. Over $18M in live tournament earnings. Multiple WPT and WSOP final tables. Known as "Ren Lin" internationally — a dominant force at the highest stakes globally.',
+    bioZh: 'WPT大使，台灣最頂尖的撲克選手之一。現場錦標賽收入超過1800萬美元。多次WPT和WSOP決賽桌。國際上以「林仁」聞名——在全球最高級別賽事中的統治級力量。',
+  },
+  {
+    id: 'p14', displayName: 'Eric Tsai', displayNameZh: '小六',
+    avatarUrl: '/images/players/eric-tsai.svg', region: 'TW', isVerified: true, memberSince: '2022-03-15',
+    stats: { lifetimeROI: 68.4, totalTournaments: 245, cashRate: 26.5, totalStakedValue: 5200000, avgFinish: 'Top 5%', biggestWin: 1150000,
+      monthlyROI: [
+        { month: '2025-04', roi: 55.8 }, { month: '2025-05', roi: 22.3 }, { month: '2025-06', roi: -18.7 },
+        { month: '2025-07', roi: 82.4 }, { month: '2025-08', roi: -8.5 }, { month: '2025-09', roi: 45.2 },
+        { month: '2025-10', roi: 68.1 }, { month: '2025-11', roi: 112.8 }, { month: '2025-12', roi: -15.3 },
+        { month: '2026-01', roi: 52.6 }, { month: '2026-02', roi: 78.4 }, { month: '2026-03', roi: 35.9 },
+      ],
+    },
+    bio: 'Taiwan GPI #1 ranked player. Known as "小六" (SixPoker) in the Asian poker community. Over $5.2M in live earnings. Dominant across APT, TMT, and regional tours. A true pioneer of Taiwan\'s poker scene.',
+    bioZh: '台灣GPI排名第一選手。在亞洲撲克圈以「小六」聞名。現場收入超過520萬美元。在APT、TMT和地區巡迴賽中表現出色。台灣撲克界的真正先驅。',
+  },
+  {
+    id: 'p15', displayName: 'Charlie Chiu', displayNameZh: '查理',
+    avatarUrl: '/images/players/charlie-chiu.svg', region: 'HK', isVerified: true, memberSince: '2022-06-01',
+    stats: { lifetimeROI: 52.8, totalTournaments: 195, cashRate: 24.6, totalStakedValue: 3800000, avgFinish: 'Top 6%', biggestWin: 890000,
+      monthlyROI: [
+        { month: '2025-04', roi: 42.5 }, { month: '2025-05', roi: -15.8 }, { month: '2025-06', roi: 58.2 },
+        { month: '2025-07', roi: 35.1 }, { month: '2025-08', roi: -22.4 }, { month: '2025-09', roi: 72.8 },
+        { month: '2025-10', roi: 28.3 }, { month: '2025-11', roi: 95.6 }, { month: '2025-12', roi: -8.7 },
+        { month: '2026-01', roi: 48.2 }, { month: '2026-02', roi: 62.1 }, { month: '2026-03', roi: 32.5 },
+      ],
+    },
+    bio: 'Natural8 Ambassador and Hong Kong poker star. Known as "I.C Charlie" in the international circuit. Over $3.8M in live earnings. Multiple deep runs at WSOP, APT, and Triton events. One of HK\'s most recognizable poker personalities.',
+    bioZh: 'Natural8大使，香港撲克明星。在國際賽事中以「I.C Charlie」聞名。現場收入超過380萬美元。在WSOP、APT和Triton賽事中多次深入。香港最知名的撲克人物之一。',
   },
 ];
 
@@ -485,6 +530,15 @@ const listings = [
   { id: 'l22', playerId: 'p5', tournamentId: 't13', markup: 1.06, totalActionOffered: 85, actionSold: 28, minThreshold: 65, status: 'active', createdAt: '2026-03-10T19:00:00Z' },
   { id: 'l23', playerId: 'p1', tournamentId: 't14', markup: 1.15, totalActionOffered: 60, actionSold: 60, minThreshold: 40, status: 'completed', createdAt: '2026-02-25T08:00:00Z' },
   { id: 'l24', playerId: 'p3', tournamentId: 't8', markup: 1.10, totalActionOffered: 70, actionSold: 45, minThreshold: 50, status: 'active', createdAt: '2026-03-09T21:15:00Z' },
+  // Tony Lin listings
+  { id: 'l25', playerId: 'p13', tournamentId: 't3', markup: 1.30, totalActionOffered: 40, actionSold: 40, minThreshold: 25, status: 'filled', createdAt: '2026-03-02T08:00:00Z' },
+  { id: 'l26', playerId: 'p13', tournamentId: 't15', markup: 1.25, totalActionOffered: 30, actionSold: 22, minThreshold: 20, status: 'active', createdAt: '2026-03-10T10:00:00Z' },
+  // 小六 Eric Tsai listings
+  { id: 'l27', playerId: 'p14', tournamentId: 't4', markup: 1.18, totalActionOffered: 55, actionSold: 48, minThreshold: 40, status: 'active', createdAt: '2026-03-08T14:00:00Z' },
+  { id: 'l28', playerId: 'p14', tournamentId: 't8', markup: 1.15, totalActionOffered: 65, actionSold: 52, minThreshold: 45, status: 'active', createdAt: '2026-03-09T16:30:00Z' },
+  // 查理 Charlie Chiu listings
+  { id: 'l29', playerId: 'p15', tournamentId: 't6', markup: 1.20, totalActionOffered: 50, actionSold: 35, minThreshold: 30, status: 'active', createdAt: '2026-03-07T12:00:00Z' },
+  { id: 'l30', playerId: 'p15', tournamentId: 't15', markup: 1.22, totalActionOffered: 45, actionSold: 28, minThreshold: 30, status: 'active', createdAt: '2026-03-11T09:00:00Z' },
 ];
 
 const testimonials = [

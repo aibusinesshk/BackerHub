@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { PAYMENT_METHODS, PLATFORM_FEE_PERCENT } from '@/lib/constants';
 import { formatCurrency, formatMarkup } from '@/lib/format';
 import { CheckCircle, CreditCard, Wallet, Copy, Loader2 } from 'lucide-react';
@@ -81,9 +81,12 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
             <CardHeader><CardTitle className="text-white text-sm">{t('orderSummary')}</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 border border-gold-500/20">
-                  <AvatarFallback className="bg-gold-500/10 text-gold-400 text-xs">{listing.player.displayName.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <PlayerAvatar
+                  src={listing.player.avatarUrl}
+                  name={listing.player.displayName}
+                  className="h-10 w-10 border border-gold-500/20"
+                  fallbackClassName="bg-gold-500/10 text-gold-400 text-xs"
+                />
                 <div>
                   <p className="text-sm font-medium text-white">{playerName}</p>
                   <p className="text-xs text-white/40">{tournamentName}</p>

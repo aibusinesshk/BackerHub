@@ -6,7 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { formatCurrency, formatPercent } from '@/lib/format';
 import {
   Search, CheckCircle, TrendingUp, Trophy, Users, Loader2, ExternalLink,
@@ -120,11 +120,11 @@ export default function PlayersPage() {
               >
                 {/* Player header */}
                 <div className="flex items-center gap-4 mb-4">
-                  <Avatar className="h-12 w-12 border-2 border-gold-500/30">
-                    <AvatarFallback className="bg-gold-500/10 text-gold-400 font-semibold">
-                      {player.displayName.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <PlayerAvatar
+                    src={player.avatarUrl}
+                    name={player.displayName}
+                    className="h-12 w-12 border-2 border-gold-500/30"
+                  />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-white truncate">{playerName}</h3>

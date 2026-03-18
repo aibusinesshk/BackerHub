@@ -6,7 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { ScrollReveal } from '@/components/shared/scroll-reveal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { formatPercent, formatCurrency } from '@/lib/format';
 import { CheckCircle, TrendingUp, Trophy } from 'lucide-react';
 import type { Player } from '@/types';
@@ -40,11 +40,11 @@ export function FeaturedPlayers() {
             <ScrollReveal key={player.id} delay={i * 0.1}>
               <div className="group rounded-2xl border border-white/[0.06] bg-[#111318] p-6 transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
                 <div className="flex items-center gap-4 mb-4">
-                  <Avatar className="h-12 w-12 border-2 border-gold-500/30">
-                    <AvatarFallback className="bg-gold-500/10 text-gold-400 font-semibold">
-                      {player.displayName.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <PlayerAvatar
+                    src={player.avatarUrl}
+                    name={player.displayName}
+                    className="h-12 w-12 border-2 border-gold-500/30"
+                  />
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-white">
