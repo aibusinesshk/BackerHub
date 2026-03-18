@@ -7,7 +7,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Spade, TrendingUp, Gamepad2, Layers, Loader2, CheckCircle2 } from 'lucide-react';
+import { Spade, TrendingUp, Gamepad2, Layers, Loader2 } from 'lucide-react';
 import type { UserRole, Region } from '@/types';
 
 export default function SignupPage() {
@@ -21,7 +21,6 @@ export default function SignupPage() {
   const [region, setRegion] = useState<Region>('TW');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,8 +36,8 @@ export default function SignupPage() {
     try {
       const result = await signup({ displayName, email, password, role, region });
       if (result.success) {
-        // Show email verification message
-        setShowVerification(true);
+        // Account created & auto-logged in — redirect to dashboard
+        router.push('/dashboard/investor');
       } else {
         setError(result.error || 'Signup failed');
       }
@@ -54,27 +53,6 @@ export default function SignupPage() {
     { value: 'player', label: t('rolePlayer'), icon: Gamepad2 },
     { value: 'both', label: t('roleBoth'), icon: Layers },
   ];
-
-  if (showVerification) {
-    return (
-      <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">
-        <CardContent className="pt-8 pb-8 text-center">
-          <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-400" />
-          <h2 className="mb-2 text-xl font-semibold text-white">Check your email</h2>
-          <p className="mb-4 text-white/50">
-            We sent a verification link to <span className="text-gold-400">{email}</span>.
-            Click the link to activate your account.
-          </p>
-          <Button
-            onClick={() => router.push('/login')}
-            className="bg-gold-500 text-black font-semibold hover:bg-gold-400"
-          >
-            Go to Login
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">

@@ -57,15 +57,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const supabase = createClient();
 
   const fetchProfile = useCallback(async (authUser: User) => {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', authUser.id)
-      .single();
+    // Retry up to 3 times with delay — profile may not exist yet due to DB trigger timing
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .single();
 
-    if (profile) {
-      setUser(mapProfileToAuthUser(profile));
+      if (profile) {
+        setUser(mapProfileToAuthUser(profile));
+        return;
+      }
+
+      // Wait before retrying (500ms, 1000ms)
+      if (attempt < 2) {
+        await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
+      }
     }
+    // If all retries failed, log but don't crash
+    console.warn('Profile not found after retries for user:', authUser.id);
   }, [supabase]);
 
   // Listen for auth state changes
@@ -112,21 +123,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     role: UserRole;
     region: Region;
   }) => {
-    const { error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          display_name: data.displayName,
+    try {
+      // Call server-side API that uses admin client (auto-confirms email)
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          displayName: data.displayName,
           role: data.role,
           region: data.region,
-        },
-      },
-    });
-    if (error) {
-      return { success: false, error: error.message };
+        }),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        return { success: false, error: result.error || 'Signup failed' };
+      }
+
+      // Account created & confirmed — now sign in immediately
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+      if (signInError) {
+        // Account was created but auto-login failed — user can still login manually
+        return { success: true, error: undefined };
+      }
+
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Network error' };
     }
-    return { success: true };
   };
 
   const loginWithGoogle = async () => {
