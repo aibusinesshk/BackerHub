@@ -887,5 +887,96 @@
     "ctaBacker": "Start Backing Players",
     "ctaPlayer": "Sell Your Action",
     "ctaFee": "0% platform fee during pre-launch"
+  },
+  "pricing": {
+    "badge": "Pricing",
+    "title": "Zero Fees.",
+    "titleHighlight": "Seriously.",
+    "subtitle": "During our pre-launch period, BackerHub charges 0% platform commission on every transaction. No hidden costs. No catches. Just transparent poker staking.",
+
+    "whatWaived": "What's Waived Right Now",
+    "whatWaivedSub": "The platform fee that would normally apply to every backer purchase is completely eliminated during pre-launch.",
+
+    "feeTitle": "Platform Commission",
+    "feeNormal": "Normally 2%",
+    "feeNow": "Now 0%",
+    "feeDesc": "This is the fee BackerHub charges on each action purchase to fund platform operations — escrow management, admin verification, result checking, player vetting, and 24/7 support. During pre-launch, we absorb this cost entirely.",
+    "feeSaved": "You save on every single transaction",
+
+    "exampleTitle": "See What You Save",
+    "exampleSubtitle": "Here's a real example of what a backer pays with and without the platform fee.",
+    "exampleScenario": "Scenario",
+    "exampleScenarioDesc": "You buy 10% action of a player's $1,000 buy-in tournament at 1.10x markup",
+    "exampleBuyIn": "Tournament Buy-in",
+    "exampleAction": "Your Action Share (10%)",
+    "exampleBaseCost": "Base Cost",
+    "exampleMarkup": "Markup (1.10x)",
+    "examplePlatformFee": "Platform Fee (2%)",
+    "exampleTotal": "You Pay",
+    "exampleWithFee": "After Launch",
+    "exampleWithoutFee": "Pre-Launch (Now)",
+    "exampleSaving": "You save {amount} per transaction",
+    "exampleNote": "Multiply this across 10, 20, 50 backings — the savings add up fast.",
+
+    "breakdownTitle": "Full Cost Breakdown for Backers",
+    "breakdownSubtitle": "Complete transparency on every line item. Here's exactly what goes into the price you pay.",
+
+    "breakdownBase": "Base Cost",
+    "breakdownBaseDesc": "Your proportional share of the player's tournament buy-in. If you buy 10% of a $1,000 buy-in, your base cost is $100.",
+    "breakdownBaseStatus": "Always applies",
+
+    "breakdownMarkup": "Player Markup",
+    "breakdownMarkupDesc": "A premium set by the player (e.g., 1.10x = 10% above base). This is the player's fee for their skill and time. Higher-rated players typically charge higher markups.",
+    "breakdownMarkupStatus": "Set by player",
+
+    "breakdownPlatform": "Platform Fee",
+    "breakdownPlatformDesc": "BackerHub's commission for escrow management, admin verification, result checking, dispute handling, and platform operations.",
+    "breakdownPlatformStatus": "Waived (0%)",
+    "breakdownPlatformNormal": "Normally 2%",
+
+    "playerTitle": "What About Players?",
+    "playerSubtitle": "Players don't pay any platform fee either. Here's how the economics work for players during pre-launch.",
+
+    "playerEarn": "What Players Earn",
+    "playerEarnDesc": "When backers purchase action, the player receives the full markup profit. No platform cut, no deductions.",
+    "playerKeep": "Markup Profit",
+    "playerKeepDesc": "The difference between what backers pay (with markup) and the base buy-in cost. At 1.10x markup on a fully-backed $1,000 tournament, the player keeps $100 in markup profit.",
+
+    "playerBuyIn": "Buy-in Funds",
+    "playerBuyInDesc": "The base buy-in amount is released from escrow to the player's wallet after admin approval, specifically for tournament registration.",
+
+    "playerNoFee": "No platform deductions",
+    "playerNoFeeDesc": "During pre-launch, 100% of the markup goes to the player. After launch, a small platform fee will apply.",
+
+    "whyFreeTitle": "Why Are We Doing This?",
+    "whyFreeSubtitle": "Because trust takes time to build — and we want you to experience the platform before we charge for it.",
+
+    "why1Title": "We Need You to Try It",
+    "why1Desc": "Poker staking has been done through DMs and handshakes for decades. We know asking people to switch to a new platform is a big ask. Removing the fee eliminates the cost barrier so you can see the value of escrow protection, verified results, and reliability scoring firsthand.",
+
+    "why2Title": "We're Building a Community",
+    "why2Desc": "The more backers and players who join early, the stronger the platform becomes. Early adopters get the best deal — zero fees while the platform grows. We'd rather have a thriving community than maximize revenue on day one.",
+
+    "why3Title": "We're Confident You'll Stay",
+    "why3Desc": "Once you experience transparent staking with escrow protection, admin-verified results, and enforced settlement — going back to unprotected DM deals won't feel right. We're betting on our product.",
+
+    "afterLaunchTitle": "What Happens After Pre-Launch?",
+    "afterLaunchDesc": "When the pre-launch period ends, a standard 2% platform fee will apply to backer purchases. This is competitive with industry norms and funds the infrastructure that makes BackerHub safe — escrow management, admin verification, result checking, support, and ongoing development.",
+    "afterLaunchNote": "Early adopters will be the first to know about any changes, and we'll always give advance notice.",
+
+    "neverChargeTitle": "Fees We'll Never Charge",
+    "neverChargeSub": "Some things should always be free. Period.",
+    "neverCharge1": "Account creation & signup",
+    "neverCharge2": "Browsing the marketplace",
+    "neverCharge3": "Viewing player profiles & stats",
+    "neverCharge4": "Creating staking listings (for players)",
+    "neverCharge5": "Wallet deposits (network fees may apply)",
+    "neverCharge6": "Prize distributions to backers",
+    "neverCharge7": "Identity verification (KYC)",
+
+    "ctaTitle": "Try BackerHub Risk-Free",
+    "ctaSubtitle": "Zero platform fees. Full escrow protection. The safest way to stake in poker — and right now, it costs you nothing extra.",
+    "ctaBacker": "Start Backing Players",
+    "ctaPlayer": "Sell Your Action"
   }
 }
