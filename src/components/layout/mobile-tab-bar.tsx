@@ -3,21 +3,27 @@
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { useAuth } from '@/providers/auth-provider';
-import { Store, Users, Spade, LayoutDashboard, UserCircle } from 'lucide-react';
+import { Store, Users, Spade, Plus, LayoutDashboard, UserCircle } from 'lucide-react';
 
 export function MobileTabBar() {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const { user } = useAuth();
 
-  const dashboardHref = user?.role === 'player'
+  const isPlayer = user?.role === 'player';
+  const dashboardHref = isPlayer
     ? '/dashboard/player' as const
     : '/dashboard/investor' as const;
+
+  // Center button: "Sell Action" for players, "Home" for others
+  const centerTab = isPlayer
+    ? { href: '/create-listing' as any, label: t('sellAction'), icon: Plus }
+    : { href: '/' as const, label: 'Home', icon: Spade };
 
   const tabs = [
     { href: '/marketplace' as const, label: t('marketplace'), icon: Store },
     { href: '/players' as const, label: t('players'), icon: Users },
-    { href: '/' as const, label: 'Home', icon: Spade, isCenter: true },
+    { ...centerTab, isCenter: true },
     { href: dashboardHref, label: t('dashboard'), icon: LayoutDashboard },
     { href: '/profile' as any, label: t('profile'), icon: UserCircle },
   ];
@@ -31,16 +37,16 @@ export function MobileTabBar() {
 
       <nav className="relative bg-[#111318] pb-[env(safe-area-inset-bottom)]">
         <div className="flex items-end">
-          {tabs.map((tab) => {
+          {tabs.map((tab, i) => {
             const isActive = tab.href === '/'
               ? pathname === '/'
               : pathname.startsWith(tab.href);
             const Icon = tab.icon;
 
-            if (tab.isCenter) {
+            if ('isCenter' in tab && tab.isCenter) {
               return (
                 <Link
-                  key="home"
+                  key="center"
                   href={tab.href}
                   className="flex-1 relative -mt-5 flex flex-col items-center"
                 >
