@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency, formatPercent } from '@/lib/format';
+import { PlayerHeroImage } from '@/components/shared/player-hero-image';
 import {
   Search, CheckCircle, TrendingUp, Trophy, Users, Loader2, ExternalLink,
 } from 'lucide-react';
-import Image from 'next/image';
 import type { Player } from '@/types';
 
 export default function PlayersPage() {
@@ -120,21 +120,11 @@ export default function PlayersPage() {
               >
                 {/* Large player photo */}
                 <div className="relative h-52 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
-                  {player.avatarUrl ? (
-                    <Image
-                      src={player.avatarUrl}
-                      alt={playerName}
-                      fill
-                      className="object-cover object-[center_30%]"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <span className="text-5xl font-bold text-gold-500/30">
-                        {player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </span>
-                    </div>
-                  )}
+                  <PlayerHeroImage
+                    src={player.avatarUrl}
+                    alt={playerName}
+                    initials={player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  />
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111318] to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4">
                     <div className="flex items-center gap-2">

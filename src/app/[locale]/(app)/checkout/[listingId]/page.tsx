@@ -3,13 +3,15 @@
 import { use, useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
+import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
-import { CRYPTO_COINS, PLATFORM_WALLET, PLATFORM_FEE_PERCENT } from '@/lib/constants';
+import { DepositDialog } from '@/components/shared/deposit-dialog';
+import { PLATFORM_FEE_PERCENT } from '@/lib/constants';
 import { formatCurrency, formatMarkup } from '@/lib/format';
-import { CheckCircle, Copy, Check, Loader2 } from 'lucide-react';
+import { CheckCircle, Loader2, Wallet, AlertCircle } from 'lucide-react';
 import type { StakingListing } from '@/types';
 
 export default function CheckoutPage({ params }: { params: Promise<{ listingId: string }> }) {
@@ -18,13 +20,15 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
   const tLegal = useTranslations('legal');
   const locale = useLocale();
   const router = useRouter();
+  const { user, isLoading: authLoading } = useAuth();
   const [sharePercent, setSharePercent] = useState(10);
-  const [coin, setCoin] = useState<'usdt' | 'usdc'>('usdt');
-  const [copiedAddr, setCopiedAddr] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [listing, setListing] = useState<StakingListing | null>(null);
   const [loading, setLoading] = useState(true);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [error, setError] = useState('');
+  const [showDeposit, setShowDeposit] = useState(false);
 
   useEffect(() => {
     fetch(`/api/listings/${listingId}`)
@@ -34,14 +38,45 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
       .finally(() => setLoading(false));
   }, [listingId]);
 
-  if (loading) {
+  // Fetch wallet balance when user is authenticated
+  useEffect(() => {
+    if (!user) return;
+    fetch('/api/wallet')
+      .then((r) => r.json())
+      .then((data) => setWalletBalance(data.balance ?? null))
+      .catch(() => setWalletBalance(null));
+  }, [user]);
+
+  const refreshBalance = () => {
+    fetch('/api/wallet')
+      .then((r) => r.json())
+      .then((data) => setWalletBalance(data.balance ?? null))
+      .catch(() => {});
+  };
+
+  if (loading || authLoading) {
     return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-gold-400" /></div>;
+  }
+
+  // Redirect to login if not authenticated
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-lg py-20 text-center">
+        <AlertCircle className="mx-auto h-16 w-16 text-gold-400 mb-4" />
+        <h2 className="text-2xl font-bold text-white mb-2">{t('title')}</h2>
+        <p className="text-white/50 mb-6">You need to be logged in to purchase action.</p>
+        <Button render={<Link href="/login" />} className="bg-gold-500 text-black font-semibold hover:bg-gold-400">
+          Log In
+        </Button>
+      </div>
+    );
   }
 
   if (!listing || !listing.player || !listing.tournament) {
     return <div className="py-20 text-center text-white/50">Listing not found</div>;
   }
 
+  const availableShares = listing.totalActionOffered - listing.actionSold;
   const baseCost = listing.tournament.buyIn * (sharePercent / 100);
   const markupCost = baseCost * (listing.markup - 1);
   const platformFee = baseCost * (PLATFORM_FEE_PERCENT / 100);
@@ -50,20 +85,36 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
   const playerName = locale === 'zh-TW' && listing.player.displayNameZh ? listing.player.displayNameZh : listing.player.displayName;
   const tournamentName = locale === 'zh-TW' && listing.tournament.nameZh ? listing.tournament.nameZh : listing.tournament.name;
 
-  const selectedCoin = CRYPTO_COINS.find((c) => c.id === coin);
+  const hasInsufficientBalance = walletBalance !== null && walletBalance < total;
 
-  const copyAddress = () => {
-    navigator.clipboard.writeText(PLATFORM_WALLET.address);
-    setCopiedAddr(true);
-    setTimeout(() => setCopiedAddr(false), 2000);
-  };
-
-  const handlePay = () => {
+  const handlePurchase = async () => {
+    setError('');
     setProcessing(true);
-    setTimeout(() => {
+
+    try {
+      const res = await fetch('/api/investments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listingId: listing.id,
+          sharesPurchased: sharePercent,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Purchase failed');
+        setProcessing(false);
+        return;
+      }
+
       setProcessing(false);
       setSuccess(true);
-    }, 2000);
+    } catch {
+      setError('Network error. Please try again.');
+      setProcessing(false);
+    }
   };
 
   if (success) {
@@ -108,11 +159,15 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
                 <input
                   type="range"
                   min="1"
-                  max={listing.totalActionOffered - listing.actionSold}
+                  max={availableShares}
                   value={sharePercent}
-                  onChange={(e) => setSharePercent(parseInt(e.target.value))}
+                  onChange={(e) => { setSharePercent(parseInt(e.target.value)); setError(''); }}
                   className="w-full accent-gold-500"
                 />
+                <div className="flex justify-between text-xs text-white/40 mt-1">
+                  <span>1%</span>
+                  <span>{availableShares}% available</span>
+                </div>
               </div>
 
               <Separator className="bg-white/[0.06]" />
@@ -132,65 +187,68 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
           <Card className="border-white/[0.06] bg-[#111318]">
             <CardHeader><CardTitle className="text-white text-sm">{t('selectPayment')}</CardTitle></CardHeader>
             <CardContent className="space-y-5">
-              {/* Coin Selector */}
-              <div>
-                <label className="text-xs text-white/50 mb-2 block">{t('crypto')}</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {(['usdt', 'usdc'] as const).map((c) => {
-                    const coinData = CRYPTO_COINS.find((x) => x.id === c)!;
-                    return (
-                      <button
-                        key={c}
-                        type="button"
-                        onClick={() => setCoin(c)}
-                        className={`flex items-center gap-2 rounded-xl border p-3 transition-all ${
-                          coin === c
-                            ? 'border-gold-500/50 bg-gold-500/10'
-                            : 'border-white/10 hover:border-white/20'
-                        }`}
-                      >
-                        <span className={`text-lg font-bold ${coin === c ? 'text-gold-400' : 'text-white/40'}`}>
-                          {coinData.icon}
-                        </span>
-                        <div className="text-left">
-                          <span className={`text-xs font-medium block ${coin === c ? 'text-gold-400' : 'text-white/60'}`}>
-                            {coinData.name}
-                          </span>
-                          <span className="text-[10px] text-white/30">{coinData.network}</span>
-                        </div>
-                      </button>
-                    );
-                  })}
+              {/* Wallet Balance */}
+              <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold-500/10">
+                    <Wallet className="h-5 w-5 text-gold-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-white">Wallet Balance</p>
+                    <p className={`text-lg font-bold ${hasInsufficientBalance ? 'text-red-400' : 'text-gold-400'}`}>
+                      {walletBalance !== null ? formatCurrency(walletBalance) : '—'}
+                    </p>
+                  </div>
                 </div>
+
+                {hasInsufficientBalance && (
+                  <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 mb-3">
+                    <p className="text-xs text-red-400">
+                      Insufficient balance. You need {formatCurrency(total - (walletBalance || 0))} more.
+                    </p>
+                  </div>
+                )}
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDeposit(true)}
+                  className="w-full border-gold-500/20 text-gold-400 hover:bg-gold-500/10 text-xs"
+                >
+                  Deposit Funds
+                </Button>
               </div>
 
-              {/* Wallet Address */}
-              <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3">
-                <p className="text-xs text-white/40">{t('walletAddress')} ({selectedCoin?.name} - {PLATFORM_WALLET.networkShort})</p>
-                <div className="flex items-center gap-2 bg-white/5 rounded-lg p-2">
-                  <code className="flex-1 text-xs text-white/80 break-all font-mono">{PLATFORM_WALLET.address}</code>
-                  <button onClick={copyAddress} className="flex-shrink-0 text-gold-400 hover:text-gold-300">
-                    {copiedAddr ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  </button>
+              {/* Error message */}
+              {error && (
+                <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+                  <p className="text-xs text-red-400">{error}</p>
                 </div>
-                <div className="flex justify-between text-sm pt-2 border-t border-white/[0.06]">
-                  <span className="text-white/50">{t('total')}</span>
-                  <span className="text-gold-400 font-semibold">${total.toFixed(2)} {selectedCoin?.name}</span>
-                </div>
-              </div>
+              )}
 
+              {/* Purchase button */}
               <Button
-                onClick={handlePay}
-                disabled={processing}
-                className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow h-12 text-base"
+                onClick={handlePurchase}
+                disabled={processing || hasInsufficientBalance || walletBalance === null}
+                className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow h-12 text-base disabled:opacity-50"
               >
-                {processing ? t('processing') : `${t('payNow')} - ${formatCurrency(total)}`}
+                {processing ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('processing')}</>
+                ) : (
+                  `${t('payNow')} - ${formatCurrency(total)}`
+                )}
               </Button>
               <p className="mt-4 text-xs text-white/30 text-center">{tLegal('checkoutDisclaimer')}</p>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <DepositDialog
+        open={showDeposit}
+        onOpenChange={setShowDeposit}
+        onSuccess={refreshBalance}
+      />
     </div>
   );
 }

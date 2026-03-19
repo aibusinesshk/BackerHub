@@ -21,7 +21,7 @@ const DOC_LABELS_EN: Record<string, string> = {
 
 export default function AdminKycPage() {
   const t = useTranslations('adminKyc');
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
 
   const [pending, setPending] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
@@ -29,23 +29,32 @@ export default function AdminKycPage() {
   const [processing, setProcessing] = useState<string | null>(null);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState('');
-  const [forbidden, setForbidden] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [promoting, setPromoting] = useState(false);
+  const [promoteError, setPromoteError] = useState('');
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchData();
-  }, []);
+  }, [authLoading, user]);
 
   async function fetchData() {
     try {
       const res = await fetch('/api/admin/kyc');
       if (res.status === 403) {
-        setForbidden(true);
+        setIsAdmin(false);
+        setLoading(false);
         return;
       }
       if (res.ok) {
         const data = await res.json();
         setPending(data.pending || []);
         setHistory(data.history || []);
+        setIsAdmin(true);
       }
     } catch {
       // ignore
@@ -88,23 +97,26 @@ export default function AdminKycPage() {
     }
   };
 
-  if (!user?.isAdmin && !loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-white/50">Admin access required</p>
-      </div>
-    );
-  }
+  const handlePromote = async () => {
+    setPromoting(true);
+    setPromoteError('');
+    try {
+      const res = await fetch('/api/admin/promote', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        setPromoteError(data.error || 'Failed to promote');
+        return;
+      }
+      window.location.reload();
+    } catch {
+      setPromoteError('Network error');
+    } finally {
+      setPromoting(false);
+    }
+  };
 
-  if (forbidden) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-red-400">Access forbidden</p>
-      </div>
-    );
-  }
-
-  if (loading) {
+  // Show spinner while auth or data is loading
+  if (authLoading || loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-gold-400" />
@@ -112,6 +124,53 @@ export default function AdminKycPage() {
     );
   }
 
+  // Not logged in
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-white/50">Please log in first</p>
+      </div>
+    );
+  }
+
+  // Not an admin — show become admin option
+  if (!isAdmin) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-20">
+        <Card className="border-white/[0.06] bg-[#111318]">
+          <CardContent className="flex flex-col items-center text-center pt-8 pb-8 gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gold-500/10">
+              <Shield className="h-8 w-8 text-gold-400" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white mb-1">Admin Access Required</h2>
+              <p className="text-sm text-white/40">
+                You need admin privileges to manage KYC reviews.
+              </p>
+            </div>
+            <p className="text-xs text-white/30 max-w-xs">
+              If this is a fresh setup and no admin exists yet, you can claim the admin role below.
+            </p>
+            {promoteError && (
+              <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 w-full">
+                <p className="text-xs text-red-400">{promoteError}</p>
+              </div>
+            )}
+            <Button
+              onClick={handlePromote}
+              disabled={promoting}
+              className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400"
+            >
+              {promoting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Become Admin
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Admin view — KYC management
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">

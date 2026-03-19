@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
-import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
+import { PlayerHeroImage } from '@/components/shared/player-hero-image';
 import { CheckCircle, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2 } from 'lucide-react';
 import type { Player, StakingListing, Review } from '@/types';
 
@@ -70,22 +70,11 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
           {/* Player Header with Large Photo */}
           <Card className="border-white/[0.06] bg-[#111318] overflow-hidden">
             <div className="relative h-56 sm:h-64 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
-              {player.avatarUrl ? (
-                <Image
-                  src={player.avatarUrl}
-                  alt={name}
-                  fill
-                  className="object-cover object-[center_30%]"
-                  sizes="(max-width: 1024px) 100vw, 66vw"
-                  priority
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <span className="text-6xl font-bold text-gold-500/30">
-                    {player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </span>
-                </div>
-              )}
+              <PlayerHeroImage
+                src={player.avatarUrl}
+                alt={name}
+                initials={player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+              />
               <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#111318] to-transparent" />
               <div className="absolute bottom-4 left-6 right-6">
                 <div className="flex items-center gap-3">

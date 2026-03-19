@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { LanguageSwitcher } from './language-switcher';
-import { Menu, User, LayoutDashboard, LogOut, Spade } from 'lucide-react';
+import { Menu, User, LayoutDashboard, LogOut, Spade, Shield } from 'lucide-react';
 
 export function Header() {
   const t = useTranslations();
@@ -95,6 +95,12 @@ export function Header() {
                     <User className="h-4 w-4" />
                     {t('nav.profile')}
                 </DropdownMenuItem>
+                {user.isAdmin && (
+                  <DropdownMenuItem render={<Link href={'/admin/kyc' as any} />} className="flex items-center gap-2">
+                      <Shield className="h-4 w-4" />
+                      Admin
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="flex items-center gap-2">
                   <LogOut className="h-4 w-4" />
@@ -153,6 +159,15 @@ export function Header() {
                     >
                       {t('nav.profile')}
                     </Link>
+                    {user.isAdmin && (
+                      <Link
+                        href={'/admin/kyc' as any}
+                        onClick={() => setMobileOpen(false)}
+                        className="rounded-lg px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
+                      >
+                        Admin
+                      </Link>
+                    )}
                     <button
                       onClick={() => { logout(); setMobileOpen(false); }}
                       className="rounded-lg px-4 py-3 text-left text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"

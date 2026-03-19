@@ -7,8 +7,8 @@ import { ScrollReveal } from '@/components/shared/scroll-reveal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatPercent, formatCurrency } from '@/lib/format';
+import { PlayerHeroImage } from '@/components/shared/player-hero-image';
 import { CheckCircle, TrendingUp, Trophy } from 'lucide-react';
-import Image from 'next/image';
 import type { Player } from '@/types';
 
 export function FeaturedPlayers() {
@@ -41,21 +41,11 @@ export function FeaturedPlayers() {
               <div className="group rounded-2xl border border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
                 {/* Large player photo */}
                 <div className="relative h-52 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
-                  {player.avatarUrl ? (
-                    <Image
-                      src={player.avatarUrl}
-                      alt={locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName}
-                      fill
-                      className="object-cover object-[center_30%]"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <span className="text-5xl font-bold text-gold-500/30">
-                        {player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </span>
-                    </div>
-                  )}
+                  <PlayerHeroImage
+                    src={player.avatarUrl}
+                    alt={locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName}
+                    initials={player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  />
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111318] to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4">
                     <div className="flex items-center gap-2">

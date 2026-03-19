@@ -45,11 +45,16 @@ export async function GET(request: Request) {
 
   const players = profiles.map((p: any) => {
     const stats = statsMap.get(p.id);
+    // Normalize avatar URL: convert old Supabase Storage URLs to API proxy
+    let avatarUrl = p.avatar_url || '';
+    if (avatarUrl && avatarUrl.includes('supabase.co/storage')) {
+      avatarUrl = `/api/avatar/${p.id}?t=${Date.now()}`;
+    }
     return {
       id: p.id,
       displayName: p.display_name,
       displayNameZh: p.display_name_zh,
-      avatarUrl: p.avatar_url || '',
+      avatarUrl,
       region: p.region,
       isVerified: p.is_verified,
       memberSince: p.member_since,

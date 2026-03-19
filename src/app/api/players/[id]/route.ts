@@ -33,11 +33,17 @@ export async function GET(
     tournamentMap = new Map<string, any>((tournaments || []).map((t: any) => [t.id, t]));
   }
 
+  // Normalize avatar URL: convert old Supabase Storage URLs to API proxy
+  let avatarUrl = profile.avatar_url || '';
+  if (avatarUrl && avatarUrl.includes('supabase.co/storage')) {
+    avatarUrl = `/api/avatar/${profile.id}?t=${Date.now()}`;
+  }
+
   const player = {
     id: profile.id,
     displayName: profile.display_name,
     displayNameZh: profile.display_name_zh,
-    avatarUrl: profile.avatar_url || '',
+    avatarUrl,
     region: profile.region,
     isVerified: profile.is_verified,
     memberSince: profile.member_since,

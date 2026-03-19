@@ -52,6 +52,11 @@ export async function GET(request: Request) {
     const profile = profileMap.get(l.player_id);
     const stats = statsMap.get(l.player_id);
     const tournament = tournamentMap.get(l.tournament_id);
+    // Normalize avatar URL: convert old Supabase Storage URLs to API proxy
+    let playerAvatarUrl = profile?.avatar_url || '';
+    if (playerAvatarUrl && playerAvatarUrl.includes('supabase.co/storage')) {
+      playerAvatarUrl = `/api/avatar/${profile.id}?t=${Date.now()}`;
+    }
     return {
       id: l.id,
       playerId: l.player_id,
@@ -59,7 +64,7 @@ export async function GET(request: Request) {
         id: profile.id,
         displayName: profile.display_name,
         displayNameZh: profile.display_name_zh,
-        avatarUrl: profile.avatar_url || '',
+        avatarUrl: playerAvatarUrl,
         region: profile.region,
         isVerified: profile.is_verified,
         memberSince: profile.member_since,

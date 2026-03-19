@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { PLATFORM_FEE_PERCENT } from '@/lib/constants';
+import { z } from 'zod';
 import type { Investment, Listing, Tournament } from '@/lib/supabase/types';
+
+const investmentSchema = z.object({
+  listingId: z.string().uuid(),
+  sharesPurchased: z.number().int().min(1).max(100),
+});
 
 export async function GET(request: Request) {
   const supabase = await createClient();
@@ -41,11 +47,12 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { listingId, sharesPurchased } = body;
-
-  if (!listingId || !sharesPurchased) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+  const parsed = investmentSchema.safeParse(body);
+  if (!parsed.success) {
+    const msg = parsed.error.issues.map((i) => i.message).join(', ');
+    return NextResponse.json({ error: msg || 'Invalid input' }, { status: 400 });
   }
+  const { listingId, sharesPurchased } = parsed.data;
 
   // Fetch the listing to calculate costs
   const { data: listing, error: listingError } = await (supabase
@@ -60,6 +67,11 @@ export async function POST(request: Request) {
 
   if (listing.status !== 'active') {
     return NextResponse.json({ error: 'Listing is not active' }, { status: 400 });
+  }
+
+  // Prevent player from backing their own listing
+  if (listing.player_id === user.id) {
+    return NextResponse.json({ error: 'You cannot back your own listing' }, { status: 400 });
   }
 
   // Check shares availability
@@ -135,6 +147,13 @@ export async function POST(request: Request) {
     status: 'completed',
     description: `Backed ${sharesPurchased}% action`,
   });
+
+  // Update listing shares_sold and check if fully filled
+  const newSharesSold = listing.shares_sold + sharesPurchased;
+  const newStatus = newSharesSold >= listing.total_shares_offered ? 'filled' : listing.status;
+  await (supabase.from('listings') as any)
+    .update({ shares_sold: newSharesSold, status: newStatus, updated_at: new Date().toISOString() })
+    .eq('id', listingId);
 
   // Update escrow
   await (supabase as any).rpc('increment_escrow', {
