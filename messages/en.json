@@ -261,7 +261,8 @@
     "publish": "Publish Listing",
     "publishing": "Publishing...",
     "success": "Listing Published!",
-    "successMessage": "Your listing is now live on the marketplace."
+    "successMessage": "Your listing is now live on the marketplace.",
+    "publishError": "Failed to publish listing. Please try again."
   },
   "about": {
     "title": "About BackerHub",

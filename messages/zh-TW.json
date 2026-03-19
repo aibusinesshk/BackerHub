@@ -261,7 +261,8 @@
     "publish": "發布列表",
     "publishing": "發布中...",
     "success": "列表已發布！",
-    "successMessage": "您的列表現已在市場上線。"
+    "successMessage": "您的列表現已在市場上線。",
+    "publishError": "發布列表失敗，請重試。"
   },
   "about": {
     "title": "關於 BackerHub",
