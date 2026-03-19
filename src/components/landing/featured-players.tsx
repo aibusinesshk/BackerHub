@@ -48,12 +48,12 @@ export function FeaturedPlayers() {
                   />
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111318] to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1">
                       <h3 className="text-lg font-bold text-white drop-shadow-lg">
                         {locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName}
                       </h3>
-                      <span className="flex-shrink-0 inline-flex items-center justify-center h-4 w-4 rounded-full bg-gold-400">
-                        <Check className="h-2.5 w-2.5 text-black" strokeWidth={3} />
+                      <span className="flex-shrink-0 inline-flex items-center justify-center h-3 w-3 rounded-full bg-gold-400/80">
+                        <Check className="h-2 w-2 text-black" strokeWidth={3.5} />
                       </span>
                     </div>
                     <p className="text-xs text-white/60">
