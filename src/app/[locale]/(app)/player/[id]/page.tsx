@@ -11,7 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
 import { PlayerHeroImage } from '@/components/shared/player-hero-image';
-import { BadgeCheck, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2 } from 'lucide-react';
+import { Check, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2 } from 'lucide-react';
 import type { Player, StakingListing, Review } from '@/types';
 
 export default function PlayerProfilePage({ params }: { params: Promise<{ id: string }> }) {
@@ -80,7 +80,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">{name}</h1>
                   {player.isVerified ? (
-                    <Badge className="border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs backdrop-blur-sm"><BadgeCheck className="mr-1 h-3 w-3 fill-gold-400/20" />{t('verified')}</Badge>
+                    <Badge className="border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs backdrop-blur-sm"><span className="mr-1 inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-gold-400"><Check className="h-2 w-2 text-black" strokeWidth={3} /></span>{t('verified')}</Badge>
                   ) : (
                     <Badge variant="outline" className="text-xs border-white/10 text-white/40 backdrop-blur-sm">{t('unverified')}</Badge>
                   )}

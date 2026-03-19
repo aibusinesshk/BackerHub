@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { formatCurrency, formatPercent } from '@/lib/format';
 import { PlayerHeroImage } from '@/components/shared/player-hero-image';
 import {
-  Search, BadgeCheck, TrendingUp, Trophy, Users, Loader2, ExternalLink,
+  Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink,
 } from 'lucide-react';
 import type { Player } from '@/types';
 
@@ -80,7 +80,7 @@ export default function PlayersPage() {
           onClick={() => setVerifiedFilter(!verifiedFilter)}
           className={verifiedFilter ? 'bg-gold-500 text-black' : 'border-white/10 text-white/50 hover:text-white'}
         >
-          <BadgeCheck className="mr-1 h-3.5 w-3.5" />
+          <Check className="mr-1 h-3 w-3" />
           {t('verifiedOnly')}
         </Button>
       </div>
@@ -129,7 +129,11 @@ export default function PlayersPage() {
                   <div className="absolute bottom-3 left-4 right-4">
                     <div className="flex items-center gap-1.5">
                       <h3 className="text-lg font-bold text-white drop-shadow-lg truncate">{playerName}</h3>
-                      {player.isVerified && <BadgeCheck className="h-3.5 w-3.5 flex-shrink-0 text-gold-400 fill-gold-400/20" />}
+                      {player.isVerified && (
+                        <span className="flex-shrink-0 inline-flex items-center justify-center h-4 w-4 rounded-full bg-gold-400">
+                          <Check className="h-2.5 w-2.5 text-black" strokeWidth={3} />
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-white/60">
                       {player.region === 'TW' ? '🇹🇼' : player.region === 'HK' ? '🇭🇰' : '🌐'}{' '}
