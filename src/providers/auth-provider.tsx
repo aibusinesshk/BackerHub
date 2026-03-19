@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import type { Profile } from '@/lib/supabase/types';
 import type { UserRole, Region } from '@/types';
@@ -21,7 +21,7 @@ interface AuthUser {
 interface AuthContextType {
   user: AuthUser | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; error?: string }>;
   signup: (data: {
     displayName: string;
     email: string;
@@ -29,13 +29,13 @@ interface AuthContextType {
     role: UserRole;
     region: Region;
   }) => Promise<{ success: boolean; error?: string }>;
-  loginWithGoogle: () => Promise<void>;
-  loginWithLINE: () => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
+
+const DEMO_SESSION_KEY = 'backerhub-demo-session';
 
 function mapProfileToAuthUser(profile: Profile): AuthUser {
   return {
@@ -51,9 +51,77 @@ function mapProfileToAuthUser(profile: Profile): AuthUser {
   };
 }
 
+// --- Demo auth helpers (used when Supabase is not configured) ---
+
+function getDemoSession(): AuthUser | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(DEMO_SESSION_KEY) || sessionStorage.getItem(DEMO_SESSION_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as AuthUser;
+  } catch {
+    return null;
+  }
+}
+
+function setDemoSession(user: AuthUser, remember: boolean) {
+  const json = JSON.stringify(user);
+  // Also set a cookie so middleware can detect the session
+  const maxAge = remember ? 60 * 60 * 24 * 30 : ''; // 30 days or session
+  const expires = remember ? `; max-age=${maxAge}` : '';
+  document.cookie = `${DEMO_SESSION_KEY}=${encodeURIComponent(json)}; path=/${expires}; SameSite=Lax`;
+  if (remember) {
+    localStorage.setItem(DEMO_SESSION_KEY, json);
+    sessionStorage.removeItem(DEMO_SESSION_KEY);
+  } else {
+    sessionStorage.setItem(DEMO_SESSION_KEY, json);
+    localStorage.removeItem(DEMO_SESSION_KEY);
+  }
+}
+
+function clearDemoSession() {
+  localStorage.removeItem(DEMO_SESSION_KEY);
+  sessionStorage.removeItem(DEMO_SESSION_KEY);
+  document.cookie = `${DEMO_SESSION_KEY}=; path=/; max-age=0`;
+}
+
+function makeDemoUser(email: string, displayName: string, role: UserRole, region: Region): AuthUser {
+  // Deterministic ID from email
+  const id = crypto.randomUUID?.() || `demo-${Date.now()}`;
+  return {
+    id,
+    email,
+    displayName,
+    displayNameZh: null,
+    role,
+    region,
+    avatarUrl: null,
+    isVerified: false,
+    isAdmin: false,
+  };
+}
+
+// Store registered demo accounts in localStorage so they persist
+function getDemoAccounts(): Record<string, { password: string; user: AuthUser }> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem('backerhub-demo-accounts');
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveDemoAccount(email: string, password: string, user: AuthUser) {
+  const accounts = getDemoAccounts();
+  accounts[email.toLowerCase()] = { password, user };
+  localStorage.setItem('backerhub-demo-accounts', JSON.stringify(accounts));
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const useDemo = !isSupabaseConfigured();
   const supabase = createClient();
 
   const fetchProfile = useCallback(async (authUser: User) => {
@@ -81,7 +149,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Listen for auth state changes
   useEffect(() => {
-    // Get initial session
+    if (useDemo) {
+      // Demo mode: restore session from storage
+      const saved = getDemoSession();
+      if (saved) setUser(saved);
+      setIsLoading(false);
+      return;
+    }
+
+    // Supabase mode
     const getInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
@@ -92,7 +168,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     getInitialSession();
 
-    // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
@@ -106,9 +181,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase, fetchProfile]);
+  }, [supabase, fetchProfile, useDemo]);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, rememberMe = false) => {
+    if (useDemo) {
+      // Demo mode: check against registered demo accounts
+      const accounts = getDemoAccounts();
+      const account = accounts[email.toLowerCase()];
+      if (account) {
+        if (account.password !== password) {
+          return { success: false, error: 'Invalid login credentials' };
+        }
+        setDemoSession(account.user, rememberMe);
+        setUser(account.user);
+        return { success: true };
+      }
+      return { success: false, error: 'Invalid login credentials' };
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       return { success: false, error: error.message };
@@ -123,8 +213,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     role: UserRole;
     region: Region;
   }) => {
+    if (useDemo) {
+      // Demo mode: register locally and auto-login
+      const accounts = getDemoAccounts();
+      if (accounts[data.email.toLowerCase()]) {
+        return { success: false, error: 'An account with this email already exists' };
+      }
+      const demoUser = makeDemoUser(data.email, data.displayName, data.role, data.region);
+      saveDemoAccount(data.email, data.password, demoUser);
+      setDemoSession(demoUser, true);
+      setUser(demoUser);
+      return { success: true };
+    }
+
     try {
-      // Call server-side API that uses admin client (auto-confirms email)
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -141,13 +243,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: result.error || 'Signup failed' };
       }
 
-      // Account created & confirmed — now sign in immediately
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
       if (signInError) {
-        // Account was created but auto-login failed — user can still login manually
         return { success: true, error: undefined };
       }
 
@@ -157,31 +257,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
-      },
-    });
-  };
-
-  const loginWithLINE = async () => {
-    // LINE uses custom OIDC provider in Supabase
-    await supabase.auth.signInWithOAuth({
-      provider: 'google', // TODO: Replace with LINE when configured in Supabase
-      options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
-      },
-    });
-  };
-
   const logout = async () => {
+    if (useDemo) {
+      clearDemoSession();
+      setUser(null);
+      return;
+    }
     await supabase.auth.signOut();
     setUser(null);
   };
 
   const refreshProfile = async () => {
+    if (useDemo) {
+      const saved = getDemoSession();
+      if (saved) setUser(saved);
+      return;
+    }
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
       await fetchProfile(session.user);
@@ -194,8 +285,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       signup,
-      loginWithGoogle,
-      loginWithLINE,
       logout,
       refreshProfile,
     }}>
