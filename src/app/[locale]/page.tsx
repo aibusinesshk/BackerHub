@@ -20,7 +20,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <div className="min-h-screen bg-[#0a0a0a]">
       <PreLaunchBanner />
       <Header />
-      <main className="pb-20 md:pb-0">
+      <main className="pb-28 md:pb-0">
         <HeroSection />
         <HowItWorks />
         <StatsCounter />
