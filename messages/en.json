@@ -187,8 +187,20 @@
       "createListing": "Create New Listing",
       "yourListings": "Your Listings",
       "earnings": "Earnings Overview",
-      "noListings": "You haven't created any listings yet."
+      "noListings": "You haven't created any listings yet.",
+      "cancelListing": "Cancel Listing",
+      "cancelConfirm": "Cancel this listing? All backers will be refunded automatically.",
+      "cancelSuccess": "Listing cancelled. All backers have been refunded.",
+      "cancelling": "Cancelling..."
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "deadlineWarning": "Deadline Warning",
+    "deadlineCritical": "Urgent Action Required",
+    "viewListing": "View Listing"
   },
   "checkout": {
     "title": "Complete Your Purchase",
