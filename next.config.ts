@@ -7,7 +7,6 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 let supabaseHostname = '';
 try { if (supabaseUrl) supabaseHostname = new URL(supabaseUrl).hostname; } catch { /* env not set */ }
 
-/* Trigger Vercel redeploy */
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
