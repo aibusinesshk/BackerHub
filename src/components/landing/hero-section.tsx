@@ -75,13 +75,14 @@ export function HeroSection() {
           </p>
 
           {/* Pre-launch 0% fee callout */}
-          <div className="mt-8 inline-flex items-center gap-3 rounded-2xl border border-gold-500/30 bg-gold-500/10 backdrop-blur-sm px-6 py-3">
+          <Link href={'/pricing' as any} className="mt-8 inline-flex items-center gap-3 rounded-2xl border border-gold-500/30 bg-gold-500/10 backdrop-blur-sm px-6 py-3 transition-colors hover:bg-gold-500/20 hover:border-gold-500/40 cursor-pointer">
             <Sparkles className="h-5 w-5 text-gold-400" />
             <div className="text-left">
               <span className="block text-lg font-bold text-gold-400 sm:text-xl">{t('freeTag')}</span>
               <span className="block text-xs text-white/60 sm:text-sm">{t('freeTagSub')}</span>
             </div>
-          </div>
+            <ArrowRight className="h-4 w-4 text-gold-400/60" />
+          </Link>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <Button

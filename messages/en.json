@@ -22,7 +22,8 @@
     "contact": "Contact",
     "players": "Players",
     "sellAction": "Sell Action",
-    "whyBackerHub": "Why BackerHub"
+    "whyBackerHub": "Why BackerHub",
+    "pricing": "Pricing"
   },
   "hero": {
     "badge": "Asia's #1 Player Backing Platform",
@@ -973,6 +974,31 @@
     "neverCharge5": "Wallet deposits (network fees may apply)",
     "neverCharge6": "Prize distributions to backers",
     "neverCharge7": "Identity verification (KYC)",
+
+    "externalTitle": "Third-Party & Network Fees",
+    "externalSubtitle": "These are fees charged by external services — not by BackerHub. We want you to know about them upfront so there are zero surprises.",
+
+    "external1Title": "TRC-20 Network Fee (USDT / USDC)",
+    "external1Desc": "When you deposit or withdraw crypto, the Tron blockchain charges a small network (gas) fee to process the transaction. This is paid to the network, not to BackerHub.",
+    "external1Estimate": "~1 USDT per transfer",
+    "external1Note": "Varies with network congestion. TRC-20 is chosen specifically because it has the lowest fees among major networks.",
+
+    "external2Title": "Blockchain Confirmation Time",
+    "external2Desc": "Crypto transfers require blockchain confirmations before they appear in your wallet. This is a function of the network, not a delay imposed by BackerHub.",
+    "external2Estimate": "~1–3 minutes on TRC-20",
+    "external2Note": "BackerHub credits your wallet after sufficient confirmations for security.",
+
+    "external3Title": "Exchange Withdrawal Fees",
+    "external3Desc": "If you're sending USDT/USDC from a centralized exchange (Binance, OKX, MAX, etc.), the exchange may charge its own withdrawal fee. This varies by exchange and is not related to BackerHub.",
+    "external3Estimate": "Varies by exchange",
+    "external3Note": "Check your exchange's fee schedule before transferring. Some exchanges offer free TRC-20 withdrawals.",
+
+    "external4Title": "Currency Conversion",
+    "external4Desc": "If you need to convert fiat currency (TWD, HKD, USD) to USDT/USDC, the exchange or on-ramp service you use will charge a conversion spread or fee.",
+    "external4Estimate": "Typically 0.1%–1.5%",
+    "external4Note": "We recommend using exchanges with competitive rates in your region (e.g., MAX Exchange for TWD, or Binance P2P).",
+
+    "externalDisclaimer": "BackerHub does not profit from any third-party fees. We chose TRC-20 specifically to minimize your costs — it offers the lowest transaction fees among major blockchain networks.",
 
     "ctaTitle": "Try BackerHub Risk-Free",
     "ctaSubtitle": "Zero platform fees. Full escrow protection. The safest way to stake in poker — and right now, it costs you nothing extra.",
