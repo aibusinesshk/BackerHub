@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
+import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, TrendingUp, Users, Trophy, Sparkles } from 'lucide-react';
@@ -12,6 +13,7 @@ import type { PlatformStats } from '@/types';
 
 export function HeroSection() {
   const t = useTranslations('hero');
+  const { user } = useAuth();
   const [platformStats, setPlatformStats] = useState<PlatformStats>({
     totalBacked: 0, tournamentsStaked: 0, activePlayers: 0, avgROI: 0, prizeDistributions: 0, countriesServed: 0,
   });
@@ -84,7 +86,7 @@ export function HeroSection() {
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <Button
               size="lg"
-              render={<Link href="/signup" />}
+              render={<Link href={user ? '/marketplace' as const : '/signup' as const} />}
               className="bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow px-8 h-12 text-base"
             >
               {t('ctaInvestor')} <ArrowRight className="ml-2 h-4 w-4" />
@@ -92,7 +94,7 @@ export function HeroSection() {
             <Button
               size="lg"
               variant="outline"
-              render={<Link href="/signup" />}
+              render={<Link href={user ? '/create-listing' as any : '/signup' as const} />}
               className="border-white/20 text-white hover:bg-white/5 backdrop-blur-sm px-8 h-12 text-base"
             >
               {t('ctaPlayer')}
