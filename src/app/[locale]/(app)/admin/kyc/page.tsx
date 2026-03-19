@@ -111,21 +111,36 @@ export default function AdminKycPage() {
 
   if (!user?.isAdmin && !loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <Shield className="h-12 w-12 text-white/20" />
-        <p className="text-white/50">Admin access required</p>
-        <p className="text-xs text-white/30 max-w-sm text-center">
-          If no admin exists yet, you can claim the admin role for initial setup.
-        </p>
-        {promoteError && <p className="text-xs text-red-400">{promoteError}</p>}
-        <Button
-          onClick={handlePromote}
-          disabled={promoting}
-          className="bg-gold-500 text-black font-semibold hover:bg-gold-400"
-        >
-          {promoting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Become Admin
-        </Button>
+      <div className="mx-auto max-w-md px-4 py-20">
+        <Card className="border-white/[0.06] bg-[#111318]">
+          <CardContent className="flex flex-col items-center text-center pt-8 pb-8 gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gold-500/10">
+              <Shield className="h-8 w-8 text-gold-400" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white mb-1">Admin Access Required</h2>
+              <p className="text-sm text-white/40">
+                You need admin privileges to manage KYC reviews.
+              </p>
+            </div>
+            <p className="text-xs text-white/30 max-w-xs">
+              If this is a fresh setup and no admin exists yet, you can claim the admin role below.
+            </p>
+            {promoteError && (
+              <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 w-full">
+                <p className="text-xs text-red-400">{promoteError}</p>
+              </div>
+            )}
+            <Button
+              onClick={handlePromote}
+              disabled={promoting}
+              className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400"
+            >
+              {promoting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Become Admin
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
