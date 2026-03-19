@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
-import { PlayerHeroImage } from '@/components/shared/player-hero-image';
+import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { Search, Filter, Check, TrendingUp, Loader2 } from 'lucide-react';
 import type { StakingListing } from '@/types';
 
@@ -120,40 +120,39 @@ export default function MarketplacePage() {
 
             return (
               <Card key={listing.id} className="border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
-                {/* Large player photo */}
-                <div className="relative h-48 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
-                  <PlayerHeroImage
-                    src={listing.player.avatarUrl}
-                    alt={playerName}
-                    initials={listing.player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#111318] to-transparent" />
-                  <div className="absolute top-3 left-3 flex gap-1.5">
-                    <Badge variant="outline" className="text-[10px] border-white/20 bg-black/50 text-white/70 backdrop-blur-sm">{listing.tournament.type}</Badge>
-                  </div>
-                  <div className="absolute top-3 right-3">
-                    <Badge variant="outline" className={`text-[10px] backdrop-blur-sm bg-black/50 ${statusColors[listing.status]}`}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex gap-1.5">
+                      <Badge variant="outline" className="text-[10px] border-white/20 bg-white/[0.03] text-white/70">{listing.tournament.type}</Badge>
+                    </div>
+                    <Badge variant="outline" className={`text-[10px] ${statusColors[listing.status]}`}>
                       {t(listing.status)}
                     </Badge>
                   </div>
-                  {/* Player name overlay at bottom */}
-                  <div className="absolute bottom-3 left-4 right-4">
-                    <div className="flex items-center gap-1">
-                      <h3 className="text-lg font-bold text-white drop-shadow-lg">{playerName}</h3>
-                      {listing.player.isVerified && (
-                        <span className="flex-shrink-0 inline-flex items-center justify-center h-3 w-3 rounded-full bg-gold-400/80">
-                          <Check className="h-2 w-2 text-black" strokeWidth={3.5} />
+                  <div className="flex items-center gap-3">
+                    <PlayerAvatar
+                      src={listing.player.avatarUrl}
+                      name={listing.player.displayName}
+                      className="h-10 w-10 flex-shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1">
+                        <h3 className="text-sm font-bold text-white truncate">{playerName}</h3>
+                        {listing.player.isVerified && (
+                          <span className="flex-shrink-0 inline-flex items-center justify-center h-3 w-3 rounded-full bg-gold-400/80">
+                            <Check className="h-2 w-2 text-black" strokeWidth={3.5} />
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-white/50">{listing.player.region === 'TW' ? '🇹🇼' : listing.player.region === 'HK' ? '🇭🇰' : '🌐'}</span>
+                        <span className="flex items-center gap-1 text-green-400">
+                          <TrendingUp className="h-3 w-3" /> {formatPercent(listing.player.stats.lifetimeROI)} ROI
                         </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-xs">
-                      <span className="text-white/60">{listing.player.region === 'TW' ? '🇹🇼' : listing.player.region === 'HK' ? '🇭🇰' : '🌐'}</span>
-                      <span className="flex items-center gap-1 text-green-400">
-                        <TrendingUp className="h-3 w-3" /> {formatPercent(listing.player.stats.lifetimeROI)} ROI
-                      </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </CardHeader>
 
                 <CardContent className="space-y-3 pt-4">
                   <div>
