@@ -15,7 +15,7 @@
     "marketplace": "市場",
     "howItWorks": "如何運作",
     "about": "關於我們",
-    "dashboard": "控制面板",
+    "dashboard": "總覽",
     "profile": "個人資料",
     "settings": "設定",
     "logout": "登出",
@@ -39,7 +39,7 @@
   },
   "howItWorks": {
     "title": "如何運作",
-    "subtitle": "三個簡單步驟開始贊助或出售撲克份額",
+    "subtitle": "三個簡單步驟開始贊助或出售比賽份額",
     "step1Title": "瀏覽選手",
     "step1Desc": "探索經過驗證的撲克選手及其即將參加的錦標賽，查看詳細的表現數據。",
     "step2Title": "購買份額",
@@ -49,7 +49,7 @@
   },
   "stats": {
     "totalInvested": "總贊助金額",
-    "tournamentsStaked": "已質押錦標賽",
+    "tournamentsStaked": "已贊助錦標賽",
     "activePlayers": "活躍選手",
     "avgROI": "平均回報率",
     "payoutsMade": "獎金分配次數",
@@ -67,16 +67,16 @@
     "player": "選手"
   },
   "payments": {
-    "title": "加密原生支付",
+    "title": "加密貨幣支付",
     "subtitle": "透過 TRC-20 網路使用 USDT 和 USDC 進行快速、無國界支付"
   },
   "trust": {
     "title": "為什麼信任 BackerHub？",
     "subtitle": "為亞洲撲克社群打造，以安全和透明為核心",
     "verified": "認證選手",
-    "verifiedDesc": "所有選手均通過身份驗證，具有追蹤的表現歷史",
+    "verifiedDesc": "所有選手均通過身份驗證，擁有完整的歷史表現紀錄",
     "secure": "安全支付",
-    "secureDesc": "加密原生支付，每筆交易均有託管保護",
+    "secureDesc": "加密貨幣支付，每筆交易均有託管保護",
     "transparent": "完全透明",
     "transparentDesc": "即時追蹤錦標賽結果並自動分配獎金",
     "support": "全天候支援",
@@ -84,7 +84,7 @@
   },
   "cta": {
     "title": "準備好開始了嗎？",
-    "subtitle": "立即加入亞洲增長最快的選手贊助社群",
+    "subtitle": "立即加入亞洲成長最快的選手贊助社群",
     "investorTitle": "我想贊助選手",
     "investorDesc": "瀏覽選手、購買份額，共享錦標賽獎金",
     "playerTitle": "我想出售份額",
@@ -98,7 +98,7 @@
     "success": "感謝訂閱！"
   },
   "players": {
-    "title": "選手名錄",
+    "title": "所有選手",
     "subtitle": "瀏覽註冊選手及其錦標賽戰績",
     "searchPlaceholder": "搜尋選手名稱...",
     "allRegions": "所有地區",
@@ -109,7 +109,7 @@
     "viewProfile": "查看資料",
     "hendonMob": "Hendon Mob",
     "totalEarnings": "總獎金收入",
-    "biggestWin": "最大獲勝",
+    "biggestWin": "最高獎金",
     "roi": "回報率",
     "tournaments": "錦標賽",
     "cashRate": "兌現率",
@@ -153,9 +153,9 @@
     "lifetimeROI": "終身回報率",
     "totalTournaments": "參賽次數",
     "cashRate": "兌現率",
-    "totalStaked": "總質押價值",
+    "totalStaked": "總贊助金額",
     "avgFinish": "平均排名",
-    "biggestWin": "最大獲勝",
+    "biggestWin": "最高獎金",
     "activeListings": "進行中列表",
     "reviews": "評價",
     "avgRating": "平均評分",
@@ -166,7 +166,7 @@
   },
   "dashboard": {
     "investor": {
-      "title": "贊助者控制面板",
+      "title": "贊助者總覽",
       "welcome": "歡迎回來，{name}",
       "totalInvested": "總贊助金額",
       "activeInvestments": "進行中贊助",
@@ -178,7 +178,7 @@
       "noInvestments": "尚無贊助。前往市場開始吧！"
     },
     "player": {
-      "title": "選手控制面板",
+      "title": "選手總覽",
       "welcome": "歡迎回來，{name}",
       "totalEarnings": "總收入",
       "sharesSold": "已售份額",
@@ -205,8 +205,8 @@
     "payNow": "立即支付",
     "processing": "處理中...",
     "success": "支付成功！",
-    "successMessage": "您的份額已購買成功。您可以在控制面板中追蹤您的贊助。",
-    "goToDashboard": "前往控制面板",
+    "successMessage": "您的份額已購買成功。您可以在總覽中追蹤您的贊助。",
+    "goToDashboard": "前往總覽",
     "regionTW": "台灣",
     "regionHK": "香港",
     "creditCard": "信用卡",
@@ -329,7 +329,7 @@
     "depositTitle": "儲值資金",
     "depositDescription": "將資金存入您的錢包以開始贊助選手",
     "depositPendingDescription": "您的儲值請求已提交",
-    "withdrawTitle": "提款資金",
+    "withdrawTitle": "提取資金",
     "withdrawDescription": "將資金提取至您的加密錢包",
     "selectCoin": "選擇幣種",
     "amount": "金額",
@@ -470,7 +470,7 @@
     "notesPlaceholder": "關於錦標賽的任何補充說明...",
     "submitButton": "提交結果",
     "successTitle": "結果已提交！",
-    "backToDashboard": "返回控制面板",
+    "backToDashboard": "返回總覽",
     "buyIn": "買入",
     "actionSold": "已售份額",
     "disclaimer": "結果將與官方錦標賽記錄核實。提交虛假結果可能導致帳號停權。"
@@ -689,7 +689,7 @@
   },
   "preLaunch": {
     "banner": "預上線特惠：0% 平台手續費",
-    "bannerSub": "上線期間免費贊助選手 — 零佣金，零隱藏費用。",
+    "bannerSub": "預上線期間免費贊助選手 — 零佣金，零隱藏費用。",
     "cta": "免費開始"
   },
   "legal": {
