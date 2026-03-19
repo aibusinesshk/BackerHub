@@ -108,7 +108,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { tournamentId, markup, totalSharesOffered, minThreshold } = body;
+  const { tournamentId, markup, totalActionOffered: totalSharesOffered, minThreshold } = body;
 
   // Validate
   if (!tournamentId || !markup || !totalSharesOffered) {

@@ -60,9 +60,12 @@ export default function CreateListingPage() {
       if (res.ok) {
         setPublished(true);
         setTimeout(() => router.push('/dashboard/player'), 2000);
+      } else {
+        const data = await res.json().catch(() => null);
+        alert(data?.error || t('publishError'));
       }
-    } catch {
-      // handle error silently for now
+    } catch (err) {
+      alert(t('publishError'));
     } finally {
       setPublishing(false);
     }
