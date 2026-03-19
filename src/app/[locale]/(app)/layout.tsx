@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { MobileTabBar } from '@/components/layout/mobile-tab-bar';
 
 export default async function AppLayout({
   children,
@@ -15,8 +16,9 @@ export default async function AppLayout({
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <Header />
-      <main className="pt-16">{children}</main>
+      <main className="pt-16 pb-20 md:pb-0">{children}</main>
       <Footer />
+      <MobileTabBar />
     </div>
   );
 }
