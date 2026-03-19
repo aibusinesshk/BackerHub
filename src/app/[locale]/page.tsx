@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { MobileTabBar } from '@/components/layout/mobile-tab-bar';
 import { PreLaunchBanner } from '@/components/landing/pre-launch-banner';
 import { HeroSection } from '@/components/landing/hero-section';
 import { HowItWorks } from '@/components/landing/how-it-works';
@@ -19,7 +20,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <div className="min-h-screen bg-[#0a0a0a]">
       <PreLaunchBanner />
       <Header />
-      <main>
+      <main className="pb-20 md:pb-0">
         <HeroSection />
         <HowItWorks />
         <StatsCounter />
@@ -30,6 +31,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <CtaSection />
       </main>
       <Footer />
+      <MobileTabBar />
     </div>
   );
 }
