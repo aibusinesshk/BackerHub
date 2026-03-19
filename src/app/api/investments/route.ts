@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { PLATFORM_FEE_PERCENT } from '@/lib/constants';
 import { z } from 'zod';
 import type { Investment, Listing, Tournament } from '@/lib/supabase/types';
@@ -39,7 +39,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  // Use the user's client for auth, admin client for privileged DB operations
   const supabase = await createClient();
+  const admin = await createAdminClient();
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
@@ -55,7 +57,7 @@ export async function POST(request: Request) {
   const { listingId, sharesPurchased } = parsed.data;
 
   // Fetch the listing to calculate costs
-  const { data: listing, error: listingError } = await (supabase
+  const { data: listing, error: listingError } = await (admin
     .from('listings') as any)
     .select('*')
     .eq('id', listingId)
@@ -81,7 +83,7 @@ export async function POST(request: Request) {
   }
 
   // Fetch the tournament for buy-in calculation
-  const { data: tournament, error: tournamentError } = await (supabase
+  const { data: tournament, error: tournamentError } = await (admin
     .from('tournaments') as any)
     .select('*')
     .eq('id', listing.tournament_id)
@@ -97,8 +99,8 @@ export async function POST(request: Request) {
   const platformFee = baseCost * (PLATFORM_FEE_PERCENT / 100);
   const totalAmount = baseCost + markupCost + platformFee;
 
-  // Deduct from wallet balance
-  const { error: walletError } = await (supabase as any).rpc('adjust_wallet_balance', {
+  // Deduct from wallet balance (SECURITY DEFINER function, works with admin client)
+  const { error: walletError } = await (admin as any).rpc('adjust_wallet_balance', {
     p_user_id: user.id,
     p_amount: -totalAmount,
   });
@@ -110,8 +112,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: walletError.message }, { status: 500 });
   }
 
-  // Create investment (confirmed since wallet was deducted)
-  const { data: investment, error: investError } = await (supabase
+  // Create investment (admin client bypasses RLS)
+  const { data: investment, error: investError } = await (admin
     .from('investments') as any)
     .insert({
       listing_id: listingId,
@@ -128,15 +130,15 @@ export async function POST(request: Request) {
 
   if (investError) {
     // Refund wallet if investment creation fails
-    await (supabase as any).rpc('adjust_wallet_balance', {
+    await (admin as any).rpc('adjust_wallet_balance', {
       p_user_id: user.id,
       p_amount: totalAmount,
     });
     return NextResponse.json({ error: investError.message }, { status: 500 });
   }
 
-  // Create transaction record (completed since wallet was deducted)
-  await (supabase.from('transactions') as any).insert({
+  // Create transaction record (admin client bypasses RLS)
+  await (admin.from('transactions') as any).insert({
     user_id: user.id,
     type: 'purchase',
     investment_id: investment!.id,
@@ -151,19 +153,16 @@ export async function POST(request: Request) {
   // Update listing shares_sold and check if fully filled
   const newSharesSold = listing.shares_sold + sharesPurchased;
   const newStatus = newSharesSold >= listing.total_shares_offered ? 'filled' : listing.status;
-  await (supabase.from('listings') as any)
+  await (admin.from('listings') as any)
     .update({ shares_sold: newSharesSold, status: newStatus, updated_at: new Date().toISOString() })
     .eq('id', listingId);
 
   // Update escrow
-  await (supabase as any).rpc('increment_escrow', {
-    p_listing_id: listingId,
-    p_amount: totalAmount,
-  }).catch(() => {
-    return (supabase.from('escrow') as any)
-      .update({ total_held: listing.shares_sold + totalAmount })
-      .eq('listing_id', listingId);
-  });
+  await (admin.from('escrow') as any)
+    .upsert(
+      { listing_id: listingId, total_held: totalAmount, updated_at: new Date().toISOString() },
+      { onConflict: 'listing_id' }
+    );
 
   return NextResponse.json({ investment }, { status: 201 });
 }
