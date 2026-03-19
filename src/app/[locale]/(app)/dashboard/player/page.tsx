@@ -97,7 +97,7 @@ export default function PlayerDashboardPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
           <p className="text-sm text-white/50">{t('welcome', { name: user?.displayName || 'Player' })}</p>

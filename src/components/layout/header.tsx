@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { LanguageSwitcher } from './language-switcher';
-import { Menu, User, LayoutDashboard, LogOut, Spade, Shield } from 'lucide-react';
+import { Menu, User, LayoutDashboard, LogOut, Spade, Shield, List } from 'lucide-react';
 import { NotificationBell } from '@/components/shared/notification-bell';
 
 export function Header() {
@@ -99,6 +99,12 @@ export function Header() {
                     <User className="h-4 w-4" />
                     {t('nav.profile')}
                 </DropdownMenuItem>
+                {(user.role === 'player' || user.role === 'both') && (
+                  <DropdownMenuItem render={<Link href={'/dashboard/player/listings' as any} />} className="flex items-center gap-2">
+                      <List className="h-4 w-4" />
+                      {t('myListings.manageListings')}
+                  </DropdownMenuItem>
+                )}
                 {user.isAdmin && (
                   <DropdownMenuItem render={<Link href={'/admin/kyc' as any} />} className="flex items-center gap-2">
                       <Shield className="h-4 w-4" />
@@ -163,6 +169,15 @@ export function Header() {
                     >
                       {t('nav.profile')}
                     </Link>
+                    {(user.role === 'player' || user.role === 'both') && (
+                      <Link
+                        href={'/dashboard/player/listings' as any}
+                        onClick={() => setMobileOpen(false)}
+                        className="rounded-lg px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
+                      >
+                        {t('myListings.manageListings')}
+                      </Link>
+                    )}
                     {user.isAdmin && (
                       <Link
                         href={'/admin/kyc' as any}
