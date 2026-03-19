@@ -11,7 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatDate } from '@/lib/format';
 import {
   DollarSign, TrendingUp, Layers, Tag, Plus, ArrowUpRight, Loader2,
-  Trophy, Upload, Clock, AlertTriangle, XCircle,
+  Trophy, Upload, Clock, AlertTriangle, XCircle, List,
 } from 'lucide-react';
 import { WalletBalance } from '@/components/shared/wallet-balance';
 
@@ -102,9 +102,14 @@ export default function PlayerDashboardPage() {
           <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
           <p className="text-sm text-white/50">{t('welcome', { name: user?.displayName || 'Player' })}</p>
         </div>
-        <Button render={<Link href="/create-listing" />} className="bg-gold-500 text-black font-semibold hover:bg-gold-400">
-          <Plus className="mr-2 h-4 w-4" /> {t('createListing')}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button render={<Link href={'/dashboard/player/listings' as any} />} variant="outline" className="border-white/10 text-white/70 hover:text-white">
+            <List className="mr-2 h-4 w-4" /> {t('manageListings')}
+          </Button>
+          <Button render={<Link href="/create-listing" />} className="bg-gold-500 text-black font-semibold hover:bg-gold-400">
+            <Plus className="mr-2 h-4 w-4" /> {t('createListing')}
+          </Button>
+        </div>
       </div>
 
       <WalletBalance />
@@ -132,6 +137,14 @@ export default function PlayerDashboardPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-white text-sm">{t('yourListings')}</CardTitle>
+            <Button
+              render={<Link href={'/dashboard/player/listings' as any} />}
+              variant="ghost"
+              size="sm"
+              className="text-gold-400 hover:text-gold-300 text-xs"
+            >
+              {t('manageListings')} →
+            </Button>
           </div>
         </CardHeader>
         <CardContent>

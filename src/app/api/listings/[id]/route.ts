@@ -83,13 +83,60 @@ export async function PUT(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Fetch listing first to validate it can be edited
+  const { data: existing } = await (supabase
+    .from('listings') as any)
+    .select('*')
+    .eq('id', id)
+    .eq('player_id', user.id)
+    .single();
+
+  if (!existing) {
+    return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
+  }
+
+  if (existing.status !== 'active') {
+    return NextResponse.json({ error: 'Only active listings can be edited' }, { status: 400 });
+  }
+
+  if (Number(existing.shares_sold) > 0) {
+    return NextResponse.json({ error: 'Cannot edit a listing that already has backers' }, { status: 400 });
+  }
+
+  // Only allow updating specific fields
   const body = await request.json();
+  const updates: Record<string, any> = {};
+  if (body.markup !== undefined) {
+    const markup = Number(body.markup);
+    if (markup < 1.0 || markup > 1.5) {
+      return NextResponse.json({ error: 'Markup must be between 1.00 and 1.50' }, { status: 400 });
+    }
+    updates.markup = markup;
+  }
+  if (body.total_shares_offered !== undefined) {
+    const shares = Number(body.total_shares_offered);
+    if (shares < 10 || shares > 100) {
+      return NextResponse.json({ error: 'Shares offered must be between 10 and 100' }, { status: 400 });
+    }
+    updates.total_shares_offered = shares;
+  }
+  if (body.min_threshold !== undefined) {
+    const threshold = Number(body.min_threshold);
+    if (threshold < 0 || threshold > 100) {
+      return NextResponse.json({ error: 'Threshold must be between 0 and 100' }, { status: 400 });
+    }
+    updates.min_threshold = threshold;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+  }
 
   const { data: listing, error } = await (supabase
     .from('listings') as any)
-    .update(body)
+    .update(updates)
     .eq('id', id)
-    .eq('player_id', user.id) // Ensure user owns the listing
+    .eq('player_id', user.id)
     .select()
     .single() as { data: any | null; error: any };
 
