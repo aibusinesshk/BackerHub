@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatPercent, formatCurrency } from '@/lib/format';
 import { PlayerHeroImage } from '@/components/shared/player-hero-image';
-import { CheckCircle, TrendingUp, Trophy } from 'lucide-react';
+import { BadgeCheck, TrendingUp, Trophy } from 'lucide-react';
 import type { Player } from '@/types';
 
 export function FeaturedPlayers() {
@@ -48,11 +48,11 @@ export function FeaturedPlayers() {
                   />
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111318] to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <h3 className="text-lg font-bold text-white drop-shadow-lg">
                         {locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName}
                       </h3>
-                      <CheckCircle className="h-4 w-4 text-gold-400 drop-shadow" />
+                      <BadgeCheck className="h-3.5 w-3.5 text-gold-400 fill-gold-400/20" />
                     </div>
                     <p className="text-xs text-white/60">
                       {player.region === 'TW' ? '🇹🇼' : '🇭🇰'} {player.stats.totalTournaments} tournaments

@@ -10,7 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
 import { PlayerHeroImage } from '@/components/shared/player-hero-image';
-import { Search, Filter, CheckCircle, TrendingUp, Loader2 } from 'lucide-react';
+import { Search, Filter, BadgeCheck, TrendingUp, Loader2 } from 'lucide-react';
 import type { StakingListing } from '@/types';
 
 export default function MarketplacePage() {
@@ -138,9 +138,9 @@ export default function MarketplacePage() {
                   </div>
                   {/* Player name overlay at bottom */}
                   <div className="absolute bottom-3 left-4 right-4">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <h3 className="text-lg font-bold text-white drop-shadow-lg">{playerName}</h3>
-                      {listing.player.isVerified && <CheckCircle className="h-4 w-4 text-gold-400 drop-shadow" />}
+                      {listing.player.isVerified && <BadgeCheck className="h-3.5 w-3.5 text-gold-400 fill-gold-400/20" />}
                     </div>
                     <div className="flex items-center gap-3 text-xs">
                       <span className="text-white/60">{listing.player.region === 'TW' ? '🇹🇼' : listing.player.region === 'HK' ? '🇭🇰' : '🌐'}</span>
