@@ -30,12 +30,15 @@ export function MobileTabBar() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
+      {/* Solid background that extends below to cover any browser chrome gaps */}
+      <div className="absolute inset-0 -bottom-20 bg-[#111318]" />
+
       {/* Top edge line with notch cutout */}
       <div className="relative h-px bg-gold-500/30">
         <div className="absolute left-1/2 -translate-x-1/2 -top-5 w-16 h-6 bg-[#111318] rounded-t-full" />
       </div>
 
-      <nav className="relative bg-[#111318] pb-[env(safe-area-inset-bottom)]">
+      <nav className="relative pb-[max(env(safe-area-inset-bottom),0.5rem)]">
         <div className="flex items-end">
           {tabs.map((tab, i) => {
             const isActive = tab.href === '/'
