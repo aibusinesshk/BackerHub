@@ -22,7 +22,8 @@
     "contact": "聯絡",
     "players": "選手",
     "sellAction": "賣份額",
-    "whyBackerHub": "為什麼選擇我們"
+    "whyBackerHub": "為什麼選擇我們",
+    "pricing": "費用說明"
   },
   "hero": {
     "badge": "亞洲第一選手贊助平台",
@@ -887,5 +888,121 @@
     "ctaBacker": "開始贊助選手",
     "ctaPlayer": "出售比賽份額",
     "ctaFee": "預上線期間 0% 平台手續費"
+  },
+  "pricing": {
+    "badge": "費用說明",
+    "title": "零手續費。",
+    "titleHighlight": "真的。",
+    "subtitle": "在預上線期間，BackerHub 對每筆交易收取 0% 平台佣金。沒有隱藏費用，沒有附加條件。只有透明的撲克質押。",
+
+    "whatWaived": "目前免除的費用",
+    "whatWaivedSub": "原本適用於每筆贊助者購買的平台手續費，在預上線期間完全免除。",
+
+    "feeTitle": "平台佣金",
+    "feeNormal": "原價 2%",
+    "feeNow": "現在 0%",
+    "feeDesc": "這是 BackerHub 對每筆份額購買收取的費用，用於維持平台運營——託管管理、管理員驗證、結果核實、選手審核和全天候支援。在預上線期間，我們完全吸收這筆費用。",
+    "feeSaved": "每筆交易都為你省錢",
+
+    "exampleTitle": "看看你省了多少",
+    "exampleSubtitle": "以下是贊助者在有無平台手續費情況下的實際費用範例。",
+    "exampleScenario": "情境",
+    "exampleScenarioDesc": "你以 1.10x 加價購買一位選手 $1,000 買入錦標賽的 10% 份額",
+    "exampleBuyIn": "錦標賽買入",
+    "exampleAction": "你的份額（10%）",
+    "exampleBaseCost": "基本費用",
+    "exampleMarkup": "加價（1.10x）",
+    "examplePlatformFee": "平台手續費（2%）",
+    "exampleTotal": "你需支付",
+    "exampleWithFee": "正式上線後",
+    "exampleWithoutFee": "預上線期間（現在）",
+    "exampleSaving": "每筆交易省下 {amount}",
+    "exampleNote": "乘以 10、20、50 次贊助——省下的金額快速累積。",
+
+    "breakdownTitle": "贊助者完整費用明細",
+    "breakdownSubtitle": "每一項費用完全透明。以下是你支付的價格包含的所有項目。",
+
+    "breakdownBase": "基本費用",
+    "breakdownBaseDesc": "你在選手錦標賽買入中的按比例份額。如果你購買 $1,000 買入的 10%，你的基本費用為 $100。",
+    "breakdownBaseStatus": "固定收取",
+
+    "breakdownMarkup": "選手加價",
+    "breakdownMarkupDesc": "由選手設定的溢價（如 1.10x = 基本費用之上 10%）。這是選手為其技術和時間收取的費用。評分越高的選手通常收取越高的加價。",
+    "breakdownMarkupStatus": "由選手設定",
+
+    "breakdownPlatform": "平台手續費",
+    "breakdownPlatformDesc": "BackerHub 用於託管管理、管理員驗證、結果核實、糾紛處理和平台運營的佣金。",
+    "breakdownPlatformStatus": "已免除（0%）",
+    "breakdownPlatformNormal": "原價 2%",
+
+    "playerTitle": "選手的費用呢？",
+    "playerSubtitle": "選手同樣不需支付任何平台手續費。以下是預上線期間選手的經濟模式。",
+
+    "playerEarn": "選手賺取什麼",
+    "playerEarnDesc": "當贊助者購買份額時，選手獲得全額加價利潤。沒有平台抽成，沒有扣除。",
+    "playerKeep": "加價利潤",
+    "playerKeepDesc": "贊助者支付的金額（含加價）與基本買入費用之間的差額。以完全贊助的 $1,000 錦標賽、1.10x 加價計算，選手保留 $100 加價利潤。",
+
+    "playerBuyIn": "買入資金",
+    "playerBuyInDesc": "基本買入金額在管理員核准後從託管釋放至選手錢包，專門用於錦標賽報名。",
+
+    "playerNoFee": "無平台扣除",
+    "playerNoFeeDesc": "在預上線期間，100% 的加價歸選手所有。正式上線後，將收取少量平台手續費。",
+
+    "whyFreeTitle": "為什麼我們這樣做？",
+    "whyFreeSubtitle": "因為建立信任需要時間——我們希望你在我們收費之前先體驗平台的價值。",
+
+    "why1Title": "我們需要你來試試",
+    "why1Desc": "撲克質押幾十年來都是透過私訊和口頭協議進行的。我們知道要求人們轉換到新平台是很大的要求。取消手續費消除了成本門檻，讓你可以親身體驗託管保護、結果驗證和可靠度評分的價值。",
+
+    "why2Title": "我們正在建立社群",
+    "why2Desc": "越多贊助者和選手早期加入，平台就越強大。早期使用者享有最好的待遇——平台成長期間零手續費。我們寧可擁有蓬勃的社群，也不願在第一天就最大化收入。",
+
+    "why3Title": "我們對產品有信心",
+    "why3Desc": "一旦你體驗了有託管保護、管理員驗證結果和強制結算的透明質押——回去用沒有保障的私訊交易就再也不對味了。我們在賭自己的產品。",
+
+    "afterLaunchTitle": "預上線結束後會怎樣？",
+    "afterLaunchDesc": "預上線期間結束後，將對贊助者購買收取標準 2% 平台手續費。這在業界具有競爭力，用於資助使 BackerHub 安全運作的基礎設施——託管管理、管理員驗證、結果核實、支援和持續開發。",
+    "afterLaunchNote": "早期使用者將最先得知任何變更，我們會提前通知。",
+
+    "neverChargeTitle": "我們永遠不會收取的費用",
+    "neverChargeSub": "有些東西應該永遠免費。沒有例外。",
+    "neverCharge1": "帳號建立與註冊",
+    "neverCharge2": "瀏覽市場",
+    "neverCharge3": "查看選手資料與數據",
+    "neverCharge4": "建立質押列表（選手）",
+    "neverCharge5": "錢包儲值（可能產生網路手續費）",
+    "neverCharge6": "獎金分配給贊助者",
+    "neverCharge7": "身份驗證（KYC）",
+
+    "externalTitle": "第三方與網路手續費",
+    "externalSubtitle": "這些是由外部服務收取的費用——並非由 BackerHub 收取。我們希望你提前了解，讓一切零意外。",
+
+    "external1Title": "TRC-20 網路手續費（USDT / USDC）",
+    "external1Desc": "當你儲值或提款加密貨幣時，Tron 區塊鏈會收取少量網路（Gas）費來處理交易。這筆費用支付給網路，而非 BackerHub。",
+    "external1Estimate": "每次轉帳約 1 USDT",
+    "external1Note": "會隨網路擁塞程度變化。我們特意選擇 TRC-20，因為它在主要網路中費用最低。",
+
+    "external2Title": "區塊鏈確認時間",
+    "external2Desc": "加密貨幣轉帳需要區塊鏈確認才會顯示在你的錢包中。這是網路本身的機制，並非 BackerHub 造成的延遲。",
+    "external2Estimate": "TRC-20 上約 1-3 分鐘",
+    "external2Note": "為確保安全，BackerHub 在足夠的確認數後才會入帳。",
+
+    "external3Title": "交易所提幣手續費",
+    "external3Desc": "如果你從中心化交易所（Binance、OKX、MAX 等）發送 USDT/USDC，交易所可能收取自己的提幣手續費。這因交易所而異，與 BackerHub 無關。",
+    "external3Estimate": "因交易所而異",
+    "external3Note": "轉帳前請查看你的交易所費用表。部分交易所提供免費 TRC-20 提幣。",
+
+    "external4Title": "法幣兌換",
+    "external4Desc": "如果你需要將法幣（TWD、HKD、USD）兌換成 USDT/USDC，你使用的交易所或入金服務會收取兌換價差或手續費。",
+    "external4Estimate": "通常 0.1%–1.5%",
+    "external4Note": "我們建議使用你所在地區費率有競爭力的交易所（如台灣用 MAX Exchange，或幣安 P2P）。",
+
+    "externalDisclaimer": "BackerHub 不從任何第三方費用中獲利。我們特意選擇 TRC-20 以最小化你的成本——它在主要區塊鏈網路中提供最低的交易費用。",
+
+    "ctaTitle": "零風險試用 BackerHub",
+    "ctaSubtitle": "零平台手續費。完整託管保護。撲克質押最安全的方式——現在不用額外花一分錢。",
+    "ctaBacker": "開始贊助選手",
+    "ctaPlayer": "出售比賽份額"
   }
 }

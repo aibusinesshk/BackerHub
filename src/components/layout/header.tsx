@@ -33,6 +33,7 @@ export function Header() {
     { href: '/players' as const, label: t('nav.players') },
     { href: '/how-it-works' as const, label: t('nav.howItWorks') },
     { href: '/why-backerhub' as any, label: t('nav.whyBackerHub') },
+    { href: '/pricing' as any, label: t('nav.pricing') },
     { href: '/about' as const, label: t('nav.about') },
     { href: '/contact' as const, label: t('nav.contact') },
   ];
