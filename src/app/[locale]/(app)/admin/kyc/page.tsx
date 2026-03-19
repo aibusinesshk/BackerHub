@@ -30,6 +30,8 @@ export default function AdminKycPage() {
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState('');
   const [forbidden, setForbidden] = useState(false);
+  const [promoting, setPromoting] = useState(false);
+  const [promoteError, setPromoteError] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -88,10 +90,42 @@ export default function AdminKycPage() {
     }
   };
 
+  const handlePromote = async () => {
+    setPromoting(true);
+    setPromoteError('');
+    try {
+      const res = await fetch('/api/admin/promote', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        setPromoteError(data.error || 'Failed to promote');
+        return;
+      }
+      // Reload the page to pick up admin status
+      window.location.reload();
+    } catch {
+      setPromoteError('Network error');
+    } finally {
+      setPromoting(false);
+    }
+  };
+
   if (!user?.isAdmin && !loading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <Shield className="h-12 w-12 text-white/20" />
         <p className="text-white/50">Admin access required</p>
+        <p className="text-xs text-white/30 max-w-sm text-center">
+          If no admin exists yet, you can claim the admin role for initial setup.
+        </p>
+        {promoteError && <p className="text-xs text-red-400">{promoteError}</p>}
+        <Button
+          onClick={handlePromote}
+          disabled={promoting}
+          className="bg-gold-500 text-black font-semibold hover:bg-gold-400"
+        >
+          {promoting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Become Admin
+        </Button>
       </div>
     );
   }
