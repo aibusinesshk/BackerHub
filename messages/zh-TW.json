@@ -21,7 +21,8 @@
     "logout": "登出",
     "contact": "聯絡",
     "players": "選手",
-    "sellAction": "賣份額"
+    "sellAction": "賣份額",
+    "whyBackerHub": "為什麼選擇我們"
   },
   "hero": {
     "badge": "亞洲第一選手贊助平台",
@@ -786,5 +787,105 @@
     "selfie": "自拍照",
     "proofOfAddress": "地址證明",
     "viewDoc": "查看文件"
+  },
+  "whyBackerHub": {
+    "badge": "為什麼選擇 BackerHub",
+    "title": "撲克質押的信任問題，",
+    "titleHighlight": "該被解決了。",
+    "subtitle": "每年有數百萬美元在撲克質押交易中流轉，而這些交易僅建立在陌生人之間的口頭信任上。結果？跳票的承諾、消失的選手、求助無門的贊助者。我們打造 BackerHub，因為撲克社群值得更好的基礎設施。",
+
+    "problemTitle": "今天撲克質押的問題",
+    "problemSubtitle": "如果你有過質押經驗，你大概至少遇過其中一個。",
+
+    "problem1Title": "口頭承諾，零保障",
+    "problem1Desc": "大多數質押交易發生在私訊、群組聊天或口耳相傳中。沒有合約、沒有託管、沒有記錄。出了問題——而且經常出問題——你完全無計可施。",
+    "problem1Stat": "質押糾紛",
+    "problem1StatLabel": "沒有任何正式的解決機制",
+
+    "problem2Title": "選手贏了就消失",
+    "problem2Desc": "撲克質押界最古老的故事：選手贏了大獎，然後突然失聯。不存獎金、不回訊息、不負責任。贊助者只能在 Telegram 和 Twitter 上追著幽靈跑。",
+    "problem2Stat": "信任是首要問題",
+    "problem2StatLabel": "贊助者在質押中最關注的議題",
+
+    "problem3Title": "無法驗證比賽結果",
+    "problem3Desc": "選手到底是真的淘汰了，還是贏了獎金卻謊報結果？沒有經過驗證的錦標賽結果，贊助者等於在瞎子摸象。自行回報的結果只會助長不誠實。",
+    "problem3Stat": "無法驗證的結果",
+    "problem3StatLabel": "是私人質押中的常態",
+
+    "problem4Title": "選手找不到可信賴的贊助者",
+    "problem4Desc": "受害的不只是贊助者。有實力的選手很難找到贊助，因為沒有辦法向陌生人證明自己的戰績。最優秀的選手往往無法獲得需要的資金。",
+    "problem4Stat": "有實力的選手",
+    "problem4StatLabel": "因信任障礙而無法獲得足夠贊助",
+
+    "solutionTitle": "BackerHub 如何解決這些問題",
+    "solutionSubtitle": "我們不只是建立一個市場。我們打造了撲克質押一直缺少的信任基礎設施。",
+
+    "solution1Title": "託管保護資金",
+    "solution1Desc": "贊助者的每一分錢都進入託管——絕不直接轉給選手。資金只在管理員逐步驗證後才釋放。你的錢在每個階段都受到保護。",
+
+    "solution2Title": "強制結算流程",
+    "solution2Desc": "選手不能贏了就消失。獎金存入是強制性的，結算期間提款被鎖定，嚴格的期限被執行。錯過期限？將觸發管理員審查。",
+
+    "solution3Title": "驗證結果，非自行回報",
+    "solution3Desc": "每一個錦標賽結果都由我們的管理團隊與官方記錄交叉比對。不再依賴對方的一面之詞。結果經過驗證後，資金才會流動。",
+
+    "solution4Title": "選手可靠度評分",
+    "solution4Desc": "每位選手都有公開的可靠度評分，基於準時結算與違約記錄。贊助者在投入資金前，可以先評估對方的信譽。",
+
+    "solution5Title": "透明的費用明細",
+    "solution5Desc": "基本費用、加價、平台手續費——購買前一切清清楚楚。沒有隱藏收費，沒有意外扣款。你永遠知道自己付了什麼。",
+
+    "solution6Title": "多步管理員驗證",
+    "solution6Desc": "報名證明、結果提交、獎金入帳——每一個關鍵步驟都需要管理員驗證。這不是點對點的信任實驗。這是一個受管理、經驗證的流程。",
+
+    "comparisonTitle": "BackerHub vs. 傳統質押",
+    "comparisonTraditional": "傳統質押",
+    "comparisonBackerHub": "BackerHub",
+
+    "compare1Label": "資金保護",
+    "compare1Old": "直接轉帳給選手",
+    "compare1New": "託管保護至驗證完成",
+
+    "compare2Label": "結果驗證",
+    "compare2Old": "自行回報，基於信任",
+    "compare2New": "管理員對照官方記錄驗證",
+
+    "compare3Label": "選手獲獎後",
+    "compare3Old": "祈禱選手會把錢給你",
+    "compare3New": "強制入帳，鎖定提款",
+
+    "compare4Label": "選手戰績",
+    "compare4Old": "口耳相傳，無法查證",
+    "compare4New": "認證數據 + 可靠度評分",
+
+    "compare5Label": "糾紛處理",
+    "compare5Old": "在論壇上公開指責",
+    "compare5New": "管理員審查與強制期限",
+
+    "compare6Label": "費用透明度",
+    "compare6Old": "口頭協議，隱藏加價",
+    "compare6New": "購買前完整費用明細",
+
+    "playerTitle": "給選手",
+    "playerSubtitle": "別再私訊苦求贊助了。讓你的戰績替你說話。",
+    "player1": "建立經過驗證的戰績，自動吸引贊助者",
+    "player2": "自行設定加價率和份額比例——你掌握主導權",
+    "player3": "買入資金直接釋放到你的錢包用於報名",
+    "player4": "可靠度評分獎勵持續、誠信的結算行為",
+    "player5": "參加更多錦標賽而不承擔個人財務風險",
+
+    "backerTitle": "給贊助者",
+    "backerSubtitle": "別再把錢賭在信任上。用真實數據做出明智決策。",
+    "backer1": "瀏覽經過驗證、可稽核表現歷史的選手",
+    "backer2": "資金受託管保護——絕不直接轉給選手",
+    "backer3": "管理員驗證結果後才進行任何結算",
+    "backer4": "分散贊助於多位選手和錦標賽",
+    "backer5": "強制獎金入帳搭配提款鎖定，保護你的回報",
+
+    "ctaTitle": "撲克社群值得更好的基礎設施。",
+    "ctaSubtitle": "加入這個由撲克人打造、為撲克人服務的平台——擁有社群一直需要的信任機制。",
+    "ctaBacker": "開始贊助選手",
+    "ctaPlayer": "出售比賽份額",
+    "ctaFee": "預上線期間 0% 平台手續費"
   }
 }

@@ -21,7 +21,8 @@
     "logout": "Log Out",
     "contact": "Contact",
     "players": "Players",
-    "sellAction": "Sell Action"
+    "sellAction": "Sell Action",
+    "whyBackerHub": "Why BackerHub"
   },
   "hero": {
     "badge": "Asia's #1 Player Backing Platform",
@@ -786,5 +787,105 @@
     "selfie": "Selfie",
     "proofOfAddress": "Proof of Address",
     "viewDoc": "View Document"
+  },
+  "whyBackerHub": {
+    "badge": "Why BackerHub",
+    "title": "Poker Staking Is Broken.",
+    "titleHighlight": "We're Fixing It.",
+    "subtitle": "Every year, millions of dollars change hands in poker staking deals built on nothing but trust between strangers. The result? Broken promises, disappeared players, and backers with no recourse. We built BackerHub because the poker community deserves better.",
+
+    "problemTitle": "The Problem with Poker Staking Today",
+    "problemSubtitle": "If you've staked or been staked before, you've probably experienced at least one of these.",
+
+    "problem1Title": "Handshake Deals, Zero Protection",
+    "problem1Desc": "Most staking happens through DMs, group chats, or word of mouth. There's no contract, no escrow, no record. When things go wrong — and they do — there's nothing to fall back on.",
+    "problem1Stat": "of staking disputes",
+    "problem1StatLabel": "have no formal resolution process",
+
+    "problem2Title": "Players Who Disappear After Winning",
+    "problem2Desc": "The oldest story in poker staking: a player cashes big and suddenly goes silent. No prize deposit, no response, no accountability. Backers are left chasing ghosts across Telegram and Twitter.",
+    "problem2Stat": "trust is the #1 issue",
+    "problem2StatLabel": "cited by backers in poker staking",
+
+    "problem3Title": "No Way to Verify Results",
+    "problem3Desc": "Did the player actually bust, or did they cash and lie about it? Without verified tournament results, backers are operating blind. Self-reported results invite dishonesty.",
+    "problem3Stat": "unverifiable results",
+    "problem3StatLabel": "are the norm in private staking",
+
+    "problem4Title": "Players Can't Find Trustworthy Backers",
+    "problem4Desc": "It's not just backers who suffer. Talented players struggle to find backing because there's no way to prove their track record to strangers. The best players often can't access the capital they need.",
+    "problem4Stat": "skilled players",
+    "problem4StatLabel": "are underleveraged due to trust barriers",
+
+    "solutionTitle": "How BackerHub Solves This",
+    "solutionSubtitle": "We didn't just build another marketplace. We built the infrastructure of trust that poker staking has always needed.",
+
+    "solution1Title": "Escrow-Protected Funds",
+    "solution1Desc": "Every dollar from backers goes into escrow — never directly to players. Funds are only released after admin verification at each milestone. Your money is protected at every stage.",
+
+    "solution2Title": "Enforced Settlement Flow",
+    "solution2Desc": "Players can't ghost after winning. Prize deposits are mandatory, withdrawals are locked during settlement, and strict deadlines are enforced. Miss a deadline? It triggers admin review.",
+
+    "solution3Title": "Verified Results, Not Self-Reports",
+    "solution3Desc": "Every tournament result is cross-checked against official records by our admin team. No more taking someone's word for it. Results are verified before any money moves.",
+
+    "solution4Title": "Player Reliability Scores",
+    "solution4Desc": "Every player has a public reliability score based on on-time settlements vs defaults. Backers can assess trustworthiness before committing a single dollar.",
+
+    "solution5Title": "Transparent Cost Breakdown",
+    "solution5Desc": "Base cost, markup, platform fee — everything is visible upfront before you buy. No hidden charges, no surprise deductions. You always know exactly what you're paying.",
+
+    "solution6Title": "Multi-Step Admin Verification",
+    "solution6Desc": "Registration proof, result submission, prize deposits — every critical action requires admin verification. This isn't a peer-to-peer trust experiment. It's a managed, verified process.",
+
+    "comparisonTitle": "BackerHub vs. Traditional Staking",
+    "comparisonTraditional": "Traditional Staking",
+    "comparisonBackerHub": "BackerHub",
+
+    "compare1Label": "Fund Protection",
+    "compare1Old": "Direct transfer to player",
+    "compare1New": "Escrow-protected until verified",
+
+    "compare2Label": "Result Verification",
+    "compare2Old": "Self-reported, trust-based",
+    "compare2New": "Admin-verified against official records",
+
+    "compare3Label": "After a Win",
+    "compare3Old": "Hope the player pays you back",
+    "compare3New": "Mandatory deposit, locked withdrawals",
+
+    "compare4Label": "Player Track Record",
+    "compare4Old": "Anecdotal, unverifiable",
+    "compare4New": "Verified stats + reliability score",
+
+    "compare5Label": "Dispute Resolution",
+    "compare5Old": "Public shaming on forums",
+    "compare5New": "Admin review with enforced deadlines",
+
+    "compare6Label": "Fee Transparency",
+    "compare6Old": "Verbal agreements, hidden markups",
+    "compare6New": "Full breakdown before purchase",
+
+    "playerTitle": "For Players",
+    "playerSubtitle": "Stop hustling for backing in DMs. Let your record speak for itself.",
+    "player1": "Build a verified track record that attracts backers automatically",
+    "player2": "Set your own markup and action percentage — you're in control",
+    "player3": "Get buy-in funds released directly to your wallet for registration",
+    "player4": "Reliability score rewards consistent, honest settlement",
+    "player5": "Play more tournaments without personal financial risk",
+
+    "backerTitle": "For Backers",
+    "backerSubtitle": "Stop gambling on trust. Start making informed decisions with real data.",
+    "backer1": "Browse verified players with auditable performance history",
+    "backer2": "Funds protected in escrow — never sent directly to players",
+    "backer3": "Admin-verified results before any settlement occurs",
+    "backer4": "Diversify across multiple players and tournaments",
+    "backer5": "Mandatory prize deposits with withdrawal locks protect your returns",
+
+    "ctaTitle": "The Poker Community Deserves Better Infrastructure.",
+    "ctaSubtitle": "Join the platform built by poker players, for poker players — with the trust mechanisms the community has always needed.",
+    "ctaBacker": "Start Backing Players",
+    "ctaPlayer": "Sell Your Action",
+    "ctaFee": "0% platform fee during pre-launch"
   }
 }
