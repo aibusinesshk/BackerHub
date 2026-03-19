@@ -21,7 +21,7 @@ const DOC_LABELS_EN: Record<string, string> = {
 
 export default function AdminKycPage() {
   const t = useTranslations('adminKyc');
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
 
   const [pending, setPending] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
@@ -29,25 +29,32 @@ export default function AdminKycPage() {
   const [processing, setProcessing] = useState<string | null>(null);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState('');
-  const [forbidden, setForbidden] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [promoting, setPromoting] = useState(false);
   const [promoteError, setPromoteError] = useState('');
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     fetchData();
-  }, []);
+  }, [authLoading, user]);
 
   async function fetchData() {
     try {
       const res = await fetch('/api/admin/kyc');
       if (res.status === 403) {
-        setForbidden(true);
+        setIsAdmin(false);
+        setLoading(false);
         return;
       }
       if (res.ok) {
         const data = await res.json();
         setPending(data.pending || []);
         setHistory(data.history || []);
+        setIsAdmin(true);
       }
     } catch {
       // ignore
@@ -100,7 +107,6 @@ export default function AdminKycPage() {
         setPromoteError(data.error || 'Failed to promote');
         return;
       }
-      // Reload the page to pick up admin status
       window.location.reload();
     } catch {
       setPromoteError('Network error');
@@ -109,7 +115,26 @@ export default function AdminKycPage() {
     }
   };
 
-  if (!user?.isAdmin && !loading) {
+  // Show spinner while auth or data is loading
+  if (authLoading || loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-gold-400" />
+      </div>
+    );
+  }
+
+  // Not logged in
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-white/50">Please log in first</p>
+      </div>
+    );
+  }
+
+  // Not an admin — show become admin option
+  if (!isAdmin) {
     return (
       <div className="mx-auto max-w-md px-4 py-20">
         <Card className="border-white/[0.06] bg-[#111318]">
@@ -145,22 +170,7 @@ export default function AdminKycPage() {
     );
   }
 
-  if (forbidden) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-red-400">Access forbidden</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-gold-400" />
-      </div>
-    );
-  }
-
+  // Admin view — KYC management
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
