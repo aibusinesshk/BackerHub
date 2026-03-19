@@ -187,8 +187,20 @@
       "createListing": "建立新列表",
       "yourListings": "您的列表",
       "earnings": "收入概覽",
-      "noListings": "您尚未建立任何列表。"
+      "noListings": "您尚未建立任何列表。",
+      "cancelListing": "取消列表",
+      "cancelConfirm": "確定要取消此列表嗎？所有贊助者將自動獲得退款。",
+      "cancelSuccess": "列表已取消。所有贊助者已獲得退款。",
+      "cancelling": "取消中..."
     }
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "全部標為已讀",
+    "noNotifications": "沒有通知",
+    "deadlineWarning": "期限提醒",
+    "deadlineCritical": "需要緊急處理",
+    "viewListing": "查看列表"
   },
   "checkout": {
     "title": "完成購買",

@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { LanguageSwitcher } from './language-switcher';
 import { Menu, User, LayoutDashboard, LogOut, Spade, Shield } from 'lucide-react';
+import { NotificationBell } from '@/components/shared/notification-bell';
 
 export function Header() {
   const t = useTranslations();
@@ -78,6 +79,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
+          <NotificationBell />
 
           {user ? (
             <DropdownMenu>
