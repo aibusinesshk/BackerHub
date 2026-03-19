@@ -3,12 +3,14 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
+import { useAuth } from '@/providers/auth-provider';
 import { ScrollReveal } from '@/components/shared/scroll-reveal';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Gamepad2, ArrowRight } from 'lucide-react';
 
 export function CtaSection() {
   const t = useTranslations('cta');
+  const { user } = useAuth();
 
   return (
     <section className="relative py-24 overflow-hidden">
@@ -42,7 +44,7 @@ export function CtaSection() {
               <h3 className="mb-3 text-2xl font-bold text-white">{t('investorTitle')}</h3>
               <p className="mb-6 text-white/50">{t('investorDesc')}</p>
               <Button
-                render={<Link href="/signup" />}
+                render={<Link href={user ? '/marketplace' as const : '/signup' as const} />}
                 className="bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow"
               >
                 Get Started <ArrowRight className="ml-2 h-4 w-4" />
@@ -59,7 +61,7 @@ export function CtaSection() {
               <p className="mb-6 text-white/50">{t('playerDesc')}</p>
               <Button
                 variant="outline"
-                render={<Link href="/signup" />}
+                render={<Link href={user ? '/create-listing' as any : '/signup' as const} />}
                 className="border-gold-500/30 text-gold-400 hover:bg-gold-500/10"
               >
                 List Your Action <ArrowRight className="ml-2 h-4 w-4" />
