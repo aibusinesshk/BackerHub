@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency, formatPercent } from '@/lib/format';
-import { PlayerHeroImage } from '@/components/shared/player-hero-image';
+import { PlayerAvatar } from '@/components/shared/player-avatar';
 import {
   Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink,
 } from 'lucide-react';
@@ -118,31 +118,29 @@ export default function PlayersPage() {
                 key={player.id}
                 className="group rounded-2xl border border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]"
               >
-                {/* Large player photo */}
-                <div className="relative h-52 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
-                  <PlayerHeroImage
-                    src={player.avatarUrl}
-                    alt={playerName}
-                    initials={player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#111318] to-transparent" />
-                  <div className="absolute bottom-3 left-4 right-4">
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="text-lg font-bold text-white drop-shadow-lg truncate">{playerName}</h3>
-                      {player.isVerified && (
-                        <span className="flex-shrink-0 inline-flex items-center justify-center h-4 w-4 rounded-full bg-gold-400">
-                          <Check className="h-2.5 w-2.5 text-black" strokeWidth={3} />
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-white/60">
-                      {player.region === 'TW' ? '🇹🇼' : player.region === 'HK' ? '🇭🇰' : '🌐'}{' '}
-                      {player.stats.totalTournaments} {t('tournaments')}
-                    </p>
-                  </div>
-                </div>
-
                 <div className="p-5">
+                  {/* Player info with circular avatar */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <PlayerAvatar
+                      src={player.avatarUrl}
+                      name={player.displayName}
+                      className="h-11 w-11 flex-shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1">
+                        <h3 className="text-base font-bold text-white truncate">{playerName}</h3>
+                        {player.isVerified && (
+                          <span className="flex-shrink-0 inline-flex items-center justify-center h-3 w-3 rounded-full bg-gold-400/80">
+                            <Check className="h-2 w-2 text-black" strokeWidth={3.5} />
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-white/50">
+                        {player.region === 'TW' ? '🇹🇼' : player.region === 'HK' ? '🇭🇰' : '🌐'}{' '}
+                        {player.stats.totalTournaments} {t('tournaments')}
+                      </p>
+                    </div>
+                  </div>
                   {/* Stats grid */}
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     <div className="rounded-lg bg-white/[0.03] p-3 text-center">
