@@ -38,8 +38,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
     }
 
-    const { data: { publicUrl } } = admin.storage.from(BUCKET).getPublicUrl(filePath);
-    const avatarUrl = `${publicUrl}?t=${Date.now()}`;
+    // Use API proxy URL instead of direct Supabase Storage URL
+    // This ensures avatars load regardless of bucket public/private settings
+    const avatarUrl = `/api/avatar/${user.id}?t=${Date.now()}`;
 
     await (admin.from('profiles') as any)
       .update({ avatar_url: avatarUrl, updated_at: new Date().toISOString() })

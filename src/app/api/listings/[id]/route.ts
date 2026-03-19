@@ -25,6 +25,12 @@ export async function GET(
     (supabase.from('tournaments') as any).select('*').eq('id', listing.tournament_id).single(),
   ]);
 
+  // Normalize avatar URL: convert old Supabase Storage URLs to API proxy
+  let playerAvatarUrl = profile?.avatar_url || '';
+  if (playerAvatarUrl && playerAvatarUrl.includes('supabase.co/storage')) {
+    playerAvatarUrl = `/api/avatar/${profile.id}?t=${Date.now()}`;
+  }
+
   return NextResponse.json({
     listing: {
       id: listing.id,
@@ -33,7 +39,7 @@ export async function GET(
         id: profile.id,
         displayName: profile.display_name,
         displayNameZh: profile.display_name_zh,
-        avatarUrl: profile.avatar_url || '',
+        avatarUrl: playerAvatarUrl,
         region: profile.region,
         isVerified: profile.is_verified,
         memberSince: profile.member_since,

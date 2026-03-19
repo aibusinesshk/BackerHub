@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
+import { PlayerHeroImage } from '@/components/shared/player-hero-image';
 import { Search, Filter, CheckCircle, TrendingUp, Loader2 } from 'lucide-react';
 import type { StakingListing } from '@/types';
 
@@ -121,19 +122,11 @@ export default function MarketplacePage() {
               <Card key={listing.id} className="border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
                 {/* Large player photo */}
                 <div className="relative h-48 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
-                  {listing.player.avatarUrl ? (
-                    <img
-                      src={listing.player.avatarUrl}
-                      alt={playerName}
-                      className="absolute inset-0 h-full w-full object-cover object-[center_30%]"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <span className="text-4xl font-bold text-gold-500/30">
-                        {listing.player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </span>
-                    </div>
-                  )}
+                  <PlayerHeroImage
+                    src={listing.player.avatarUrl}
+                    alt={playerName}
+                    initials={listing.player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  />
                   <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#111318] to-transparent" />
                   <div className="absolute top-3 left-3 flex gap-1.5">
                     <Badge variant="outline" className="text-[10px] border-white/20 bg-black/50 text-white/70 backdrop-blur-sm">{listing.tournament.type}</Badge>
