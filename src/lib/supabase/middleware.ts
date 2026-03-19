@@ -1,9 +1,11 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+const DEMO_SESSION_KEY = 'backerhub-demo-session';
+
 const isSupabaseConfigured = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return url && url.startsWith('http');
+  return url && url.startsWith('http') && !url.includes('placeholder');
 };
 
 export async function updateSession(request: NextRequest) {
@@ -11,8 +13,23 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
-  // Skip Supabase session if not configured yet
+  const pathname = request.nextUrl.pathname;
+  const protectedPaths = ['/dashboard', '/create-listing', '/checkout'];
+  const isProtected = protectedPaths.some((path) => pathname.includes(path));
+
+  // When Supabase is not configured, use demo auth cookie
   if (!isSupabaseConfigured()) {
+    if (isProtected) {
+      const demoSession = request.cookies.get(DEMO_SESSION_KEY);
+      if (!demoSession?.value) {
+        const localeMatch = pathname.match(/^\/(en|zh-TW)/);
+        const locale = localeMatch ? localeMatch[1] : 'en';
+        const url = request.nextUrl.clone();
+        url.pathname = `/${locale}/login`;
+        url.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(url);
+      }
+    }
     return supabaseResponse;
   }
 
@@ -44,16 +61,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protected routes — redirect to login if not authenticated
-  const pathname = request.nextUrl.pathname;
-  const protectedPaths = ['/dashboard', '/create-listing', '/checkout'];
-  const isProtected = protectedPaths.some(
-    (path) =>
-      pathname.includes(path)
-  );
-
   if (isProtected && !user) {
-    // Extract locale from path
     const localeMatch = pathname.match(/^\/(en|zh-TW)/);
     const locale = localeMatch ? localeMatch[1] : 'en';
     const url = request.nextUrl.clone();

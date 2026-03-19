@@ -237,6 +237,8 @@
     "regionHK": "香港",
     "regionOther": "其他",
     "forgotPassword": "忘記密碼？",
+    "rememberMe": "保持登入",
+    "signingIn": "登入中...",
     "noAccount": "還沒有帳號？",
     "hasAccount": "已有帳號？",
     "orContinueWith": "或使用以下方式繼續",

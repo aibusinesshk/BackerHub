@@ -237,6 +237,8 @@
     "regionHK": "Hong Kong",
     "regionOther": "Other",
     "forgotPassword": "Forgot password?",
+    "rememberMe": "Stay logged in",
+    "signingIn": "Signing in...",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
     "orContinueWith": "Or continue with",

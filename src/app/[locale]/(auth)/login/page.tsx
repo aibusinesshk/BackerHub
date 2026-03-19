@@ -7,14 +7,14 @@ import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { Spade, Loader2, X } from 'lucide-react';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
-  const { login, loginWithGoogle, loginWithLINE } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,11 +24,13 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      const result = await login(email, password);
+      const result = await login(email, password, rememberMe);
       if (result.success) {
         // Hard navigation so middleware picks up the new session cookie
         const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
-        window.location.href = `/${locale}/dashboard/investor`;
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect') || `/${locale}/dashboard/investor`;
+        window.location.href = redirect;
       } else {
         setError(result.error || 'Invalid credentials');
       }
@@ -77,49 +79,37 @@ export default function LoginPage() {
               disabled={isSubmitting}
             />
           </div>
+
           {error && <p className="text-sm text-red-400">{error}</p>}
-          <Link href="/forgot-password" className="block text-sm text-gold-400 hover:underline">
-            {t('forgotPassword')}
-          </Link>
+
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                disabled={isSubmitting}
+                className="h-4 w-4 rounded border-white/20 bg-white/5 text-gold-500 focus:ring-gold-500/50 focus:ring-offset-0 accent-[#F5B81C]"
+              />
+              <span className="text-sm text-white/50">{t('rememberMe')}</span>
+            </label>
+            <Link href="/forgot-password" className="text-sm text-gold-400 hover:underline">
+              {t('forgotPassword')}
+            </Link>
+          </div>
+
           <Button
             type="submit"
             className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</>
+              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('signingIn')}</>
             ) : (
               t('loginTitle')
             )}
           </Button>
         </form>
-
-        <div className="mt-6">
-          <div className="relative">
-            <Separator className="bg-white/[0.06]" />
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#111318] px-3 text-xs text-white/40">
-              {t('orContinueWith')}
-            </span>
-          </div>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              className="border-white/10 text-white/70 hover:text-white"
-              onClick={loginWithGoogle}
-              type="button"
-            >
-              {t('google')}
-            </Button>
-            <Button
-              variant="outline"
-              className="border-white/10 text-white/70 hover:text-white"
-              onClick={loginWithLINE}
-              type="button"
-            >
-              {t('line')}
-            </Button>
-          </div>
-        </div>
 
         <p className="mt-6 text-center text-sm text-white/40">
           {t('noAccount')}{' '}
