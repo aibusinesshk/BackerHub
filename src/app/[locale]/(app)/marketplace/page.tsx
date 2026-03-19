@@ -10,7 +10,6 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
 import { Search, Filter, CheckCircle, TrendingUp, Loader2 } from 'lucide-react';
-import Image from 'next/image';
 import type { StakingListing } from '@/types';
 
 export default function MarketplacePage() {
@@ -123,12 +122,10 @@ export default function MarketplacePage() {
                 {/* Large player photo */}
                 <div className="relative h-48 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
                   {listing.player.avatarUrl ? (
-                    <Image
+                    <img
                       src={listing.player.avatarUrl}
                       alt={playerName}
-                      fill
-                      className="object-cover object-[center_30%]"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="absolute inset-0 h-full w-full object-cover object-[center_30%]"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center">

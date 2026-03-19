@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
-import Image from 'next/image';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
 import { CheckCircle, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2 } from 'lucide-react';
@@ -71,13 +70,10 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
           <Card className="border-white/[0.06] bg-[#111318] overflow-hidden">
             <div className="relative h-56 sm:h-64 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
               {player.avatarUrl ? (
-                <Image
+                <img
                   src={player.avatarUrl}
                   alt={name}
-                  fill
-                  className="object-cover object-[center_30%]"
-                  sizes="(max-width: 1024px) 100vw, 66vw"
-                  priority
+                  className="absolute inset-0 h-full w-full object-cover object-[center_30%]"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
