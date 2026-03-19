@@ -24,14 +24,13 @@ export function MobileTabBar() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      {/* Top edge line */}
+      {/* Top edge line with notch cutout */}
       <div className="relative h-px bg-gold-500/30">
-        {/* Notch cutout in the line for center button */}
         <div className="absolute left-1/2 -translate-x-1/2 -top-5 w-16 h-6 bg-[#111318] rounded-t-full" />
       </div>
 
-      <nav className="relative bg-[#111318] px-2 pb-[env(safe-area-inset-bottom)]">
-        <div className="flex items-end justify-around">
+      <nav className="relative bg-[#111318] pb-[env(safe-area-inset-bottom)]">
+        <div className="flex items-end">
           {tabs.map((tab) => {
             const isActive = tab.href === '/'
               ? pathname === '/'
@@ -41,11 +40,11 @@ export function MobileTabBar() {
             if (tab.isCenter) {
               return (
                 <Link
-                  key={tab.href}
+                  key="home"
                   href={tab.href}
-                  className="relative -mt-5 flex flex-col items-center"
+                  className="flex-1 relative -mt-5 flex flex-col items-center"
                 >
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-full bg-gold-500 shadow-[0_0_20px_rgba(245,184,28,0.3)] transition-transform active:scale-95`}>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gold-500 shadow-[0_0_20px_rgba(245,184,28,0.3)] transition-transform active:scale-95">
                     <Icon className="h-6 w-6 text-black" />
                   </div>
                   <span className={`mt-1 text-[10px] font-medium ${isActive ? 'text-gold-400' : 'text-white/50'}`}>
@@ -59,7 +58,7 @@ export function MobileTabBar() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="flex flex-col items-center py-2 px-3"
+                className="flex-1 flex flex-col items-center py-2"
               >
                 <Icon className={`h-5 w-5 transition-colors ${isActive ? 'text-gold-400' : 'text-white/40'}`} />
                 <span className={`mt-1 text-[10px] font-medium transition-colors ${isActive ? 'text-gold-400' : 'text-white/40'}`}>
