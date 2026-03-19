@@ -15,7 +15,7 @@
     "marketplace": "市場",
     "howItWorks": "如何運作",
     "about": "關於我們",
-    "dashboard": "控制面板",
+    "dashboard": "總覽",
     "profile": "個人資料",
     "settings": "設定",
     "logout": "登出",
@@ -98,7 +98,7 @@
     "success": "感謝訂閱！"
   },
   "players": {
-    "title": "選手名錄",
+    "title": "所有選手",
     "subtitle": "瀏覽註冊選手及其錦標賽戰績",
     "searchPlaceholder": "搜尋選手名稱...",
     "allRegions": "所有地區",
@@ -166,7 +166,7 @@
   },
   "dashboard": {
     "investor": {
-      "title": "贊助者控制面板",
+      "title": "贊助者總覽",
       "welcome": "歡迎回來，{name}",
       "totalInvested": "總贊助金額",
       "activeInvestments": "進行中贊助",
@@ -178,7 +178,7 @@
       "noInvestments": "尚無贊助。前往市場開始吧！"
     },
     "player": {
-      "title": "選手控制面板",
+      "title": "選手總覽",
       "welcome": "歡迎回來，{name}",
       "totalEarnings": "總收入",
       "sharesSold": "已售份額",
@@ -205,8 +205,8 @@
     "payNow": "立即支付",
     "processing": "處理中...",
     "success": "支付成功！",
-    "successMessage": "您的份額已購買成功。您可以在控制面板中追蹤您的贊助。",
-    "goToDashboard": "前往控制面板",
+    "successMessage": "您的份額已購買成功。您可以在總覽中追蹤您的贊助。",
+    "goToDashboard": "前往總覽",
     "regionTW": "台灣",
     "regionHK": "香港",
     "creditCard": "信用卡",
@@ -470,7 +470,7 @@
     "notesPlaceholder": "關於錦標賽的任何補充說明...",
     "submitButton": "提交結果",
     "successTitle": "結果已提交！",
-    "backToDashboard": "返回控制面板",
+    "backToDashboard": "返回總覽",
     "buyIn": "買入",
     "actionSold": "已售份額",
     "disclaimer": "結果將與官方錦標賽記錄核實。提交虛假結果可能導致帳號停權。"
