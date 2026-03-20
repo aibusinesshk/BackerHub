@@ -53,11 +53,8 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/logo.png" alt="BackerHub" width={32} height={32} className="h-8 w-8" />
-          <span className="text-lg font-bold tracking-tight text-white">
-            Backer<span className="text-gold-400">Hub</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image src="/images/logo-nav.svg" alt="BackerHub" width={160} height={32} className="h-8 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
