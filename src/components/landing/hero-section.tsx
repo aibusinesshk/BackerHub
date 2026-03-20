@@ -57,11 +57,11 @@ export function HeroSection() {
           {/* Large Logo Display */}
           <div className="mb-6 sm:mb-10">
             <Image
-              src="/images/logo-full.png"
+              src="/images/logo-hero.png"
               alt="BackerHub - Premium Poker Staking"
-              width={500}
-              height={500}
-              className="h-32 sm:h-40 md:h-52 lg:h-64 w-auto drop-shadow-2xl"
+              width={706}
+              height={159}
+              className="h-16 sm:h-20 md:h-28 lg:h-36 w-auto drop-shadow-2xl"
               priority
             />
           </div>
