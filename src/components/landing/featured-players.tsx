@@ -17,7 +17,7 @@ export function FeaturedPlayers() {
   const [featured, setFeatured] = useState<Player[]>([]);
 
   useEffect(() => {
-    fetch('/api/players?verified=true&limit=6')
+    fetch('/api/players?verified=true&sort=top&limit=6')
       .then((r) => r.json())
       .then((data) => setFeatured(data.players || []))
       .catch(() => {});
