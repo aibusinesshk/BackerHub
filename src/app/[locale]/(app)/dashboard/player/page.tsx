@@ -33,9 +33,9 @@ export default function PlayerDashboardPage() {
   const [selectedColorTone, setSelectedColorTone] = useState<PlayerColorTone | null>(null);
   const [savingColor, setSavingColor] = useState(false);
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback((signal?: AbortSignal) => {
     setError(false);
-    fetch('/api/dashboard/player')
+    fetch('/api/dashboard/player', signal ? { signal } : undefined)
       .then((r) => { if (!r.ok) throw new Error('Failed'); return r.json(); })
       .then((d) => {
         setData(d);
@@ -43,12 +43,14 @@ export default function PlayerDashboardPage() {
           setSelectedColorTone(d.profile.color_tone);
         }
       })
-      .catch(() => setError(true))
+      .catch((err) => { if (err.name !== 'AbortError') setError(true); })
       .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    fetchData();
+    const controller = new AbortController();
+    fetchData(controller.signal);
+    return () => controller.abort();
   }, [fetchData]);
 
   async function handleUploadProof(listingId: string) {

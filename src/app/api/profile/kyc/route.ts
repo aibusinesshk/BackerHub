@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
+import { logger } from '@/lib/logger';
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB per file
 const BUCKET = 'kyc-documents';
@@ -77,7 +78,7 @@ export async function POST(request: Request) {
         .upload(filePath, buffer, { contentType: file.type, upsert: true });
 
       if (uploadError) {
-        console.error(`KYC upload error (${docName}):`, uploadError);
+        logger.error(`KYC upload error (${docName})`, uploadError, { route: '/api/profile/kyc', action: 'upload' });
         return NextResponse.json({ error: `Failed to upload ${docName}` }, { status: 500 });
       }
     }
@@ -92,7 +93,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, kyc_status: 'pending' });
   } catch (err) {
-    console.error('KYC submission error:', err);
+    logger.apiError('/api/profile/kyc', 'POST', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

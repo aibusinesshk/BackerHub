@@ -43,16 +43,20 @@ export default function MyListingsPage() {
   const [proofUrl, setProofUrl] = useState<Record<string, string>>({});
   const [submittingProof, setSubmittingProof] = useState<string | null>(null);
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback((signal?: AbortSignal) => {
     setLoading(true);
-    fetch('/api/dashboard/player')
+    fetch('/api/dashboard/player', signal ? { signal } : undefined)
       .then((r) => r.json())
       .then((d) => setData(d))
-      .catch(() => {})
+      .catch((err) => { if (err.name !== 'AbortError') { /* silent */ } })
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchData(controller.signal);
+    return () => controller.abort();
+  }, [fetchData]);
 
   const allListings = data?.listings || [];
 

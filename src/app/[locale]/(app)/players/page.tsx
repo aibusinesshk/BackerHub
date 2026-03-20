@@ -24,11 +24,13 @@ export default function PlayersPage() {
   const [verifiedFilter, setVerifiedFilter] = useState(false);
 
   useEffect(() => {
-    fetch('/api/players?limit=200')
+    const controller = new AbortController();
+    fetch('/api/players?limit=200', { signal: controller.signal })
       .then((res) => res.json())
       .then((data) => setPlayers(data.players || []))
-      .catch(() => setPlayers([]))
+      .catch((err) => { if (err.name !== 'AbortError') setPlayers([]); })
       .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   const filtered = useMemo(() => {

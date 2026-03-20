@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
+import { logger } from '@/lib/logger';
 
 const KYC_BUCKET = 'kyc-documents';
 const DOC_NAMES = ['id-front', 'id-back', 'selfie', 'proof-of-address'] as const;
@@ -64,7 +65,7 @@ export async function GET() {
 
     return NextResponse.json({ pending: pendingWithDocs, history: history || [] });
   } catch (err) {
-    console.error('Admin KYC GET error:', err);
+    logger.apiError('/api/admin/kyc', 'GET', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -105,7 +106,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, action });
   } catch (err) {
-    console.error('Admin KYC POST error:', err);
+    logger.apiError('/api/admin/kyc', 'POST', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

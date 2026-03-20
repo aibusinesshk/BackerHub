@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 import { authRateLimit } from '@/lib/rate-limit';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
       }, { onConflict: 'id' });
 
     if (profileError) {
-      console.error('Profile upsert error (non-fatal):', profileError.message);
+      logger.warn('Profile upsert error (non-fatal)', { route: '/api/auth/signup', action: 'profile_upsert', errorMessage: profileError.message });
       // Don't fail — the user was created, profile trigger may handle it
     }
 
@@ -117,7 +118,7 @@ export async function POST(request: Request) {
       userId: authData.user.id,
     });
   } catch (err) {
-    console.error('Signup API error:', err);
+    logger.apiError('/api/auth/signup', 'POST', err);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
