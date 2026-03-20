@@ -1,25 +1,42 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { ScrollReveal } from '@/components/shared/scroll-reveal';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Quote } from 'lucide-react';
 
+interface Testimonial {
+  id: string;
+  name: string;
+  nameZh?: string;
+  quote: string;
+  quoteZh?: string;
+  role: 'investor' | 'player';
+  region: string;
+}
+
 export function Testimonials() {
   const t = useTranslations('testimonials');
   const locale = useLocale();
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [error, setError] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    fetch('/api/testimonials')
+    const controller = new AbortController();
+    abortRef.current = controller;
+    fetch('/api/testimonials', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setTestimonials(data.testimonials || []))
-      .catch(() => {});
+      .catch((err) => {
+        if (err.name !== 'AbortError') setError(true);
+      });
+    return () => controller.abort();
   }, []);
 
-  if (testimonials.length === 0) return null;
+  if (error || testimonials.length === 0) return null;
 
   return (
     <section className="py-24">
@@ -50,7 +67,7 @@ export function Testimonials() {
                       {locale === 'zh-TW' ? item.nameZh : item.name}
                     </p>
                     <Badge variant="outline" className="text-[10px] border-gold-500/20 text-gold-400">
-                      {item.role === 'investor' ? t('investor') : t('player')} · {item.region === 'TW' ? '🇹🇼' : '🇭🇰'}
+                      {item.role === 'investor' ? t('investor') : t('player')} · <span role="img" aria-label={item.region === 'TW' ? 'Taiwan' : 'Hong Kong'}>{item.region === 'TW' ? '🇹🇼' : '🇭🇰'}</span>
                     </Badge>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAnimatedCounter } from '@/hooks/use-animated-counter';
 import type { PlatformStats } from '@/types';
@@ -26,10 +26,12 @@ export function StatsCounter() {
   });
 
   useEffect(() => {
-    fetch('/api/stats')
+    const controller = new AbortController();
+    fetch('/api/stats', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setPlatformStats(data))
       .catch(() => {});
+    return () => controller.abort();
   }, []);
 
   return (

@@ -14,7 +14,7 @@ import { getPlayerColorTone } from '@/lib/player-colors';
 import {
   DollarSign, TrendingUp, BarChart3, Layers, ArrowUpRight, ArrowDownRight,
   Loader2, ChevronDown, ChevronUp, Calendar, MapPin, Users, CreditCard,
-  Check, ExternalLink,
+  Check, ExternalLink, AlertCircle, RefreshCw,
 } from 'lucide-react';
 import { WalletBalance } from '@/components/shared/wallet-balance';
 
@@ -24,15 +24,18 @@ export default function InvestorDashboardPage() {
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [expandedPortfolio, setExpandedPortfolio] = useState<string | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/dashboard/investor')
-      .then((r) => r.json())
-      .then((d) => setData(d))
-      .catch(() => {})
+    const controller = new AbortController();
+    fetch('/api/dashboard/investor', { signal: controller.signal })
+      .then((r) => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then((d) => { setData(d); setError(false); })
+      .catch((err) => { if (err.name !== 'AbortError') setError(true); })
       .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   const apiStats = data?.stats || { totalBacked: 0, activeInvestments: 0, totalReturns: 0, roi: 0 };
@@ -105,7 +108,20 @@ export default function InvestorDashboardPage() {
         ))}
       </div>
 
-      {loading ? (
+      {error ? (
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
+          <AlertCircle className="h-8 w-8 text-red-400" />
+          <p className="text-sm text-white/50">Failed to load dashboard data.</p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => { setError(false); setLoading(true); fetch('/api/dashboard/investor').then(r => r.json()).then(d => { setData(d); setError(false); }).catch(() => setError(true)).finally(() => setLoading(false)); }}
+            className="border-white/10 text-white/60"
+          >
+            <RefreshCw className="mr-2 h-3 w-3" /> Retry
+          </Button>
+        </div>
+      ) : loading ? (
         <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-gold-400" /></div>
       ) : (
       <div className="grid gap-6 lg:grid-cols-2">

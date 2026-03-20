@@ -27,7 +27,7 @@ export function usePlatformStats() {
 }
 
 /** Generic SWR hook with sensible defaults */
-export function useAPI<T = any>(url: string | null, config?: SWRConfiguration) {
+export function useAPI<T = unknown>(url: string | null, config?: SWRConfiguration) {
   return useSWR<T>(url, fetcher, {
     dedupingInterval: 10_000,
     revalidateOnFocus: false,

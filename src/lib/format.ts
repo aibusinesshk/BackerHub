@@ -28,7 +28,13 @@ export function formatMarkup(markup: number): string {
 
 export function formatDate(dateStr: string, locale: string = 'en'): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString(locale === 'zh-TW' ? 'zh-TW' : 'en-US', {
+  if (isNaN(date.getTime())) return dateStr;
+  const localeMap: Record<string, string> = {
+    'zh-TW': 'zh-TW',
+    'zh-HK': 'zh-HK',
+    en: 'en-US',
+  };
+  return date.toLocaleDateString(localeMap[locale] || 'en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

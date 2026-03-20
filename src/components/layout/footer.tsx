@@ -12,8 +12,8 @@ export function Footer() {
   const paymentIcons = [...PAYMENT_BADGES];
 
   return (
-    <footer className="hidden md:block border-t border-white/[0.06] bg-[#080a0e]">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <footer className="border-t border-white/[0.06] bg-[#080a0e] pb-20 md:pb-0">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4">

@@ -137,12 +137,11 @@ export function NotificationBell() {
         {notifications.length === 0 ? (
           <div className="px-3 py-6 text-center text-xs text-white/30">{t('noNotifications')}</div>
         ) : (
-          <div className="max-h-64 overflow-y-auto" role="list">
+          <div className="max-h-64 overflow-y-auto">
             {notifications.slice(0, 10).map((n) => (
               <DropdownMenuItem
                 key={n.id}
                 className={`flex flex-col items-start gap-1 px-3 py-2.5 cursor-default ${!n.isRead ? 'bg-gold-500/5' : ''}`}
-                role="listitem"
               >
                 <div className="flex items-center gap-2 w-full">
                   <span

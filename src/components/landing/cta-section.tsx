@@ -18,7 +18,7 @@ export function CtaSection() {
       <div className="absolute inset-0">
         <Image
           src="/images/poker-table.jpg"
-          alt=""
+          alt="Poker table background"
           fill
           className="object-cover object-center"
           quality={80}

@@ -31,20 +31,24 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
   const [showDeposit, setShowDeposit] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/listings/${listingId}`)
+    const controller = new AbortController();
+    fetch(`/api/listings/${listingId}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setListing(data.listing || null))
-      .catch(() => setListing(null))
+      .catch((err) => { if (err.name !== 'AbortError') setListing(null); })
       .finally(() => setLoading(false));
+    return () => controller.abort();
   }, [listingId]);
 
   // Fetch wallet balance when user is authenticated
   useEffect(() => {
     if (!user) return;
-    fetch('/api/wallet')
+    const controller = new AbortController();
+    fetch('/api/wallet', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setWalletBalance(data.balance ?? null))
-      .catch(() => setWalletBalance(null));
+      .catch((err) => { if (err.name !== 'AbortError') setWalletBalance(null); });
+    return () => controller.abort();
   }, [user]);
 
   const refreshBalance = () => {
@@ -52,6 +56,12 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
       .then((r) => r.json())
       .then((data) => setWalletBalance(data.balance ?? null))
       .catch(() => {});
+  };
+
+  // Auto-refresh wallet balance when deposit dialog closes
+  const handleDepositClose = (open: boolean) => {
+    setShowDeposit(open);
+    if (!open) refreshBalance();
   };
 
   if (loading || authLoading) {
@@ -246,7 +256,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
 
       <DepositDialog
         open={showDeposit}
-        onOpenChange={setShowDeposit}
+        onOpenChange={handleDepositClose}
         onSuccess={refreshBalance}
       />
     </div>

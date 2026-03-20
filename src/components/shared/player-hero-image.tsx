@@ -28,7 +28,7 @@ export function PlayerHeroImage({ src, alt, initials }: PlayerHeroImageProps) {
   return (
     <img
       src={src}
-      alt={alt}
+      alt={alt || initials}
       className="absolute inset-0 h-full w-full object-cover object-[center_30%]"
       onError={() => setFailed(true)}
     />
