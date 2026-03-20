@@ -11,8 +11,44 @@ import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { TournamentBrandBanner } from '@/components/shared/tournament-brand-banner';
-import { Search, Filter, Check, TrendingUp, Loader2 } from 'lucide-react';
+import { Search, Filter, Check, TrendingUp, Loader2, ArrowUpDown, ChevronDown } from 'lucide-react';
 import type { StakingListing } from '@/types';
+
+type SortOption = 'newest' | 'priceLow' | 'priceHigh' | 'markupLow' | 'dateSoon' | 'roi';
+type PriceRange = 'all' | 'low' | 'mid' | 'high' | 'ultra';
+
+function detectBrand(name: string): string {
+  const upper = name.toUpperCase();
+  if (upper.includes('APT')) return 'APT';
+  if (upper.includes('TMT')) return 'TMT';
+  if (upper.includes('WPT')) return 'WPT';
+  if (upper.includes('WSOP')) return 'WSOP';
+  return 'Other';
+}
+
+function matchesPriceRange(buyIn: number, range: PriceRange): boolean {
+  switch (range) {
+    case 'low': return buyIn < 500;
+    case 'mid': return buyIn >= 500 && buyIn < 2000;
+    case 'high': return buyIn >= 2000 && buyIn < 5000;
+    case 'ultra': return buyIn >= 5000;
+    default: return true;
+  }
+}
+
+function sortListings(listings: StakingListing[], sort: SortOption): StakingListing[] {
+  return [...listings].sort((a, b) => {
+    switch (sort) {
+      case 'priceLow': return (a.tournament?.buyIn ?? 0) - (b.tournament?.buyIn ?? 0);
+      case 'priceHigh': return (b.tournament?.buyIn ?? 0) - (a.tournament?.buyIn ?? 0);
+      case 'markupLow': return a.markup - b.markup;
+      case 'dateSoon': return new Date(a.tournament?.date ?? 0).getTime() - new Date(b.tournament?.date ?? 0).getTime();
+      case 'roi': return (b.player?.stats.lifetimeROI ?? 0) - (a.player?.stats.lifetimeROI ?? 0);
+      case 'newest':
+      default: return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+  });
+}
 
 export default function MarketplacePage() {
   const t = useTranslations('marketplace');
@@ -20,9 +56,13 @@ export default function MarketplacePage() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [regionFilter, setRegionFilter] = useState('all');
+  const [brandFilter, setBrandFilter] = useState('all');
+  const [priceRange, setPriceRange] = useState<PriceRange>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [statusFilter, setStatusFilter] = useState('active');
   const [allListings, setAllListings] = useState<StakingListing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSortMenu, setShowSortMenu] = useState(false);
 
   useEffect(() => {
     fetch('/api/listings')
@@ -32,11 +72,22 @@ export default function MarketplacePage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Derive available brands from data
+  const availableBrands = useMemo(() => {
+    const brands = new Set<string>();
+    allListings.forEach((l) => {
+      if (l.tournament?.name) brands.add(detectBrand(l.tournament.name));
+    });
+    return Array.from(brands).sort();
+  }, [allListings]);
+
   const filtered = useMemo(() => {
-    return allListings.filter((l) => {
+    const results = allListings.filter((l) => {
       if (statusFilter !== 'all' && l.status !== statusFilter) return false;
       if (typeFilter !== 'all' && l.tournament?.type !== typeFilter) return false;
       if (regionFilter !== 'all' && l.tournament?.region !== regionFilter) return false;
+      if (brandFilter !== 'all' && l.tournament?.name && detectBrand(l.tournament.name) !== brandFilter) return false;
+      if (priceRange !== 'all' && l.tournament?.buyIn != null && !matchesPriceRange(l.tournament.buyIn, priceRange)) return false;
       if (search) {
         const q = search.toLowerCase();
         const name = locale === 'zh-TW' && l.player?.displayNameZh ? l.player.displayNameZh : l.player?.displayName || '';
@@ -45,13 +96,36 @@ export default function MarketplacePage() {
       }
       return true;
     });
-  }, [allListings, search, typeFilter, regionFilter, statusFilter, locale]);
+    return sortListings(results, sortBy);
+  }, [allListings, search, typeFilter, regionFilter, brandFilter, priceRange, sortBy, statusFilter, locale]);
 
   const statusColors: Record<string, string> = {
     active: 'border-green-500/30 bg-green-500/10 text-green-400',
     filled: 'border-gold-500/30 bg-gold-500/10 text-gold-400',
     completed: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
     cancelled: 'border-red-500/30 bg-red-500/10 text-red-400',
+    in_progress: 'border-green-500/30 bg-green-500/10 text-green-400',
+  };
+
+  const sortLabels: Record<SortOption, string> = {
+    newest: t('sortNewest'),
+    priceLow: t('sortPriceLow'),
+    priceHigh: t('sortPriceHigh'),
+    markupLow: t('sortMarkupLow'),
+    dateSoon: t('sortDateSoon'),
+    roi: t('sortROI'),
+  };
+
+  const activeFilterCount = [typeFilter, regionFilter, brandFilter, priceRange].filter((f) => f !== 'all').length;
+
+  const resetAllFilters = () => {
+    setSearch('');
+    setTypeFilter('all');
+    setRegionFilter('all');
+    setBrandFilter('all');
+    setPriceRange('all');
+    setSortBy('newest');
+    setStatusFilter('all');
   };
 
   return (
@@ -61,7 +135,8 @@ export default function MarketplacePage() {
         <p className="mt-2 text-white/50">{t('subtitle')}</p>
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-3">
+      {/* Search + Sort row */}
+      <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
           <Input
@@ -71,32 +146,136 @@ export default function MarketplacePage() {
             className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
           />
         </div>
-        <div className="flex gap-2 flex-wrap">
-          {['all', 'MTT', 'SNG', 'SAT', 'HU'].map((type) => (
-            <Button
-              key={type}
-              variant={typeFilter === type ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setTypeFilter(type)}
-              className={typeFilter === type ? 'bg-gold-500 text-black' : 'border-white/10 text-white/50 hover:text-white'}
-            >
-              {type === 'all' ? t('allTypes') : type}
-            </Button>
-          ))}
+        {/* Sort dropdown */}
+        <div className="relative">
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-white/10 text-white/70 hover:text-white gap-1.5"
+            onClick={() => setShowSortMenu(!showSortMenu)}
+          >
+            <ArrowUpDown className="h-3.5 w-3.5" />
+            {sortLabels[sortBy]}
+            <ChevronDown className="h-3 w-3 opacity-50" />
+          </Button>
+          {showSortMenu && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowSortMenu(false)} />
+              <div className="absolute right-0 top-full mt-1 z-50 min-w-[180px] rounded-lg border border-white/10 bg-[#1a1d24] shadow-xl py-1">
+                {(Object.keys(sortLabels) as SortOption[]).map((key) => (
+                  <button
+                    key={key}
+                    className={`w-full text-left px-3 py-2 text-xs hover:bg-white/5 transition-colors ${sortBy === key ? 'text-gold-400 font-semibold' : 'text-white/60'}`}
+                    onClick={() => { setSortBy(key); setShowSortMenu(false); }}
+                  >
+                    {sortLabels[key]}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
-        <div className="flex gap-2">
-          {['all', 'TW', 'HK'].map((r) => (
+      </div>
+
+      {/* Filter rows */}
+      <div className="mb-6 space-y-3">
+        {/* Row 1: Type + Brand */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-white/30 w-14 flex-shrink-0">{t('filterByTournament')}</span>
+          <div className="flex gap-1.5 flex-wrap">
+            {['all', 'MTT', 'SAT'].map((type) => (
+              <Button
+                key={type}
+                variant={typeFilter === type ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTypeFilter(type)}
+                className={`h-7 text-xs px-2.5 ${typeFilter === type ? 'bg-gold-500 text-black hover:bg-gold-400' : 'border-white/10 text-white/50 hover:text-white'}`}
+              >
+                {type === 'all' ? t('allTypes') : type}
+              </Button>
+            ))}
+          </div>
+
+          <span className="text-white/10 mx-1">|</span>
+
+          <div className="flex gap-1.5 flex-wrap">
             <Button
-              key={r}
-              variant={regionFilter === r ? 'default' : 'outline'}
+              variant={brandFilter === 'all' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setRegionFilter(r)}
-              className={regionFilter === r ? 'bg-gold-500 text-black' : 'border-white/10 text-white/50 hover:text-white'}
+              onClick={() => setBrandFilter('all')}
+              className={`h-7 text-xs px-2.5 ${brandFilter === 'all' ? 'bg-gold-500 text-black hover:bg-gold-400' : 'border-white/10 text-white/50 hover:text-white'}`}
             >
-              {r === 'all' ? t('allRegions') : r === 'TW' ? '🇹🇼 TW' : '🇭🇰 HK'}
+              {t('allBrands')}
             </Button>
-          ))}
+            {availableBrands.map((brand) => (
+              <Button
+                key={brand}
+                variant={brandFilter === brand ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setBrandFilter(brand)}
+                className={`h-7 text-xs px-2.5 ${brandFilter === brand ? 'bg-gold-500 text-black hover:bg-gold-400' : 'border-white/10 text-white/50 hover:text-white'}`}
+              >
+                {brand}
+              </Button>
+            ))}
+          </div>
         </div>
+
+        {/* Row 2: Region + Price range */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-white/30 w-14 flex-shrink-0">{t('filterByRegion')}</span>
+          <div className="flex gap-1.5">
+            {['all', 'TW', 'HK'].map((r) => (
+              <Button
+                key={r}
+                variant={regionFilter === r ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setRegionFilter(r)}
+                className={`h-7 text-xs px-2.5 ${regionFilter === r ? 'bg-gold-500 text-black hover:bg-gold-400' : 'border-white/10 text-white/50 hover:text-white'}`}
+              >
+                {r === 'all' ? t('allRegions') : r === 'TW' ? '🇹🇼 TW' : '🇭🇰 HK'}
+              </Button>
+            ))}
+          </div>
+
+          <span className="text-white/10 mx-1">|</span>
+
+          <span className="text-xs text-white/30 flex-shrink-0">{t('filterByBuyIn')}</span>
+          <div className="flex gap-1.5 flex-wrap">
+            {(['all', 'low', 'mid', 'high', 'ultra'] as PriceRange[]).map((range) => {
+              const labels: Record<PriceRange, string> = {
+                all: t('allPrices'),
+                low: t('priceLow'),
+                mid: t('priceMid'),
+                high: t('priceHigh'),
+                ultra: t('priceUltra'),
+              };
+              return (
+                <Button
+                  key={range}
+                  variant={priceRange === range ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setPriceRange(range)}
+                  className={`h-7 text-xs px-2.5 ${priceRange === range ? 'bg-gold-500 text-black hover:bg-gold-400' : 'border-white/10 text-white/50 hover:text-white'}`}
+                >
+                  {labels[range]}
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Active filter count + reset */}
+        {activeFilterCount > 0 && (
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-[10px] border-gold-500/30 bg-gold-500/10 text-gold-400">
+              {activeFilterCount} {activeFilterCount === 1 ? 'filter' : 'filters'}
+            </Badge>
+            <button className="text-xs text-white/40 hover:text-white/70 underline underline-offset-2" onClick={resetAllFilters}>
+              {t('resetFilters')}
+            </button>
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -107,7 +286,7 @@ export default function MarketplacePage() {
         <div className="text-center py-20">
           <Filter className="mx-auto h-12 w-12 text-white/20 mb-4" />
           <p className="text-white/50">{t('noResults')}</p>
-          <Button variant="outline" size="sm" className="mt-4 border-white/10 text-white/50" onClick={() => { setSearch(''); setTypeFilter('all'); setRegionFilter('all'); setStatusFilter('all'); }}>
+          <Button variant="outline" size="sm" className="mt-4 border-white/10 text-white/50" onClick={resetAllFilters}>
             {t('resetFilters')}
           </Button>
         </div>
