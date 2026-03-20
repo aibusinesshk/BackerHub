@@ -18,12 +18,12 @@
       "command": "npx",
       "args": ["-y", "@anthropic-ai/playwright-mcp@latest"]
     },
-    "netlify": {
+    "vercel": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@anthropic-ai/netlify-mcp@latest"],
+      "args": ["-y", "@anthropic-ai/vercel-mcp@latest"],
       "env": {
-        "NETLIFY_ACCESS_TOKEN": "${NETLIFY_ACCESS_TOKEN}"
+        "VERCEL_ACCESS_TOKEN": "${VERCEL_ACCESS_TOKEN}"
       }
     }
   }
