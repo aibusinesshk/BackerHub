@@ -6,6 +6,8 @@ import type { User } from '@supabase/supabase-js';
 import type { Profile } from '@/lib/supabase/types';
 import type { UserRole, Region } from '@/types';
 
+type KycStatus = 'none' | 'pending' | 'approved' | 'rejected';
+
 interface AuthUser {
   id: string;
   email: string;
@@ -16,6 +18,7 @@ interface AuthUser {
   avatarUrl: string | null;
   isVerified: boolean;
   isAdmin: boolean;
+  kycStatus: KycStatus;
 }
 
 interface AuthContextType {
@@ -48,6 +51,7 @@ function mapProfileToAuthUser(profile: Profile): AuthUser {
     avatarUrl: profile.avatar_url,
     isVerified: profile.is_verified,
     isAdmin: profile.is_admin,
+    kycStatus: (profile.kyc_status || 'none') as KycStatus,
   };
 }
 
@@ -98,6 +102,7 @@ function makeDemoUser(email: string, displayName: string, role: UserRole, region
     avatarUrl: null,
     isVerified: false,
     isAdmin: false,
+    kycStatus: 'none' as KycStatus,
   };
 }
 

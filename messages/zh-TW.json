@@ -251,7 +251,14 @@
       "cancelSuccess": "列表已取消。所有贊助者已獲得退款。",
       "cancelling": "取消中...",
       "manageListings": "管理列表",
-      "profileColor": "個人色調"
+      "profileColor": "個人色調",
+      "kycRequiredTitle": "請完成身份驗證",
+      "kycRequiredDesc": "驗證身份後即可開始出售份額和上架賽事。",
+      "kycPendingTitle": "驗證審核中",
+      "kycPendingDesc": "您的文件正在審核中，審核通過後將通知您。",
+      "kycRejectedTitle": "驗證未通過",
+      "kycRejectedDesc": "請重新提交文件以完成驗證。",
+      "kycVerifyNow": "立即驗證"
     }
   },
   "notifications": {
@@ -338,7 +345,13 @@
     "publishing": "發布中...",
     "success": "列表已發布！",
     "successMessage": "您的列表現已在市場上線。",
-    "publishError": "發布列表失敗，請重試。"
+    "publishError": "發布列表失敗，請重試。",
+    "kycRequired": "需要身份驗證",
+    "kycRequiredMessage": "為保障贊助者權益，所有選手在上架賽事前須完成KYC身份驗證。此為一次性流程。",
+    "kycPendingMessage": "您的身份驗證正在審核中。審核通過後即可建立列表，通常在24小時內完成。",
+    "kycRejectedMessage": "您之前的驗證未通過。請重新提交文件以開始出售份額。",
+    "kycPendingBadge": "驗證審核中",
+    "kycStartVerification": "開始驗證"
   },
   "about": {
     "title": "關於 BackerHub",

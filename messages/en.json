@@ -251,7 +251,14 @@
       "cancelSuccess": "Listing cancelled. All backers have been refunded.",
       "cancelling": "Cancelling...",
       "manageListings": "Manage Listings",
-      "profileColor": "Profile Color"
+      "profileColor": "Profile Color",
+      "kycRequiredTitle": "Complete Identity Verification",
+      "kycRequiredDesc": "Verify your identity to start selling action and listing tournaments.",
+      "kycPendingTitle": "Verification Under Review",
+      "kycPendingDesc": "Your documents are being reviewed. You'll be notified once approved.",
+      "kycRejectedTitle": "Verification Not Approved",
+      "kycRejectedDesc": "Please re-submit your documents to complete verification.",
+      "kycVerifyNow": "Verify Now"
     }
   },
   "notifications": {
@@ -338,7 +345,13 @@
     "publishing": "Publishing...",
     "success": "Listing Published!",
     "successMessage": "Your listing is now live on the marketplace.",
-    "publishError": "Failed to publish listing. Please try again."
+    "publishError": "Failed to publish listing. Please try again.",
+    "kycRequired": "Identity Verification Required",
+    "kycRequiredMessage": "To protect our backers, all players must complete KYC verification before listing tournaments for sale. This is a one-time process.",
+    "kycPendingMessage": "Your identity verification is being reviewed. You'll be able to create listings once approved — usually within 24 hours.",
+    "kycRejectedMessage": "Your previous verification was not approved. Please re-submit your documents to start selling action.",
+    "kycPendingBadge": "Verification Under Review",
+    "kycStartVerification": "Start Verification"
   },
   "about": {
     "title": "About BackerHub",
