@@ -39,22 +39,54 @@ export async function GET() {
       const statsMap = new Map<string, any>((stats || []).map((s: any) => [s.player_id, s]));
       const tournamentMap = new Map<string, any>((tournaments || []).map((t: any) => [t.id, t]));
 
+      // Build investment lookup: listing_id -> aggregated investment details
+      const investmentsByListing = new Map<string, { sharesPurchased: number; amountPaid: number; platformFee: number; investmentStatus: string; paymentMethod: string | null; investedAt: string }>();
+      for (const inv of allInvestments) {
+        const existing = investmentsByListing.get(inv.listing_id);
+        if (existing) {
+          existing.sharesPurchased += Number(inv.shares_purchased);
+          existing.amountPaid += Number(inv.amount_paid);
+          existing.platformFee += Number(inv.platform_fee);
+        } else {
+          investmentsByListing.set(inv.listing_id, {
+            sharesPurchased: Number(inv.shares_purchased),
+            amountPaid: Number(inv.amount_paid),
+            platformFee: Number(inv.platform_fee),
+            investmentStatus: inv.status,
+            paymentMethod: inv.payment_method,
+            investedAt: inv.created_at,
+          });
+        }
+      }
+
       portfolioListings = listings.map((l: any) => {
         const profile = profileMap.get(l.player_id);
         const playerStat = statsMap.get(l.player_id);
         const tournament = tournamentMap.get(l.tournament_id);
+        const inv = investmentsByListing.get(l.id);
         return {
           id: l.id,
           player: profile ? {
+            id: profile.id,
             displayName: profile.display_name, displayNameZh: profile.display_name_zh,
+            avatarUrl: profile.avatar_url || '',
             isVerified: profile.is_verified,
+            region: profile.region,
+            colorTone: profile.color_tone || null,
             stats: { lifetimeROI: playerStat ? Number(playerStat.lifetime_roi) : 0 },
           } : null,
           tournament: tournament ? {
             name: tournament.name, nameZh: tournament.name_zh,
+            venue: tournament.venue, venueZh: tournament.venue_zh,
             buyIn: Number(tournament.buy_in), date: tournament.date,
+            type: tournament.type, game: tournament.game, region: tournament.region,
+            guaranteedPool: Number(tournament.guaranteed_pool),
           } : null,
           markup: Number(l.markup), status: l.status,
+          totalSharesOffered: Number(l.total_shares_offered),
+          sharesSold: Number(l.shares_sold),
+          // Per-investor investment details
+          investment: inv || null,
         };
       });
     }
