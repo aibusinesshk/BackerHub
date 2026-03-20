@@ -10,6 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
+import { TournamentBrandBanner } from '@/components/shared/tournament-brand-banner';
 import { Search, Filter, Check, TrendingUp, Loader2 } from 'lucide-react';
 import type { StakingListing } from '@/types';
 
@@ -119,21 +120,28 @@ export default function MarketplacePage() {
             const soldPercent = (listing.actionSold / listing.totalActionOffered) * 100;
 
             return (
-              <Card key={listing.id} className="border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex gap-1.5">
-                      <Badge variant="outline" className="text-[10px] border-white/20 bg-white/[0.03] text-white/70">{listing.tournament.type}</Badge>
-                    </div>
-                    <Badge variant="outline" className={`text-[10px] ${statusColors[listing.status]}`}>
-                      {t(listing.status)}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-3">
+              <Card key={listing.id} className="border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)] flex flex-col">
+                {/* Brand banner — upper half */}
+                <div className="relative">
+                  <TournamentBrandBanner
+                    tournamentName={listing.tournament.name}
+                    venue={locale === 'zh-TW' && listing.tournament.venueZh ? listing.tournament.venueZh : listing.tournament.venue}
+                    buyIn={listing.tournament.buyIn}
+                    type={listing.tournament.type}
+                  />
+                  {/* Status badge overlaid on banner */}
+                  <Badge variant="outline" className={`absolute top-3 right-3 text-[10px] backdrop-blur-sm ${statusColors[listing.status]}`}>
+                    {t(listing.status)}
+                  </Badge>
+                </div>
+
+                {/* Player info — bridging banner and content */}
+                <div className="px-4 -mt-5 relative z-10">
+                  <div className="flex items-center gap-3 rounded-xl bg-[#111318] border border-white/[0.06] p-2.5 shadow-lg">
                     <PlayerAvatar
                       src={listing.player.avatarUrl}
                       name={listing.player.displayName}
-                      className="h-10 w-10 flex-shrink-0"
+                      className="h-9 w-9 flex-shrink-0"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1">
@@ -152,9 +160,9 @@ export default function MarketplacePage() {
                       </div>
                     </div>
                   </div>
-                </CardHeader>
+                </div>
 
-                <CardContent className="space-y-3 pt-4">
+                <CardContent className="space-y-3 pt-3 flex-1">
                   <div>
                     <h4 className="font-semibold text-white text-sm leading-tight">{tournamentName}</h4>
                     <p className="text-xs text-white/40 mt-0.5">{formatDate(listing.tournament.date, locale)}</p>
