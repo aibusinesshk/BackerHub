@@ -10,8 +10,8 @@ export async function GET() {
   const tables = ['profiles', 'player_stats', 'monthly_roi', 'tournaments', 'listings', 'listing_packages', 'package_entries', 'investments', 'transactions', 'reviews', 'escrow', 'testimonials'];
   const counts: Record<string, number> = {};
   for (const table of tables) {
-    const { count } = await admin.from(table).select('*', { count: 'exact', head: true });
-    counts[table] = count || 0;
+    const { count, error } = await admin.from(table).select('*', { count: 'exact', head: true });
+    counts[table] = error ? -1 : (count || 0);
   }
   return NextResponse.json({ counts });
 }
@@ -29,8 +29,8 @@ export async function DELETE(request: Request) {
   await admin.from('transactions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('investments').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('escrow').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await admin.from('package_entries').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await admin.from('listing_packages').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await admin.from('package_entries').delete().neq('id', '00000000-0000-0000-0000-000000000000').then(() => {}, () => {});
+  await admin.from('listing_packages').delete().neq('id', '00000000-0000-0000-0000-000000000000').then(() => {}, () => {});
   await admin.from('listings').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('tournaments').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('monthly_roi').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -196,7 +196,13 @@ export async function POST(request: Request) {
   // 3b. Listing Packages (Festival Packages)
   // =====================
   const packageErrors: string[] = [];
-  for (const pkg of listingPackages) {
+  // Check if listing_packages table exists before trying to insert
+  const { error: pkgTableCheck } = await (admin.from('listing_packages') as any).select('id').limit(1);
+  const packagesTableExists = !pkgTableCheck;
+  if (!packagesTableExists) {
+    packageErrors.push('listing_packages table not found — run migration 008_listing_packages.sql via Supabase SQL Editor first, or POST /api/migrate');
+  }
+  for (const pkg of (packagesTableExists ? listingPackages : [])) {
     const { data, error } = await admin.from('listing_packages').insert({
       player_id: playerIds[pkg.playerId],
       festival_name: pkg.festivalName,
