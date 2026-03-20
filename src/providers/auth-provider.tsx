@@ -253,7 +253,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password: data.password,
       });
       if (signInError) {
-        return { success: true, error: undefined };
+        // Account was created but auto-login failed — user should log in manually
+        return { success: false, error: signInError.message };
       }
 
       return { success: true };
