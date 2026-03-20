@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { MIN_WITHDRAWAL, MAX_WITHDRAWAL, MAX_PENDING_WITHDRAWALS } from '@/lib/constants';
+import { financialRateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -8,6 +9,11 @@ export async function POST(request: Request) {
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { success: rlOk } = financialRateLimit(user.id);
+  if (!rlOk) {
+    return NextResponse.json({ error: 'Too many requests. Please wait.' }, { status: 429 });
   }
 
   const body = await request.json();

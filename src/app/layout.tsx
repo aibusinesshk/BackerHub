@@ -21,6 +21,8 @@ const notoSansTC = Noto_Sans_TC({
   display: 'swap',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhub.com';
+
 export const metadata: Metadata = {
   title: {
     template: '%s | BackerHub',
@@ -28,6 +30,35 @@ export const metadata: Metadata = {
   },
   description:
     'Invest in poker players or sell your tournament action. The first poker staking platform built for the Asian market.',
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    type: 'website',
+    siteName: 'BackerHub',
+    title: 'BackerHub - Back Players. Share Victories.',
+    description:
+      "Asia's premier poker tournament staking platform. Back skilled players, share in their victories.",
+    url: siteUrl,
+    locale: 'en',
+    alternateLocale: 'zh-TW',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BackerHub - Back Players. Share Victories.',
+    description:
+      "Asia's premier poker tournament staking platform. Back skilled players, share in their victories.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  alternates: {
+    canonical: siteUrl,
+    languages: {
+      en: `${siteUrl}/en`,
+      'zh-TW': `${siteUrl}/zh-TW`,
+    },
+  },
 };
 
 export default function RootLayout({

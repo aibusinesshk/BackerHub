@@ -8,6 +8,8 @@ const isSupabaseConfigured = () => {
   return url && url.startsWith('http') && !url.includes('placeholder');
 };
 
+const isDevelopment = () => process.env.NODE_ENV === 'development';
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -17,8 +19,8 @@ export async function updateSession(request: NextRequest) {
   const protectedPaths = ['/dashboard', '/create-listing', '/checkout'];
   const isProtected = protectedPaths.some((path) => pathname.includes(path));
 
-  // When Supabase is not configured, use demo auth cookie
-  if (!isSupabaseConfigured()) {
+  // When Supabase is not configured, use demo auth cookie (dev only)
+  if (!isSupabaseConfigured() && isDevelopment()) {
     if (isProtected) {
       const demoSession = request.cookies.get(DEMO_SESSION_KEY);
       if (!demoSession?.value) {
