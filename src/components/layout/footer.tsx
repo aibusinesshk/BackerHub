@@ -3,7 +3,8 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { PAYMENT_BADGES } from '@/lib/constants';
-import { Spade, Shield, Wallet } from 'lucide-react';
+import { Shield, Wallet } from 'lucide-react';
+import Image from 'next/image';
 
 export function Footer() {
   const t = useTranslations('footer');
@@ -16,9 +17,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold-500 text-black">
-                <Spade className="h-5 w-5" />
-              </div>
+              <Image src="/images/logo.png" alt="BackerHub" width={32} height={32} className="h-8 w-8" />
               <span className="text-lg font-bold text-white">
                 Backer<span className="text-gold-400">Hub</span>
               </span>
