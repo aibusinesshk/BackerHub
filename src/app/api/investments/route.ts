@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { PLATFORM_FEE_PERCENT } from '@/lib/constants';
+import { financialRateLimit } from '@/lib/rate-limit';
+import { getIdempotentResponse, setIdempotentResponse, acquireInFlight, releaseInFlight } from '@/lib/idempotency';
 import { z } from 'zod';
 import type { Investment, Listing, Tournament } from '@/lib/supabase/types';
 
@@ -48,7 +50,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Rate limit: 5 investment requests per 60 seconds
+  const { success: rlOk } = financialRateLimit(user.id);
+  if (!rlOk) {
+    return NextResponse.json({ error: 'Too many requests. Please wait.' }, { status: 429 });
+  }
+
   const body = await request.json();
+
+  // Idempotency: prevent duplicate investments from double-clicks
+  const idempotencyKey = request.headers.get('x-idempotency-key');
+  if (idempotencyKey) {
+    const cached = getIdempotentResponse(`invest:${user.id}:${idempotencyKey}`);
+    if (cached) return NextResponse.json(cached.body, { status: cached.status });
+    if (!acquireInFlight(`invest:${user.id}:${idempotencyKey}`)) {
+      return NextResponse.json({ error: 'Request already in progress' }, { status: 409 });
+    }
+  }
   const parsed = investmentSchema.safeParse(body);
   if (!parsed.success) {
     const msg = parsed.error.issues.map((i) => i.message).join(', ');
@@ -163,6 +181,12 @@ export async function POST(request: Request) {
       { listing_id: listingId, total_held: totalAmount, updated_at: new Date().toISOString() },
       { onConflict: 'listing_id' }
     );
+
+  // Cache response for idempotency
+  if (idempotencyKey) {
+    setIdempotentResponse(`invest:${user.id}:${idempotencyKey}`, { status: 201, body: { investment } });
+    releaseInFlight(`invest:${user.id}:${idempotencyKey}`);
+  }
 
   return NextResponse.json({ investment }, { status: 201 });
 }
