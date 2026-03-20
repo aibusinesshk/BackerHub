@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "supabase-mcp-server@latest"],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
