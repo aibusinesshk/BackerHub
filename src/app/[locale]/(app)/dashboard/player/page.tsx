@@ -20,6 +20,7 @@ import type { PlayerColorTone } from '@/types';
 
 export default function PlayerDashboardPage() {
   const t = useTranslations('dashboard.player');
+  const tc = useTranslations('common');
   const tr = useTranslations('tournamentResults');
   const locale = useLocale();
   const { user } = useAuth();
@@ -233,9 +234,9 @@ export default function PlayerDashboardPage() {
       {error ? (
         <div className="flex flex-col items-center justify-center py-12 gap-3">
           <AlertCircle className="h-8 w-8 text-red-400" />
-          <p className="text-sm text-white/50">Failed to load dashboard data.</p>
+          <p className="text-sm text-white/50">{tc('failedToLoad')}</p>
           <Button variant="outline" size="sm" onClick={() => { setLoading(true); fetchData(); }} className="border-white/10 text-white/60">
-            <RefreshCw className="mr-2 h-3 w-3" /> Retry
+            <RefreshCw className="mr-2 h-3 w-3" /> {tc('retry')}
           </Button>
         </div>
       ) : loading ? (

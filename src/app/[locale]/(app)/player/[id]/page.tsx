@@ -18,6 +18,7 @@ import type { Player, StakingListing, Review } from '@/types';
 export default function PlayerProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations('player');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const [player, setPlayer] = useState<Player | null>(null);
   const [listings, setListings] = useState<StakingListing[]>([]);
@@ -47,7 +48,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
   const activeListings = listings.filter((l) => l.status === 'active');
 
   if (!player) {
-    return <div className="py-20 text-center text-white/50">Player not found</div>;
+    return <div className="py-20 text-center text-white/50">{tc('playerNotFound')}</div>;
   }
 
   const name = locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName;
@@ -231,7 +232,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
                         className="w-full bg-gold-500 text-black text-xs font-semibold hover:bg-gold-400"
                         size="sm"
                       >
-                        Buy Shares
+                        {tc('buyShares')}
                       </Button>
                     </div>
                   );

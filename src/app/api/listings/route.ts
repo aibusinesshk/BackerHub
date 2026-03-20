@@ -14,8 +14,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const status = searchParams.get('status');
   const playerId = searchParams.get('playerId');
-  const limit = parseInt(searchParams.get('limit') || '50');
-  const offset = parseInt(searchParams.get('offset') || '0');
+  const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '50') || 50, 1), 100);
+  const offset = Math.max(parseInt(searchParams.get('offset') || '0') || 0, 0);
 
   const supabase = await createClient();
 

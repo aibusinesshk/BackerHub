@@ -20,6 +20,7 @@ import { WalletBalance } from '@/components/shared/wallet-balance';
 
 export default function InvestorDashboardPage() {
   const t = useTranslations('dashboard.investor');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
@@ -111,14 +112,14 @@ export default function InvestorDashboardPage() {
       {error ? (
         <div className="flex flex-col items-center justify-center py-12 gap-3">
           <AlertCircle className="h-8 w-8 text-red-400" />
-          <p className="text-sm text-white/50">Failed to load dashboard data.</p>
+          <p className="text-sm text-white/50">{tc('failedToLoad')}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={() => { setError(false); setLoading(true); fetch('/api/dashboard/investor').then(r => r.json()).then(d => { setData(d); setError(false); }).catch(() => setError(true)).finally(() => setLoading(false)); }}
             className="border-white/10 text-white/60"
           >
-            <RefreshCw className="mr-2 h-3 w-3" /> Retry
+            <RefreshCw className="mr-2 h-3 w-3" /> {tc('retry')}
           </Button>
         </div>
       ) : loading ? (

@@ -10,6 +10,7 @@ import { TrendingUp, Gamepad2, ArrowRight } from 'lucide-react';
 
 export function CtaSection() {
   const t = useTranslations('cta');
+  const tc = useTranslations('common');
   const { user } = useAuth();
 
   return (
@@ -47,7 +48,7 @@ export function CtaSection() {
                 render={<Link href={user ? '/marketplace' as const : '/signup' as const} />}
                 className="bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow"
               >
-                Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                {tc('getStarted')} <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </ScrollReveal>
@@ -64,7 +65,7 @@ export function CtaSection() {
                 render={<Link href={user ? '/create-listing' as any : '/signup' as const} />}
                 className="border-gold-500/30 text-gold-400 hover:bg-gold-500/10"
               >
-                List Your Action <ArrowRight className="ml-2 h-4 w-4" />
+                {tc('listYourAction')} <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </ScrollReveal>

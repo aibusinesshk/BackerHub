@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const DEMO_SESSION_KEY = 'backerhub-demo-session';
+const LOCALE_REGEX = /^\/(en|zh-TW)/;
 
 const isSupabaseConfigured = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,13 +11,26 @@ const isSupabaseConfigured = () => {
 
 const isDevelopment = () => process.env.NODE_ENV === 'development';
 
+function extractLocale(pathname: string): string {
+  const match = pathname.match(LOCALE_REGEX);
+  return match ? match[1] : 'en';
+}
+
+function redirectToLogin(request: NextRequest, pathname: string): NextResponse {
+  const locale = extractLocale(pathname);
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}/login`;
+  url.searchParams.set('redirect', pathname);
+  return NextResponse.redirect(url);
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
 
   const pathname = request.nextUrl.pathname;
-  const protectedPaths = ['/dashboard', '/create-listing', '/checkout'];
+  const protectedPaths = ['/dashboard', '/create-listing', '/checkout', '/submit-result', '/profile'];
   const isProtected = protectedPaths.some((path) => pathname.includes(path));
 
   // When Supabase is not configured, use demo auth cookie (dev only)
@@ -24,12 +38,7 @@ export async function updateSession(request: NextRequest) {
     if (isProtected) {
       const demoSession = request.cookies.get(DEMO_SESSION_KEY);
       if (!demoSession?.value) {
-        const localeMatch = pathname.match(/^\/(en|zh-TW)/);
-        const locale = localeMatch ? localeMatch[1] : 'en';
-        const url = request.nextUrl.clone();
-        url.pathname = `/${locale}/login`;
-        url.searchParams.set('redirect', pathname);
-        return NextResponse.redirect(url);
+        return redirectToLogin(request, pathname);
       }
     }
     return supabaseResponse;
@@ -64,12 +73,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (isProtected && !user) {
-    const localeMatch = pathname.match(/^\/(en|zh-TW)/);
-    const locale = localeMatch ? localeMatch[1] : 'en';
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}/login`;
-    url.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(url);
+    return redirectToLogin(request, pathname);
   }
 
   return supabaseResponse;
