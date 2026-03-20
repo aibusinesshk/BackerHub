@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { formatCurrency, formatPercent } from '@/lib/format';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { getPlayerColorTone } from '@/lib/player-colors';
-import { usePlayers } from '@/lib/swr';
 import {
   Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink, Spade, Sparkles,
 } from 'lucide-react';
@@ -18,11 +17,19 @@ import type { Player } from '@/types';
 export default function PlayersPage() {
   const t = useTranslations('players');
   const locale = useLocale();
-  const { data: playersData, isLoading: loading } = usePlayers();
-  const players: Player[] = playersData?.players || [];
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [regionFilter, setRegionFilter] = useState('all');
   const [verifiedFilter, setVerifiedFilter] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/players?limit=200')
+      .then((res) => res.json())
+      .then((data) => setPlayers(data.players || []))
+      .catch(() => setPlayers([]))
+      .finally(() => setLoading(false));
+  }, []);
 
   const filtered = useMemo(() => {
     return players.filter((p) => {
