@@ -116,7 +116,7 @@ export default function InvestorDashboardPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => { setError(false); setLoading(true); fetch('/api/dashboard/investor').then(r => r.json()).then(d => { setData(d); setError(false); }).catch(() => setError(true)).finally(() => setLoading(false)); }}
+            onClick={() => { setError(false); setLoading(true); const c = new AbortController(); fetch('/api/dashboard/investor', { signal: c.signal }).then(r => r.json()).then(d => { setData(d); setError(false); }).catch(e => { if (e.name !== 'AbortError') setError(true); }).finally(() => setLoading(false)); }}
             className="border-white/10 text-white/60"
           >
             <RefreshCw className="mr-2 h-3 w-3" /> {tc('retry')}
@@ -133,8 +133,8 @@ export default function InvestorDashboardPage() {
             {portfolio.length === 0 ? (
               <p className="text-sm text-white/40 py-4 text-center">{t('noInvestments')}</p>
             ) : portfolio.map((l: any) => {
-              const name = locale === 'zh-TW' && l.player?.displayNameZh ? l.player.displayNameZh : l.player?.displayName || 'Player';
-              const tName = locale === 'zh-TW' && l.tournament?.nameZh ? l.tournament.nameZh : l.tournament?.name || 'Tournament';
+              const name = locale === 'zh-TW' && l.player?.displayNameZh ? l.player.displayNameZh : l.player?.displayName || tc('unknownPlayer');
+              const tName = locale === 'zh-TW' && l.tournament?.nameZh ? l.tournament.nameZh : l.tournament?.name || tc('unknownTournament');
               const isExpanded = expandedPortfolio === l.id;
               const tone = getPlayerColorTone(l.player?.colorTone);
               const inv = l.investment;

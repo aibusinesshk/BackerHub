@@ -41,7 +41,10 @@
     "failedToSubmitResult": "提交結果失敗",
     "failedToLoadProfile": "載入個人資料失敗",
     "failedToSave": "儲存失敗",
-    "uploadFailed": "上傳失敗"
+    "uploadFailed": "上傳失敗",
+    "purchaseFailed": "購買失敗",
+    "unknownPlayer": "選手",
+    "unknownTournament": "錦標賽"
   },
   "nav": {
     "marketplace": "市場",

@@ -115,7 +115,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Purchase failed');
+        setError(data.error || tc('purchaseFailed'));
         setProcessing(false);
         return;
       }

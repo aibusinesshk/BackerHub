@@ -42,6 +42,7 @@ export default function MyListingsPage() {
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [proofUrl, setProofUrl] = useState<Record<string, string>>({});
   const [submittingProof, setSubmittingProof] = useState<string | null>(null);
+  const [actionError, setActionError] = useState('');
 
   const fetchData = useCallback((signal?: AbortSignal) => {
     setLoading(true);
@@ -109,13 +110,14 @@ export default function MyListingsPage() {
       });
       if (res.ok) {
         setEditingListing(null);
+        setActionError('');
         fetchData();
       } else {
         const data = await res.json().catch(() => null);
-        alert(data?.error || t('editError'));
+        setActionError(data?.error || t('editError'));
       }
     } catch {
-      alert(t('editError'));
+      setActionError(t('editError'));
     } finally {
       setSaving(false);
     }
@@ -547,11 +549,17 @@ export default function MyListingsPage() {
               />
             </div>
 
+            {actionError && (
+              <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+                <p className="text-xs text-red-400">{actionError}</p>
+              </div>
+            )}
+
             <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
                 className="flex-1 border-white/10 text-white/70"
-                onClick={() => setEditingListing(null)}
+                onClick={() => { setEditingListing(null); setActionError(''); }}
               >
                 {t('editCancel')}
               </Button>

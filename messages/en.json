@@ -41,7 +41,10 @@
     "failedToSubmitResult": "Failed to submit result",
     "failedToLoadProfile": "Failed to load profile",
     "failedToSave": "Failed to save",
-    "uploadFailed": "Upload failed"
+    "uploadFailed": "Upload failed",
+    "purchaseFailed": "Purchase failed",
+    "unknownPlayer": "Player",
+    "unknownTournament": "Tournament"
   },
   "nav": {
     "marketplace": "Marketplace",

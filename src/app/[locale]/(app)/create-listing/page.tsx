@@ -26,6 +26,7 @@ export default function CreateListingPage() {
   const [threshold, setThreshold] = useState(50);
   const [published, setPublished] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState('');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -50,6 +51,7 @@ export default function CreateListingPage() {
   const handlePublish = async () => {
     if (!selectedTournament) return;
     setPublishing(true);
+    setPublishError('');
     try {
       const res = await fetch('/api/listings', {
         method: 'POST',
@@ -66,10 +68,10 @@ export default function CreateListingPage() {
         setTimeout(() => router.push('/dashboard/player'), 2000);
       } else {
         const data = await res.json().catch(() => null);
-        alert(data?.error || t('publishError'));
+        setPublishError(data?.error || t('publishError'));
       }
-    } catch (err) {
-      alert(t('publishError'));
+    } catch {
+      setPublishError(t('publishError'));
     } finally {
       setPublishing(false);
     }
@@ -249,6 +251,11 @@ export default function CreateListingPage() {
                       {formatCurrency(tournament.buyIn * 0.1 * markup)}
                     </p>
                   </div>
+                  {publishError && (
+                    <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+                      <p className="text-xs text-red-400">{publishError}</p>
+                    </div>
+                  )}
                   <Button onClick={handlePublish} disabled={publishing} className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow">
                     {publishing ? <Loader2 className="h-4 w-4 animate-spin" /> : t('publish')}
                   </Button>
