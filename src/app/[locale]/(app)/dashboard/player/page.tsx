@@ -11,9 +11,11 @@ import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatDate } from '@/lib/format';
 import {
   DollarSign, TrendingUp, Layers, Tag, Plus, ArrowUpRight, Loader2,
-  Trophy, Upload, Clock, AlertTriangle, XCircle, List,
+  Trophy, Upload, Clock, AlertTriangle, XCircle, List, Palette,
 } from 'lucide-react';
 import { WalletBalance } from '@/components/shared/wallet-balance';
+import { PLAYER_COLOR_TONES, ALL_COLOR_TONES, getPlayerColorTone } from '@/lib/player-colors';
+import type { PlayerColorTone } from '@/types';
 
 export default function PlayerDashboardPage() {
   const t = useTranslations('dashboard.player');
@@ -25,9 +27,20 @@ export default function PlayerDashboardPage() {
   const [proofUrl, setProofUrl] = useState<Record<string, string>>({});
   const [submittingProof, setSubmittingProof] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [selectedColorTone, setSelectedColorTone] = useState<PlayerColorTone | null>(null);
+  const [savingColor, setSavingColor] = useState(false);
 
   useEffect(() => {
     fetchData();
+    // Load current color tone from profile
+    fetch('/api/profile')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.profile?.color_tone) {
+          setSelectedColorTone(d.profile.color_tone);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   function fetchData() {
@@ -56,6 +69,22 @@ export default function PlayerDashboardPage() {
       // ignore
     } finally {
       setSubmittingProof(null);
+    }
+  }
+
+  async function handleSaveColorTone(tone: PlayerColorTone) {
+    setSelectedColorTone(tone);
+    setSavingColor(true);
+    try {
+      await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ color_tone: tone }),
+      });
+    } catch {
+      // ignore
+    } finally {
+      setSavingColor(false);
     }
   }
 
@@ -129,6 +158,41 @@ export default function PlayerDashboardPage() {
           </Card>
         ))}
       </div>
+
+      {/* Color Tone Picker */}
+      <Card className="border-white/[0.06] bg-[#111318] mb-8">
+        <CardContent className="pt-5 pb-5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Palette className="h-4 w-4 text-white/50" />
+              <span className="text-sm font-medium text-white">{t('profileColor')}</span>
+              {savingColor && <Loader2 className="h-3 w-3 animate-spin text-gold-400" />}
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {ALL_COLOR_TONES.map((tone) => {
+                const config = PLAYER_COLOR_TONES[tone];
+                const isActive = selectedColorTone === tone;
+                return (
+                  <button
+                    key={tone}
+                    onClick={() => handleSaveColorTone(tone)}
+                    className={`relative h-8 w-8 rounded-full transition-all ${isActive ? 'ring-2 ring-white ring-offset-2 ring-offset-[#111318] scale-110' : 'hover:scale-110 opacity-70 hover:opacity-100'}`}
+                    style={{ backgroundColor: config.swatch }}
+                    title={locale === 'zh-TW' ? config.labelZh : config.label}
+                  />
+                );
+              })}
+            </div>
+            {selectedColorTone && (
+              <span className="text-xs text-white/40">
+                {locale === 'zh-TW'
+                  ? PLAYER_COLOR_TONES[selectedColorTone].labelZh
+                  : PLAYER_COLOR_TONES[selectedColorTone].label}
+              </span>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {loading ? (
         <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-gold-400" /></div>

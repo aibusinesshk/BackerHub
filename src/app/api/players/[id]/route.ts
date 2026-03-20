@@ -50,6 +50,7 @@ export async function GET(
     bio: profile.bio || '',
     bioZh: profile.bio_zh,
     hendonMobUrl: profile.hendon_mob_url || null,
+    colorTone: profile.color_tone || null,
     stats: {
       lifetimeROI: stats ? Number(stats.lifetime_roi) : 0,
       totalTournaments: stats ? stats.total_tournaments : 0,

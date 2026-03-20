@@ -204,7 +204,8 @@
       "cancelConfirm": "確定要取消此列表嗎？所有贊助者將自動獲得退款。",
       "cancelSuccess": "列表已取消。所有贊助者已獲得退款。",
       "cancelling": "取消中...",
-      "manageListings": "管理列表"
+      "manageListings": "管理列表",
+      "profileColor": "個人色調"
     }
   },
   "notifications": {

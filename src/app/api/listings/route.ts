@@ -79,6 +79,7 @@ export async function GET(request: Request) {
         memberSince: profile.member_since,
         bio: profile.bio || '',
         bioZh: profile.bio_zh,
+        colorTone: profile.color_tone || null,
         stats: stats ? {
           lifetimeROI: Number(stats.lifetime_roi),
           totalTournaments: stats.total_tournaments,

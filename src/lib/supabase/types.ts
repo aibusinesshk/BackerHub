@@ -28,6 +28,7 @@ export type Database = {
           bio_zh: string | null;
           wallet_balance: number;
           hendon_mob_url: string | null;
+          color_tone: string | null;
           member_since: string;
           created_at: string;
           updated_at: string;
@@ -47,6 +48,7 @@ export type Database = {
           bio_zh?: string | null;
           wallet_balance?: number;
           hendon_mob_url?: string | null;
+          color_tone?: string | null;
           member_since?: string;
           created_at?: string;
           updated_at?: string;
@@ -63,6 +65,7 @@ export type Database = {
           bio_zh?: string | null;
           wallet_balance?: number;
           hendon_mob_url?: string | null;
+          color_tone?: string | null;
           updated_at?: string;
         };
       };

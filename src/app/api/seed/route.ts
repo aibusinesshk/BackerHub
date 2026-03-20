@@ -113,6 +113,7 @@ export async function POST(request: Request) {
       role: 'player',
       bio: p.bio,
       bio_zh: p.bioZh,
+      color_tone: p.colorTone || null,
       member_since: new Date(p.memberSince).toISOString(),
     }).eq('id', uuid);
   }
@@ -286,6 +287,7 @@ const players = [
     },
     bio: '2025 Taiwan Player of the Year. Over $1.4M in live earnings. 130 cashes across 135 events in 2025 — a masterclass in volume and consistency. APT Kickoff Taipei 2023 champion.',
     bioZh: '2025年台灣年度最佳選手。現場收入超過140萬美元。2025年135場賽事中130次入圍——穩定性和賽量的巔峰。2023年APT台北開幕賽冠軍。',
+    colorTone: 'rose',
   },
   {
     id: 'p2', displayName: 'Chih Feng Li', displayNameZh: '李志峰',
@@ -300,6 +302,7 @@ const players = [
     },
     bio: '#2 ranked Taiwanese player in 2025 SPI rankings (score: 23,990). 87 cashes across 89 events in 15 festivals. Consistent high-volume grinder.',
     bioZh: '2025年SPI台灣排名第二（積分：23,990）。15個系列賽中89場賽事取得87次入圍。穩定的高賽量選手。',
+    colorTone: 'blue',
   },
   {
     id: 'p3', displayName: 'Nevan Chang', displayNameZh: '張子龍',
@@ -314,6 +317,7 @@ const players = [
     },
     bio: '#3 ranked Taiwanese player 2025 (SPI: 23,645). $789K in total SPI earnings. High-stakes specialist with big scores across 17 festivals.',
     bioZh: '2025年台灣排名第三（SPI：23,645）。SPI總收入78.9萬美元。高額賽事專家，17個系列賽中取得大額獎金。',
+    colorTone: 'emerald',
   },
   {
     id: 'p4', displayName: 'Wayne Lam', displayNameZh: '林錦榮',
@@ -328,6 +332,7 @@ const players = [
     },
     bio: '2025 APT Championship winner ($266,992). $530K+ in live earnings. Led the APT Main Event final table with 17.9M chips. Hong Kong poker star.',
     bioZh: '2025年APT年度總冠軍（$266,992）。現場收入超過53萬美元。以1790萬籌碼領先APT主賽事決賽桌。香港撲克明星。',
+    colorTone: 'red',
   },
   {
     id: 'p5', displayName: 'Zong Chi He', displayNameZh: '何宗祺',
@@ -342,6 +347,7 @@ const players = [
     },
     bio: '#4 ranked Taiwanese player 2025 (SPI: 21,932). 67 cashes in 83 events across 18 festivals. $201K in total earnings. Reliable volume player.',
     bioZh: '2025年台灣排名第四（SPI：21,932）。18個系列賽83場賽事中67次入圍。總收入20.1萬美元。可靠的賽量型選手。',
+    colorTone: 'cyan',
   },
   {
     id: 'p6', displayName: 'Hao Shan Huang', displayNameZh: '黃浩珊',
@@ -356,6 +362,7 @@ const players = [
     },
     bio: 'APT Championship 2025 Main Event finalist. Former Magic: The Gathering pro. Qualified via $350 satellite and reached the final table of the richest tournament in Asian poker history. $480K+ earnings.',
     bioZh: '2025年APT年度總冠軍主賽事決賽選手。前魔法風雲會職業選手。通過350美元衛星賽晉級，進入亞洲撲克史上最大獎池賽事決賽桌。收入超過48萬美元。',
+    colorTone: 'purple',
   },
   {
     id: 'p7', displayName: 'Chi Jen Chu', displayNameZh: '朱志仁',
@@ -370,6 +377,7 @@ const players = [
     },
     bio: '#6 in Taiwan SPI 2025 but #1 in total SPI earnings ($1.1M). 28 cashes in 34 events across 10 festivals. Big-score specialist — when he cashes, he cashes big.',
     bioZh: '2025年台灣SPI第六名，但SPI總收入第一（110萬美元）。10個系列賽34場賽事中28次入圍。大獎專家——入圍就是大獎。',
+    colorTone: 'gold',
   },
   {
     id: 'p8', displayName: 'Sparrow Cheung', displayNameZh: '張鶴翔',
@@ -384,6 +392,7 @@ const players = [
     },
     bio: 'Hong Kong poker legend. GPI Asia ranked. Multiple APT final tables. One of the most recognizable faces in Asian poker with deep runs across APT, WSOP, and Triton events.',
     bioZh: '香港撲克傳奇。GPI亞洲排名選手。多次APT決賽桌。亞洲撲克最知名面孔之一，在APT、WSOP和Triton賽事中均有深入表現。',
+    colorTone: 'amber',
   },
   {
     id: 'p9', displayName: 'Elton Tsang', displayNameZh: '曾恩明',
@@ -398,6 +407,7 @@ const players = [
     },
     bio: 'Hong Kong high-stakes legend. Won $1.697M Triton Poker title in 2025. Multiple millions in career earnings. Known for competing at the highest stakes in both cash games and tournaments worldwide.',
     bioZh: '香港高額賽傳奇。2025年贏得169.7萬美元Triton Poker冠軍。職業生涯收入數百萬美元。以在全球最高級別現金桌和錦標賽中競爭而聞名。',
+    colorTone: 'rose',
   },
   {
     id: 'p10', displayName: 'Chih Wei Chen', displayNameZh: '陳志偉',
@@ -412,6 +422,7 @@ const players = [
     },
     bio: '#5 in Taiwan SPI 2025 (score: 18,735). 74 cashes in 77 events across 17 festivals. $109K total earnings. Ultra-consistent grinder.',
     bioZh: '2025年台灣SPI第五名（積分：18,735）。17個系列賽77場賽事中74次入圍。總收入10.9萬美元。超級穩定的選手。',
+    colorTone: 'blue',
   },
   {
     id: 'p11', displayName: 'Li Ta Hsu', displayNameZh: '許力達',
@@ -426,6 +437,7 @@ const players = [
     },
     bio: '#7 in Taiwan SPI 2025 (score: 17,078). 68 cashes in 72 events. $99.8K in total earnings. Reliable and steady performer on the Taiwan circuit.',
     bioZh: '2025年台灣SPI第七名（積分：17,078）。72場賽事中68次入圍。總收入9.98萬美元。台灣巡迴賽穩定表現者。',
+    colorTone: 'cyan',
   },
   {
     id: 'p12', displayName: 'Fung Lin', displayNameZh: '林鋒',
@@ -440,6 +452,7 @@ const players = [
     },
     bio: 'Won APT Championship 2025 Trip Saver Championship ($71,994). Hong Kong player with strong results across APT events. Rising force in the HK poker scene.',
     bioZh: '贏得2025年APT年度總冠軍旅行者冠軍賽（$71,994）。在APT賽事中成績優異的香港選手。香港撲克圈的新興力量。',
+    colorTone: 'emerald',
   },
   {
     id: 'p13', displayName: 'Tony Lin', displayNameZh: '林仁',
@@ -454,6 +467,7 @@ const players = [
     },
     bio: 'WPT Ambassador and one of Taiwan\'s most decorated poker players. Over $18M in live tournament earnings. Multiple WPT and WSOP final tables. Known as "Ren Lin" internationally — a dominant force at the highest stakes globally.',
     bioZh: 'WPT大使，台灣最頂尖的撲克選手之一。現場錦標賽收入超過1800萬美元。多次WPT和WSOP決賽桌。國際上以「林仁」聞名——在全球最高級別賽事中的統治級力量。',
+    colorTone: 'red',
   },
   {
     id: 'p14', displayName: 'Eric Tsai', displayNameZh: '小六',
@@ -468,6 +482,7 @@ const players = [
     },
     bio: 'Taiwan GPI #1 ranked player. Known as "小六" (SixPoker) in the Asian poker community. Over $5.2M in live earnings. Dominant across APT, TMT, and regional tours. A true pioneer of Taiwan\'s poker scene.',
     bioZh: '台灣GPI排名第一選手。在亞洲撲克圈以「小六」聞名。現場收入超過520萬美元。在APT、TMT和地區巡迴賽中表現出色。台灣撲克界的真正先驅。',
+    colorTone: 'gold',
   },
   {
     id: 'p15', displayName: 'Charlie Chiu', displayNameZh: '查理',
@@ -482,6 +497,7 @@ const players = [
     },
     bio: 'Natural8 Ambassador and Hong Kong poker star. Known as "I.C Charlie" in the international circuit. Over $3.8M in live earnings. Multiple deep runs at WSOP, APT, and Triton events. One of HK\'s most recognizable poker personalities.',
     bioZh: 'Natural8大使，香港撲克明星。在國際賽事中以「I.C Charlie」聞名。現場收入超過380萬美元。在WSOP、APT和Triton賽事中多次深入。香港最知名的撲克人物之一。',
+    colorTone: 'purple',
   },
 ];
 
