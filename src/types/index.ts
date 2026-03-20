@@ -136,6 +136,58 @@ export interface MockUser {
   avatarUrl: string;
 }
 
+export type PackageStatus =
+  | 'active'
+  | 'filled'
+  | 'in_progress'
+  | 'pending_result'
+  | 'settled'
+  | 'cancelled';
+
+export interface PackageListing {
+  id: string;
+  playerId: string;
+  player: Player;
+  festivalName: string;
+  festivalNameZh?: string;
+  festivalBrand: string;
+  venue: string;
+  venueZh?: string;
+  region: Region;
+  festivalStart: string;
+  festivalEnd: string;
+  markup: number;
+  totalActionOffered: number;
+  actionSold: number;
+  minThreshold: number;
+  budgetMin: number;
+  budgetMax: number;
+  plannedEventsMin: number;
+  plannedEventsMax: number;
+  notes?: string;
+  notesZh?: string;
+  status: PackageStatus;
+  entries: PackageEntry[];
+  createdAt: string;
+}
+
+export interface PackageEntry {
+  id: string;
+  packageId: string;
+  tournamentId?: string;
+  eventName: string;
+  eventNameZh?: string;
+  buyIn: number;
+  bulletNumber: number;
+  result: 'pending' | 'win' | 'loss' | 'cancelled' | null;
+  prizeAmount: number;
+  finishPosition?: number;
+  totalEntries?: number;
+  proofUrl?: string;
+  playedAt?: string;
+  createdAt: string;
+}
+
 export interface PlatformStats {
   totalBacked: number;
   tournamentsStaked: number;
