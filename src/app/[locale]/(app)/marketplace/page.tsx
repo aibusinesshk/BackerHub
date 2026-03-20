@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/f
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { TournamentBrandBanner } from '@/components/shared/tournament-brand-banner';
 import { getPlayerColorTone } from '@/lib/player-colors';
+import { useListings } from '@/lib/swr';
 import { Search, Filter, Check, TrendingUp, Loader2, ArrowUpDown, ChevronDown } from 'lucide-react';
 import type { StakingListing } from '@/types';
 
@@ -61,17 +62,9 @@ export default function MarketplacePage() {
   const [priceRange, setPriceRange] = useState<PriceRange>('all');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [statusFilter, setStatusFilter] = useState('active');
-  const [allListings, setAllListings] = useState<StakingListing[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showSortMenu, setShowSortMenu] = useState(false);
-
-  useEffect(() => {
-    fetch('/api/listings')
-      .then((res) => res.json())
-      .then((data) => setAllListings(data.listings || []))
-      .catch(() => setAllListings([]))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: listingsData, isLoading: loading } = useListings();
+  const allListings: StakingListing[] = listingsData?.listings || [];
 
   // Derive available brands from data
   const availableBrands = useMemo(() => {

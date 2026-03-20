@@ -10,9 +10,9 @@ export async function GET() {
   }
 
   const [{ data: profile }, { data: listings }, { data: transactions }] = await Promise.all([
-    (supabase.from('profiles') as any).select('*').eq('id', user.id).single(),
-    (supabase.from('listings') as any).select('*').eq('player_id', user.id).order('created_at', { ascending: false }),
-    (supabase.from('transactions') as any).select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
+    (supabase.from('profiles') as any).select('id, display_name, display_name_zh, avatar_url, region, is_verified, kyc_status, color_tone, wallet_balance').eq('id', user.id).single(),
+    (supabase.from('listings') as any).select('id, player_id, tournament_id, markup, total_shares_offered, shares_sold, min_threshold, status, created_at, registration_proof_url, deadline_registration, deadline_deposit').eq('player_id', user.id).order('created_at', { ascending: false }),
+    (supabase.from('transactions') as any).select('id, type, amount, currency, payment_method, status, description, description_zh, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
   ]);
 
   const allListings = listings || [];
@@ -25,26 +25,22 @@ export async function GET() {
     ? allListings.reduce((sum: number, l: any) => sum + Number(l.markup), 0) / allListings.length
     : 1.10;
 
-  // Join listings with tournament data + result status
+  // Join listings with tournament data + result status — fetch in parallel
   const adminClient = await createAdminClient();
   const listingIds = allListings.map((l: any) => l.id) as string[];
   const tournamentIds = [...new Set(allListings.map((l: any) => l.tournament_id))] as string[];
-  let tournamentMap = new Map<string, any>();
-  let resultMap = new Map<string, any>();
 
-  if (tournamentIds.length > 0) {
-    const { data: tournaments } = await (supabase.from('tournaments') as any)
-      .select('*').in('id', tournamentIds);
-    tournamentMap = new Map<string, any>((tournaments || []).map((t: any) => [t.id, t]));
-  }
+  const [tournamentResults, resultResults] = await Promise.all([
+    tournamentIds.length > 0
+      ? (supabase.from('tournaments') as any).select('id, name, name_zh, venue, venue_zh, date, buy_in, guaranteed_pool, type, game, region').in('id', tournamentIds)
+      : { data: [] },
+    listingIds.length > 0
+      ? adminClient.from('tournament_results').select('listing_id, status, tournament_result, prize_amount').in('listing_id', listingIds)
+      : { data: [] },
+  ]);
 
-  if (listingIds.length > 0) {
-    const { data: results } = await adminClient
-      .from('tournament_results')
-      .select('listing_id, status, tournament_result')
-      .in('listing_id', listingIds);
-    resultMap = new Map<string, any>((results || []).map((r: any) => [r.listing_id, r]));
-  }
+  const tournamentMap = new Map<string, any>(((tournamentResults as any).data || []).map((t: any) => [t.id, t]));
+  const resultMap = new Map<string, any>(((resultResults as any).data || []).map((r: any) => [r.listing_id, r]));
 
   const joinedListings = allListings.map((l: any) => {
     const tournament = tournamentMap.get(l.tournament_id);

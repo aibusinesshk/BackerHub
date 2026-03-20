@@ -47,5 +47,7 @@ export async function GET() {
     avgROI: displayAvgROI,
     prizeDistributions: payoutsMade,
     countriesServed: 3,
+  }, {
+    headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' },
   });
 }
