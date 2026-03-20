@@ -14,15 +14,24 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { LanguageSwitcher } from './language-switcher';
 import { Menu, User, LayoutDashboard, LogOut, Shield, List } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { NotificationBell } from '@/components/shared/notification-bell';
 
 export function Header() {
   const t = useTranslations();
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isHome = pathname === '/';
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (isHome) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -53,8 +62,8 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/logo-nav.png" alt="BackerHub" width={495} height={80} className="h-8 sm:h-9 w-auto" priority />
+        <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2">
+          <Image src="/images/logo-nav.png" alt="BackerHub" width={495} height={80} className="h-7 sm:h-8 w-auto" priority />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
