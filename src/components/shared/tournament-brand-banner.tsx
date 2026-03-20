@@ -41,6 +41,20 @@ const BRAND_CONFIG: Record<string, {
     logo: 'WSOP',
     pattern: 'radial-gradient(ellipse at 80% 20%, rgba(245,158,11,0.15) 0%, transparent 50%), radial-gradient(ellipse at 20% 80%, rgba(245,158,11,0.1) 0%, transparent 50%)',
   },
+  CTP: {
+    gradient: 'from-orange-900/90 via-orange-800/70 to-black/80',
+    accent: 'text-orange-400',
+    textColor: 'text-white',
+    logo: 'CTP',
+    pattern: 'radial-gradient(ellipse at 80% 20%, rgba(251,146,60,0.15) 0%, transparent 50%), radial-gradient(ellipse at 20% 80%, rgba(251,146,60,0.1) 0%, transparent 50%)',
+  },
+  CPPT: {
+    gradient: 'from-cyan-900/90 via-cyan-800/70 to-black/80',
+    accent: 'text-cyan-400',
+    textColor: 'text-white',
+    logo: 'CPPT',
+    pattern: 'radial-gradient(ellipse at 80% 20%, rgba(34,211,238,0.15) 0%, transparent 50%), radial-gradient(ellipse at 20% 80%, rgba(34,211,238,0.1) 0%, transparent 50%)',
+  },
   Zodiac: {
     gradient: 'from-purple-900/90 via-purple-800/70 to-black/80',
     accent: 'text-purple-400',
@@ -89,6 +103,8 @@ export function TournamentBrandBanner({
     : brand.logo === 'TMT' ? Trophy
     : brand.logo === 'WPT' ? Star
     : brand.logo === 'WSOP' ? Trophy
+    : brand.logo === 'CTP' ? Zap
+    : brand.logo === 'CPPT' ? Star
     : brand.logo === 'ZODIAC' ? Star
     : Zap;
 
