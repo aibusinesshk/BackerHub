@@ -41,22 +41,22 @@ export function FeaturedPlayers() {
               <div className="group rounded-2xl border border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]">
                 <div className="p-5">
                   {/* Player info with circular avatar */}
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-3.5 mb-4">
                     <PlayerAvatar
                       src={player.avatarUrl}
                       name={player.displayName}
-                      className="h-11 w-11 flex-shrink-0"
+                      className="h-14 w-14 flex-shrink-0 text-lg"
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1">
-                        <h3 className="text-base font-bold text-white truncate">
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="text-lg font-bold text-white truncate">
                           {locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName}
                         </h3>
-                        <span className="flex-shrink-0 inline-flex items-center justify-center h-3 w-3 rounded-full bg-gold-400/80">
-                          <Check className="h-2 w-2 text-black" strokeWidth={3.5} />
+                        <span className="flex-shrink-0 inline-flex items-center justify-center h-4 w-4 rounded-full bg-gold-400/80">
+                          <Check className="h-2.5 w-2.5 text-black" strokeWidth={3.5} />
                         </span>
                       </div>
-                      <p className="text-xs text-white/50">
+                      <p className="text-sm text-white/50">
                         {player.region === 'TW' ? '🇹🇼' : '🇭🇰'} {player.stats.totalTournaments} tournaments
                       </p>
                     </div>
