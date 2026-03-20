@@ -212,7 +212,9 @@
     "viewPackage": "查看套餐",
     "listingTypeAll": "所有列表",
     "listingTypeSingle": "單場賽事",
-    "listingTypePackage": "系列賽套餐"
+    "listingTypePackage": "系列賽套餐",
+    "filterType": "類型",
+    "bulletsFired": "{count} 場已打"
   },
   "player": {
     "verified": "認證選手",
@@ -404,7 +406,13 @@
     "kycPendingMessage": "您的身份驗證正在審核中。審核通過後即可建立列表，通常在24小時內完成。",
     "kycRejectedMessage": "您之前的驗證未通過。請重新提交文件以開始出售份額。",
     "kycPendingBadge": "驗證審核中",
-    "kycStartVerification": "開始驗證"
+    "kycStartVerification": "開始驗證",
+    "previewBuyIn": "買入",
+    "previewMarkup": "溢價",
+    "previewShares": "份額",
+    "previewThreshold": "門檻",
+    "investorCostPer10": "投資者每10%成本",
+    "selectTournamentToPreview": "請選擇錦標賽以預覽"
   },
   "about": {
     "title": "關於 BackerHub",
@@ -827,6 +835,10 @@
       "browse": "瀏覽市場",
       "signup": "建立帳號"
     }
+  },
+  "tournamentBanner": {
+    "gtd": "保底",
+    "buyIn": "買入"
   },
   "preLaunch": {
     "banner": "預上線特惠：0% 平台手續費",

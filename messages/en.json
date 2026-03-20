@@ -212,7 +212,9 @@
     "viewPackage": "View Package",
     "listingTypeAll": "All Listings",
     "listingTypeSingle": "Single Tournament",
-    "listingTypePackage": "Festival Package"
+    "listingTypePackage": "Festival Package",
+    "filterType": "Type",
+    "bulletsFired": "{count} fired"
   },
   "player": {
     "verified": "Verified Player",
@@ -404,7 +406,13 @@
     "kycPendingMessage": "Your identity verification is being reviewed. You'll be able to create listings once approved — usually within 24 hours.",
     "kycRejectedMessage": "Your previous verification was not approved. Please re-submit your documents to start selling action.",
     "kycPendingBadge": "Verification Under Review",
-    "kycStartVerification": "Start Verification"
+    "kycStartVerification": "Start Verification",
+    "previewBuyIn": "Buy-in",
+    "previewMarkup": "Markup",
+    "previewShares": "Shares",
+    "previewThreshold": "Threshold",
+    "investorCostPer10": "Investor cost per 10%",
+    "selectTournamentToPreview": "Select a tournament to preview"
   },
   "about": {
     "title": "About BackerHub",
@@ -827,6 +835,10 @@
       "browse": "Browse Marketplace",
       "signup": "Create Account"
     }
+  },
+  "tournamentBanner": {
+    "gtd": "GTD",
+    "buyIn": "buy-in"
   },
   "preLaunch": {
     "banner": "Pre-Launch Special: 0% Platform Fee",

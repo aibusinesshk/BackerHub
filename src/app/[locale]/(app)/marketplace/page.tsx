@@ -98,17 +98,21 @@ export default function MarketplacePage() {
   const [showSortMenu, setShowSortMenu] = useState(false);
 
   useEffect(() => {
-    const fetchListings = fetch('/api/listings')
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const fetchListings = fetch('/api/listings', { signal })
       .then((res) => res.json())
       .then((data) => setAllListings(data.listings || []))
-      .catch(() => setAllListings([]));
+      .catch((err) => { if (err.name !== 'AbortError') setAllListings([]); });
 
-    const fetchPackages = fetch('/api/packages')
+    const fetchPackages = fetch('/api/packages', { signal })
       .then((res) => res.json())
       .then((data) => setAllPackages(data.packages || []))
-      .catch(() => setAllPackages([]));
+      .catch((err) => { if (err.name !== 'AbortError') setAllPackages([]); });
 
     Promise.all([fetchListings, fetchPackages]).finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   // Build unified items list
@@ -254,7 +258,7 @@ export default function MarketplacePage() {
       <div className="mb-6 space-y-3">
         {/* Row 0: Listing type (Single vs Package) */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-white/30 w-14 flex-shrink-0">Type</span>
+          <span className="text-xs text-white/30 w-14 flex-shrink-0">{t('filterType')}</span>
           <div className="flex gap-1.5 flex-wrap">
             {(['all', 'single', 'package'] as ListingTypeFilter[]).map((lt) => {
               const labels: Record<ListingTypeFilter, string> = {
@@ -406,7 +410,7 @@ export default function MarketplacePage() {
 function SingleListingCard({ listing, locale, t, statusColors }: {
   listing: StakingListing;
   locale: string;
-  t: (key: string) => string;
+  t: ReturnType<typeof useTranslations>;
   statusColors: Record<string, string>;
 }) {
   if (!listing.player || !listing.tournament) return null;
@@ -501,7 +505,7 @@ function SingleListingCard({ listing, locale, t, statusColors }: {
 function PackageListingCard({ pkg, locale, t, statusColors }: {
   pkg: PackageListing;
   locale: string;
-  t: (key: string) => string;
+  t: ReturnType<typeof useTranslations>;
   statusColors: Record<string, string>;
 }) {
   if (!pkg.player) return null;
@@ -594,7 +598,7 @@ function PackageListingCard({ pkg, locale, t, statusColors }: {
           </div>
           <div className="rounded-lg bg-white/[0.03] p-2.5">
             <span className="text-white/40">{t('bullets')}</span>
-            <p className="font-semibold text-white text-sm">{bulletsCount} fired</p>
+            <p className="font-semibold text-white text-sm">{t('bulletsFired', { count: bulletsCount })}</p>
           </div>
         </div>
 

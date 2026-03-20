@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Spade, Trophy, Star, Zap } from 'lucide-react';
 
 /**
@@ -96,6 +97,7 @@ export function TournamentBrandBanner({
   buyIn,
   type,
 }: TournamentBrandBannerProps) {
+  const t = useTranslations('tournamentBanner');
   const brand = detectBrand(tournamentName);
 
   // Pick icon based on brand
@@ -152,11 +154,11 @@ export function TournamentBrandBanner({
             </p>
           )}
           <div className="flex items-baseline gap-2">
-            <span className="text-[10px] text-white/40">GTD</span>
+            <span className="text-[10px] text-white/40">{t('gtd')}</span>
             <span className={`text-sm font-bold ${brand.accent}`}>
               ${buyIn >= 10000 ? `${(buyIn / 1000).toFixed(0)}K` : buyIn.toLocaleString()}
             </span>
-            <span className="text-[10px] text-white/30">buy-in</span>
+            <span className="text-[10px] text-white/30">{t('buyIn')}</span>
           </div>
         </div>
       </div>
