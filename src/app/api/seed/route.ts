@@ -7,7 +7,7 @@ export const maxDuration = 120;
 // GET /api/seed — Check current database counts
 export async function GET() {
   const admin = await createAdminClient();
-  const tables = ['profiles', 'player_stats', 'monthly_roi', 'tournaments', 'listings', 'investments', 'transactions', 'reviews', 'escrow', 'testimonials'];
+  const tables = ['profiles', 'player_stats', 'monthly_roi', 'tournaments', 'listings', 'listing_packages', 'package_entries', 'investments', 'transactions', 'reviews', 'escrow', 'testimonials'];
   const counts: Record<string, number> = {};
   for (const table of tables) {
     const { count } = await admin.from(table).select('*', { count: 'exact', head: true });
@@ -29,6 +29,8 @@ export async function DELETE(request: Request) {
   await admin.from('transactions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('investments').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('escrow').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await admin.from('package_entries').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await admin.from('listing_packages').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('listings').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('tournaments').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   await admin.from('monthly_roi').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -191,6 +193,55 @@ export async function POST(request: Request) {
   }
 
   // =====================
+  // 3b. Listing Packages (Festival Packages)
+  // =====================
+  const packageErrors: string[] = [];
+  for (const pkg of listingPackages) {
+    const { data, error } = await admin.from('listing_packages').insert({
+      player_id: playerIds[pkg.playerId],
+      festival_name: pkg.festivalName,
+      festival_name_zh: pkg.festivalNameZh,
+      festival_brand: pkg.festivalBrand,
+      venue: pkg.venue,
+      venue_zh: pkg.venueZh,
+      region: pkg.region,
+      festival_start: pkg.festivalStart,
+      festival_end: pkg.festivalEnd,
+      markup: pkg.markup,
+      total_action_offered: pkg.totalActionOffered,
+      action_sold: pkg.actionSold,
+      min_threshold: pkg.minThreshold,
+      budget_min: pkg.budgetMin,
+      budget_max: pkg.budgetMax,
+      planned_events_min: pkg.plannedEventsMin,
+      planned_events_max: pkg.plannedEventsMax,
+      notes: pkg.notes,
+      notes_zh: pkg.notesZh,
+      status: pkg.status,
+      created_at: pkg.createdAt,
+    }).select('id').single();
+    if (error) packageErrors.push(`${pkg.id}: ${error.message}`);
+    // Insert package entries if any
+    if (data && pkg.entries) {
+      for (const entry of pkg.entries) {
+        await admin.from('package_entries').insert({
+          package_id: data.id,
+          tournament_id: entry.tournamentId ? tournamentIds[entry.tournamentId] : null,
+          event_name: entry.eventName,
+          event_name_zh: entry.eventNameZh,
+          buy_in: entry.buyIn,
+          bullet_number: entry.bulletNumber,
+          result: entry.result,
+          prize_amount: entry.prizeAmount || 0,
+          finish_position: entry.finishPosition || null,
+          total_entries: entry.totalEntries || null,
+          played_at: entry.playedAt || null,
+        });
+      }
+    }
+  }
+
+  // =====================
   // 4. Testimonials
   // =====================
   for (const t of testimonials) {
@@ -258,12 +309,14 @@ export async function POST(request: Request) {
       players: Object.keys(playerIds).length,
       tournaments: Object.keys(tournamentIds).length,
       listings: Object.keys(listingIds).length,
+      packages: listingPackages.length,
       testimonials: testimonials.length,
       reviews: reviews.length,
     },
     errors: {
       tournaments: tournamentErrors,
       listings: listingErrors,
+      packages: packageErrors,
     },
   });
 }
@@ -651,4 +704,146 @@ const reviews = [
   { id: 'r6', playerId: 'p9', reviewerId: 'inv2', reviewerName: 'Jenny L.', reviewerAvatar: '/avatars/inv2.svg', rating: 5, comment: 'Michael is a true professional. Multiple WSOP rings and always keeps backers informed.', commentZh: 'Michael是真正的職業選手。多枚WSOP戒指，總是讓支持者了解最新情況。', createdAt: '2026-02-10T08:00:00Z' },
   { id: 'r7', playerId: 'p6', reviewerId: 'inv3', reviewerName: 'Robert K.', reviewerAvatar: '/avatars/inv3.svg', rating: 4, comment: 'Raymond is excellent in PLO and mixed games. A unique offering on the platform.', commentZh: 'Raymond在PLO和混合賽事中表現出色。平台上的獨特選擇。', createdAt: '2026-01-15T13:00:00Z' },
   { id: 'r8', playerId: 'p10', reviewerId: 'inv4', reviewerName: 'Mike W.', reviewerAvatar: '/avatars/inv4.svg', rating: 4, comment: 'Tony consistently delivers positive returns. His Macau experience gives him an edge in live events.', commentZh: 'Tony持續提供正回報。他的澳門經驗使他在現場賽事中佔優勢。', createdAt: '2026-02-28T19:00:00Z' },
+];
+
+// =====================
+// Festival Package Listings — players selling action across an entire series
+// =====================
+const listingPackages = [
+  {
+    id: 'pkg1',
+    playerId: 'p1', // Chiayun Wu
+    festivalName: 'APT Taipei 2026', festivalNameZh: 'APT台北2026',
+    festivalBrand: 'APT',
+    venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區',
+    region: 'TW',
+    festivalStart: '2026-04-22', festivalEnd: '2026-05-03',
+    markup: 1.15, totalActionOffered: 10, actionSold: 7, minThreshold: 5,
+    budgetMin: 3000, budgetMax: 8000,
+    plannedEventsMin: 3, plannedEventsMax: 6,
+    notes: 'Planning to play Main Event + 2-3 side events. May fire additional bullets in Mystery Bounty if structure is good.',
+    notesZh: '計劃打主賽事加2-3場邊賽。如果結構好的話，可能會在神秘賞金賽加入額外子彈。',
+    status: 'active',
+    createdAt: '2026-03-15T10:00:00Z',
+    entries: [] as any[],
+  },
+  {
+    id: 'pkg2',
+    playerId: 'p13', // Tony Lin
+    festivalName: 'APT Taipei 2026', festivalNameZh: 'APT台北2026',
+    festivalBrand: 'APT',
+    venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區',
+    region: 'TW',
+    festivalStart: '2026-04-22', festivalEnd: '2026-05-03',
+    markup: 1.30, totalActionOffered: 5, actionSold: 5, minThreshold: 3,
+    budgetMin: 15000, budgetMax: 30000,
+    plannedEventsMin: 3, plannedEventsMax: 5,
+    notes: 'Super High Roller + Main Event + High Roller. Going for APT POY points.',
+    notesZh: '超高額賽 + 主賽事 + 高額賽。爭取APT年度積分。',
+    status: 'filled',
+    createdAt: '2026-03-10T08:00:00Z',
+    entries: [] as any[],
+  },
+  {
+    id: 'pkg3',
+    playerId: 'p14', // Eric Tsai (小六)
+    festivalName: 'TMT 20', festivalNameZh: 'TMT 20',
+    festivalBrand: 'TMT',
+    venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北',
+    region: 'TW',
+    festivalStart: '2026-07-08', festivalEnd: '2026-08-03',
+    markup: 1.18, totalActionOffered: 10, actionSold: 6, minThreshold: 5,
+    budgetMin: 5000, budgetMax: 15000,
+    plannedEventsMin: 4, plannedEventsMax: 8,
+    notes: 'Full festival grind. Main Event + High Roller + Monster Stack for sure, plus side events based on schedule.',
+    notesZh: '全系列磨練。確定打主賽事 + 高額賽 + 怪獸籌碼賽，邊賽根據賽程安排。',
+    status: 'active',
+    createdAt: '2026-03-16T12:00:00Z',
+    entries: [] as any[],
+  },
+  {
+    id: 'pkg4',
+    playerId: 'p7', // Chi Jen Chu
+    festivalName: 'WPT Taiwan 2026', festivalNameZh: 'WPT台灣2026',
+    festivalBrand: 'WPT',
+    venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區',
+    region: 'TW',
+    festivalStart: '2026-06-10', festivalEnd: '2026-06-18',
+    markup: 1.12, totalActionOffered: 15, actionSold: 10, minThreshold: 8,
+    budgetMin: 4000, budgetMax: 10000,
+    plannedEventsMin: 2, plannedEventsMax: 4,
+    notes: 'Main Event is the priority. Will also play High Roller if I bust day 1. Kickoff as warm-up.',
+    notesZh: '主賽事是首要目標。如果第一天淘汰會打高額賽。開幕賽作為熱身。',
+    status: 'active',
+    createdAt: '2026-03-17T09:00:00Z',
+    entries: [] as any[],
+  },
+  {
+    id: 'pkg5',
+    playerId: 'p3', // Nevan Chang
+    festivalName: 'APT Championship 2026', festivalNameZh: 'APT年度總冠軍賽2026',
+    festivalBrand: 'APT',
+    venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區',
+    region: 'TW',
+    festivalStart: '2026-11-13', festivalEnd: '2026-11-29',
+    markup: 1.15, totalActionOffered: 10, actionSold: 4, minThreshold: 5,
+    budgetMin: 12000, budgetMax: 25000,
+    plannedEventsMin: 3, plannedEventsMax: 6,
+    notes: 'Season finale. Main Event + Super High Roller + Zodiac Classic. Going for big scores to end the year.',
+    notesZh: '賽季終賽。主賽事 + 超高額賽 + 生肖經典賽。爭取大獎為今年畫下完美句點。',
+    status: 'active',
+    createdAt: '2026-03-18T11:00:00Z',
+    entries: [] as any[],
+  },
+  {
+    id: 'pkg6',
+    playerId: 'p15', // Charlie Chiu
+    festivalName: 'APT Taipei 2026', festivalNameZh: 'APT台北2026',
+    festivalBrand: 'APT',
+    venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區',
+    region: 'TW',
+    festivalStart: '2026-04-22', festivalEnd: '2026-05-03',
+    markup: 1.20, totalActionOffered: 8, actionSold: 5, minThreshold: 4,
+    budgetMin: 5000, budgetMax: 12000,
+    plannedEventsMin: 3, plannedEventsMax: 5,
+    notes: 'Main Event + High Roller + Zodiac Classic. Flying in from HK, committed to full schedule.',
+    notesZh: '主賽事 + 高額賽 + 生肖經典賽。從香港飛過來，全程參賽。',
+    status: 'active',
+    createdAt: '2026-03-14T15:00:00Z',
+    entries: [] as any[],
+  },
+  {
+    id: 'pkg7',
+    playerId: 'p2', // Chih Feng Li
+    festivalName: 'CPPT Taiwan 2026', festivalNameZh: 'CPPT台灣2026',
+    festivalBrand: 'CPPT',
+    venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區',
+    region: 'TW',
+    festivalStart: '2026-05-15', festivalEnd: '2026-05-20',
+    markup: 1.15, totalActionOffered: 12, actionSold: 8, minThreshold: 6,
+    budgetMin: 2000, budgetMax: 5000,
+    plannedEventsMin: 2, plannedEventsMax: 3,
+    notes: 'Main Event + Bounty Hunter. Solid structures, good value for grinders.',
+    notesZh: '主賽事 + 賞金獵人賽。結構穩健，對選手價值高。',
+    status: 'active',
+    createdAt: '2026-03-19T08:00:00Z',
+    entries: [] as any[],
+  },
+  {
+    id: 'pkg8',
+    playerId: 'p5', // Zong Chi He
+    festivalName: 'TMT Championship 2026', festivalNameZh: 'TMT錦標賽2026',
+    festivalBrand: 'TMT',
+    venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北',
+    region: 'TW',
+    festivalStart: '2026-10-16', festivalEnd: '2026-10-26',
+    markup: 1.08, totalActionOffered: 15, actionSold: 9, minThreshold: 8,
+    budgetMin: 3000, budgetMax: 8000,
+    plannedEventsMin: 3, plannedEventsMax: 5,
+    notes: 'Main Event + Mystery Bounty + Warm-Up. Volume approach — looking for deep runs across multiple events.',
+    notesZh: '主賽事 + 神秘賞金賽 + 熱身賽。以量取勝——在多場賽事中尋求深入表現。',
+    status: 'active',
+    createdAt: '2026-03-19T14:00:00Z',
+    entries: [] as any[],
+  },
 ];

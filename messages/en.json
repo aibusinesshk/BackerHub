@@ -163,7 +163,22 @@
     "completed": "Completed",
     "cancelled": "Cancelled",
     "in_progress": "In Progress",
-    "searchPlaceholder": "Search players or tournaments..."
+    "searchPlaceholder": "Search players or tournaments...",
+    "packageBadge": "Festival Package",
+    "budget": "Budget",
+    "budgetRange": "${min}–${max}",
+    "plannedEvents": "Planned Events",
+    "plannedEventsRange": "{min}–{max} events",
+    "festivalDates": "Festival Dates",
+    "bullets": "bullets",
+    "totalSpent": "Total Spent",
+    "totalWon": "Total Won",
+    "pending_result": "Pending Result",
+    "settled": "Settled",
+    "viewPackage": "View Package",
+    "listingTypeAll": "All Listings",
+    "listingTypeSingle": "Single Tournament",
+    "listingTypePackage": "Festival Package"
   },
   "player": {
     "verified": "Verified Player",

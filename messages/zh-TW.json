@@ -163,7 +163,22 @@
     "completed": "已完成",
     "cancelled": "已取消",
     "in_progress": "進行中",
-    "searchPlaceholder": "搜尋選手或錦標賽..."
+    "searchPlaceholder": "搜尋選手或錦標賽...",
+    "packageBadge": "系列賽套餐",
+    "budget": "預算",
+    "budgetRange": "${min}–${max}",
+    "plannedEvents": "計劃賽事",
+    "plannedEventsRange": "{min}–{max} 場賽事",
+    "festivalDates": "系列賽日期",
+    "bullets": "子彈",
+    "totalSpent": "總花費",
+    "totalWon": "總獎金",
+    "pending_result": "等待結果",
+    "settled": "已結算",
+    "viewPackage": "查看套餐",
+    "listingTypeAll": "所有列表",
+    "listingTypeSingle": "單場賽事",
+    "listingTypePackage": "系列賽套餐"
   },
   "player": {
     "verified": "認證選手",
