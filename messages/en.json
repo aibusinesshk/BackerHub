@@ -204,7 +204,8 @@
       "cancelConfirm": "Cancel this listing? All backers will be refunded automatically.",
       "cancelSuccess": "Listing cancelled. All backers have been refunded.",
       "cancelling": "Cancelling...",
-      "manageListings": "Manage Listings"
+      "manageListings": "Manage Listings",
+      "profileColor": "Profile Color"
     }
   },
   "notifications": {

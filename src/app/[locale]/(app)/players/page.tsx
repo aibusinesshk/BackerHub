@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency, formatPercent } from '@/lib/format';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
+import { getPlayerColorTone } from '@/lib/player-colors';
 import {
-  Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink,
+  Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink, Spade,
 } from 'lucide-react';
 import type { Player } from '@/types';
 
@@ -112,23 +113,49 @@ export default function PlayersPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((player) => {
             const playerName = locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName;
+            const tone = getPlayerColorTone(player.colorTone);
 
             return (
               <div
                 key={player.id}
-                className="group rounded-2xl border border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)]"
+                className={`group rounded-2xl border bg-[#111318] overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)] ${tone.border}`}
               >
-                <div className="p-5">
-                  {/* Player info with circular avatar */}
-                  <div className="flex items-center gap-3 mb-4">
+                {/* Color tone banner */}
+                <div
+                  className={`relative h-24 bg-gradient-to-br ${tone.gradient} overflow-hidden`}
+                  style={{ backgroundImage: tone.pattern }}
+                >
+                  {/* Decorative elements */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <Spade className={`absolute -right-2 -top-2 h-20 w-20 ${tone.accent} opacity-[0.06]`} strokeWidth={1} />
+                    <div
+                      className="absolute inset-0 opacity-[0.03]"
+                      style={{
+                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+                        backgroundSize: '24px 24px',
+                      }}
+                    />
+                  </div>
+
+                  {/* Region badge on banner */}
+                  <div className="absolute top-3 right-3">
+                    <span className="text-xs bg-black/30 backdrop-blur-sm rounded px-1.5 py-0.5 text-white/60">
+                      {player.region === 'TW' ? '🇹🇼' : player.region === 'HK' ? '🇭🇰' : '🌐'} {player.region}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Player info bridging banner */}
+                <div className="px-4 -mt-6 relative z-10">
+                  <div className={`flex items-center gap-3 rounded-xl bg-[#111318] border p-2.5 shadow-lg ${tone.border}`}>
                     <PlayerAvatar
                       src={player.avatarUrl}
                       name={player.displayName}
-                      className="h-11 w-11 flex-shrink-0"
+                      className="h-10 w-10 flex-shrink-0"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1">
-                        <h3 className="text-base font-bold text-white truncate">{playerName}</h3>
+                        <h3 className="text-sm font-bold text-white truncate">{playerName}</h3>
                         {player.isVerified && (
                           <span className="flex-shrink-0 inline-flex items-center justify-center h-3 w-3 rounded-full bg-gold-400/80">
                             <Check className="h-2 w-2 text-black" strokeWidth={3.5} />
@@ -136,32 +163,34 @@ export default function PlayersPage() {
                         )}
                       </div>
                       <p className="text-xs text-white/50">
-                        {player.region === 'TW' ? '🇹🇼' : player.region === 'HK' ? '🇭🇰' : '🌐'}{' '}
                         {player.stats.totalTournaments} {t('tournaments')}
                       </p>
                     </div>
                   </div>
+                </div>
+
+                <div className="p-4 pt-3">
                   {/* Stats grid */}
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    <div className="rounded-lg bg-white/[0.03] p-3 text-center">
-                      <TrendingUp className="mx-auto h-4 w-4 text-green-400 mb-1" />
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
+                      <TrendingUp className="mx-auto h-3.5 w-3.5 text-green-400 mb-1" />
                       <p className="text-sm font-semibold text-green-400">{formatPercent(player.stats.lifetimeROI)}</p>
                       <p className="text-[10px] text-white/40">{t('roi')}</p>
                     </div>
-                    <div className="rounded-lg bg-white/[0.03] p-3 text-center">
-                      <Trophy className="mx-auto h-4 w-4 text-gold-400 mb-1" />
+                    <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
+                      <Trophy className="mx-auto h-3.5 w-3.5 text-gold-400 mb-1" />
                       <p className="text-sm font-semibold text-white">{formatCurrency(player.stats.biggestWin)}</p>
                       <p className="text-[10px] text-white/40">{t('biggestWin')}</p>
                     </div>
-                    <div className="rounded-lg bg-white/[0.03] p-3 text-center">
-                      <p className="text-sm font-semibold text-white mt-4">{player.stats.cashRate}%</p>
+                    <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
+                      <p className="text-sm font-semibold text-white mt-3.5">{player.stats.cashRate}%</p>
                       <p className="text-[10px] text-white/40">{t('cashRate')}</p>
                     </div>
                   </div>
 
                   {/* Total earnings */}
                   {player.stats.totalStakedValue > 0 && (
-                    <div className="mb-4 rounded-lg bg-white/[0.03] px-4 py-2.5 flex items-center justify-between">
+                    <div className="mb-3 rounded-lg bg-white/[0.03] px-3 py-2 flex items-center justify-between">
                       <span className="text-xs text-white/40">{t('totalEarnings')}</span>
                       <span className="text-sm font-semibold text-gold-400">
                         {formatCurrency(player.stats.totalStakedValue)}
@@ -175,7 +204,7 @@ export default function PlayersPage() {
                       href={player.hendonMobUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mb-4 flex items-center gap-2 text-xs text-white/40 hover:text-gold-400 transition-colors"
+                      className="mb-3 flex items-center gap-2 text-xs text-white/40 hover:text-gold-400 transition-colors"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
                       {t('hendonMob')}

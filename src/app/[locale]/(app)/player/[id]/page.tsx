@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
 import { PlayerHeroImage } from '@/components/shared/player-hero-image';
+import { getPlayerColorTone } from '@/lib/player-colors';
 import { Check, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2 } from 'lucide-react';
 import type { Player, StakingListing, Review } from '@/types';
 
@@ -49,6 +50,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
 
   const name = locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName;
   const bio = locale === 'zh-TW' && player.bioZh ? player.bioZh : player.bio;
+  const tone = getPlayerColorTone(player.colorTone);
   const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
 
   const stats = [
@@ -68,8 +70,8 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           {/* Player Header with Large Photo */}
-          <Card className="border-white/[0.06] bg-[#111318] overflow-hidden">
-            <div className="relative h-56 sm:h-64 bg-gradient-to-b from-[#1a1d24] to-[#111318]">
+          <Card className={`${tone.border} bg-[#111318] overflow-hidden`}>
+            <div className={`relative h-56 sm:h-64 bg-gradient-to-br ${tone.gradient}`} style={{ backgroundImage: tone.pattern }}>
               <PlayerHeroImage
                 src={player.avatarUrl}
                 alt={name}

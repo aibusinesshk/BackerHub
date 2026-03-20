@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/format';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { TournamentBrandBanner } from '@/components/shared/tournament-brand-banner';
+import { getPlayerColorTone } from '@/lib/player-colors';
 import { Search, Filter, Check, TrendingUp, Loader2, ArrowUpDown, ChevronDown } from 'lucide-react';
 import type { StakingListing } from '@/types';
 
@@ -297,6 +298,7 @@ export default function MarketplacePage() {
             const playerName = locale === 'zh-TW' && listing.player.displayNameZh ? listing.player.displayNameZh : listing.player.displayName;
             const tournamentName = locale === 'zh-TW' && listing.tournament.nameZh ? listing.tournament.nameZh : listing.tournament.name;
             const soldPercent = (listing.actionSold / listing.totalActionOffered) * 100;
+            const playerTone = getPlayerColorTone(listing.player.colorTone);
 
             return (
               <Card key={listing.id} className="border-white/[0.06] bg-[#111318] overflow-hidden transition-all hover:border-gold-500/20 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,184,28,0.05)] flex flex-col">
@@ -316,7 +318,7 @@ export default function MarketplacePage() {
 
                 {/* Player info — bridging banner and content */}
                 <div className="px-4 -mt-5 relative z-10">
-                  <div className="flex items-center gap-3 rounded-xl bg-[#111318] border border-white/[0.06] p-2.5 shadow-lg">
+                  <div className={`flex items-center gap-3 rounded-xl bg-[#111318] border p-2.5 shadow-lg ${playerTone.border}`}>
                     <PlayerAvatar
                       src={listing.player.avatarUrl}
                       name={listing.player.displayName}

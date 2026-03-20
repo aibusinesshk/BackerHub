@@ -34,7 +34,7 @@ export async function PUT(request: Request) {
   // Allowlist of editable fields only
   const allowedFields = [
     'display_name', 'display_name_zh', 'avatar_url',
-    'bio', 'bio_zh', 'role', 'region',
+    'bio', 'bio_zh', 'role', 'region', 'color_tone',
   ];
   const updates: Record<string, any> = {};
   for (const key of allowedFields) {
@@ -52,6 +52,9 @@ export async function PUT(request: Request) {
   }
   if (updates.region && !['TW', 'HK', 'OTHER'].includes(updates.region)) {
     return NextResponse.json({ error: 'Invalid region' }, { status: 400 });
+  }
+  if (updates.color_tone !== undefined && updates.color_tone !== null && !['red', 'blue', 'emerald', 'purple', 'amber', 'cyan', 'rose', 'gold'].includes(updates.color_tone)) {
+    return NextResponse.json({ error: 'Invalid color tone' }, { status: 400 });
   }
 
   updates.updated_at = new Date().toISOString();

@@ -61,6 +61,7 @@ export async function GET(request: Request) {
       bio: p.bio || '',
       bioZh: p.bio_zh,
       hendonMobUrl: p.hendon_mob_url || null,
+      colorTone: p.color_tone || null,
       stats: stats ? {
         lifetimeROI: Number(stats.lifetime_roi),
         totalTournaments: stats.total_tournaments,

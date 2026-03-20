@@ -2,6 +2,7 @@ export type Locale = 'en' | 'zh-TW';
 export type Currency = 'USD' | 'TWD' | 'HKD';
 export type Region = 'TW' | 'HK' | 'OTHER';
 export type UserRole = 'investor' | 'player' | 'both';
+export type PlayerColorTone = 'red' | 'blue' | 'emerald' | 'purple' | 'amber' | 'cyan' | 'rose' | 'gold';
 
 export interface Player {
   id: string;
@@ -15,6 +16,7 @@ export interface Player {
   bio: string;
   bioZh?: string;
   hendonMobUrl?: string;
+  colorTone?: PlayerColorTone;
 }
 
 export interface PlayerStats {
