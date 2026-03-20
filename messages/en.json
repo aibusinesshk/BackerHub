@@ -114,7 +114,10 @@
     "tournaments": "Tournaments",
     "cashRate": "Cash Rate",
     "verified": "Verified",
-    "showingCount": "{count} players found"
+    "showingCount": "{count} players found",
+    "newPlayer": "New Player",
+    "newPlayerDesc": "Recently joined — no tournament history yet",
+    "justJoined": "Just joined"
   },
   "marketplace": {
     "title": "Staking Marketplace",
@@ -174,7 +177,9 @@
     "roiHistory": "ROI History (12 Months)",
     "aboutPlayer": "About",
     "noListings": "No active listings at the moment",
-    "noReviews": "No reviews yet"
+    "noReviews": "No reviews yet",
+    "newPlayer": "New Player",
+    "newPlayerProfileDesc": "This player recently joined BackerHub and hasn't competed in any tracked tournaments yet. Stats will appear once they start playing."
   },
   "dashboard": {
     "investor": {

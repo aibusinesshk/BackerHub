@@ -10,7 +10,7 @@ import { formatCurrency, formatPercent } from '@/lib/format';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { getPlayerColorTone } from '@/lib/player-colors';
 import {
-  Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink, Spade,
+  Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink, Spade, Sparkles,
 } from 'lucide-react';
 import type { Player } from '@/types';
 
@@ -163,38 +163,53 @@ export default function PlayersPage() {
                         )}
                       </div>
                       <p className="text-xs text-white/50">
-                        {player.stats.totalTournaments} {t('tournaments')}
+                        {player.stats.totalTournaments > 0
+                          ? `${player.stats.totalTournaments} ${t('tournaments')}`
+                          : t('justJoined')}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-4 pt-3">
-                  {/* Stats grid */}
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
-                      <TrendingUp className="mx-auto h-3.5 w-3.5 text-green-400 mb-1" />
-                      <p className="text-sm font-semibold text-green-400">{formatPercent(player.stats.lifetimeROI)}</p>
-                      <p className="text-[10px] text-white/40">{t('roi')}</p>
-                    </div>
-                    <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
-                      <Trophy className="mx-auto h-3.5 w-3.5 text-gold-400 mb-1" />
-                      <p className="text-sm font-semibold text-white">{formatCurrency(player.stats.biggestWin)}</p>
-                      <p className="text-[10px] text-white/40">{t('biggestWin')}</p>
-                    </div>
-                    <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
-                      <p className="text-sm font-semibold text-white mt-3.5">{player.stats.cashRate}%</p>
-                      <p className="text-[10px] text-white/40">{t('cashRate')}</p>
-                    </div>
-                  </div>
+                  {player.stats.totalTournaments > 0 ? (
+                    <>
+                      {/* Stats grid */}
+                      <div className="grid grid-cols-3 gap-2 mb-3">
+                        <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
+                          <TrendingUp className="mx-auto h-3.5 w-3.5 text-green-400 mb-1" />
+                          <p className="text-sm font-semibold text-green-400">{formatPercent(player.stats.lifetimeROI)}</p>
+                          <p className="text-[10px] text-white/40">{t('roi')}</p>
+                        </div>
+                        <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
+                          <Trophy className="mx-auto h-3.5 w-3.5 text-gold-400 mb-1" />
+                          <p className="text-sm font-semibold text-white">{formatCurrency(player.stats.biggestWin)}</p>
+                          <p className="text-[10px] text-white/40">{t('biggestWin')}</p>
+                        </div>
+                        <div className="rounded-lg bg-white/[0.03] p-2.5 text-center">
+                          <p className="text-sm font-semibold text-white mt-3.5">{player.stats.cashRate}%</p>
+                          <p className="text-[10px] text-white/40">{t('cashRate')}</p>
+                        </div>
+                      </div>
 
-                  {/* Total earnings */}
-                  {player.stats.totalStakedValue > 0 && (
-                    <div className="mb-3 rounded-lg bg-white/[0.03] px-3 py-2 flex items-center justify-between">
-                      <span className="text-xs text-white/40">{t('totalEarnings')}</span>
-                      <span className="text-sm font-semibold text-gold-400">
-                        {formatCurrency(player.stats.totalStakedValue)}
-                      </span>
+                      {/* Total earnings */}
+                      {player.stats.totalStakedValue > 0 && (
+                        <div className="mb-3 rounded-lg bg-white/[0.03] px-3 py-2 flex items-center justify-between">
+                          <span className="text-xs text-white/40">{t('totalEarnings')}</span>
+                          <span className="text-sm font-semibold text-gold-400">
+                            {formatCurrency(player.stats.totalStakedValue)}
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    /* New player — no stats yet */
+                    <div className="mb-3 rounded-xl bg-white/[0.03] border border-dashed border-white/[0.08] p-4 text-center">
+                      <Sparkles className={`mx-auto h-5 w-5 mb-2 ${tone.accent}`} />
+                      <Badge variant="outline" className={`text-[10px] mb-1.5 ${tone.accent} ${tone.border}`}>
+                        {t('newPlayer')}
+                      </Badge>
+                      <p className="text-xs text-white/40">{t('newPlayerDesc')}</p>
                     </div>
                   )}
 

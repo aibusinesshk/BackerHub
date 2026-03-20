@@ -114,7 +114,10 @@
     "tournaments": "錦標賽",
     "cashRate": "兌現率",
     "verified": "已認證",
-    "showingCount": "找到 {count} 位選手"
+    "showingCount": "找到 {count} 位選手",
+    "newPlayer": "新選手",
+    "newPlayerDesc": "剛加入平台，尚無賽事記錄",
+    "justJoined": "剛加入"
   },
   "marketplace": {
     "title": "質押市場",
@@ -174,7 +177,9 @@
     "roiHistory": "回報率歷史（12個月）",
     "aboutPlayer": "關於選手",
     "noListings": "目前沒有進行中的列表",
-    "noReviews": "尚無評價"
+    "noReviews": "尚無評價",
+    "newPlayer": "新選手",
+    "newPlayerProfileDesc": "此選手剛加入BackerHub，尚未參加任何追蹤賽事。開始比賽後將顯示數據統計。"
   },
   "dashboard": {
     "investor": {

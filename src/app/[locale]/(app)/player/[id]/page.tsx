@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
 import { PlayerHeroImage } from '@/components/shared/player-hero-image';
 import { getPlayerColorTone } from '@/lib/player-colors';
-import { Check, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2 } from 'lucide-react';
+import { Check, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2, Sparkles } from 'lucide-react';
 import type { Player, StakingListing, Review } from '@/types';
 
 export default function PlayerProfilePage({ params }: { params: Promise<{ id: string }> }) {
@@ -109,42 +109,59 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
             )}
           </Card>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {stats.map((s) => (
-              <Card key={s.label} className="border-white/[0.06] bg-[#111318]">
-                <CardContent className="pt-4 pb-4 text-center">
-                  <s.icon className={`mx-auto h-5 w-5 ${s.color} mb-2`} />
-                  <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-                  <p className="text-[10px] text-white/40">{s.label}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* ROI Chart */}
-          <Card className="border-white/[0.06] bg-[#111318]">
-            <CardHeader><CardTitle className="text-white text-sm">{t('roiHistory')}</CardTitle></CardHeader>
-            <CardContent>
-              <div className="flex items-end gap-1 h-32">
-                {roiData.map((d) => {
-                  const height = Math.abs(d.roi) / maxROI * 100;
-                  return (
-                    <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full flex flex-col items-center" style={{ height: '100px' }}>
-                        <div className="flex-1" />
-                        <div
-                          className={`w-full rounded-sm ${d.roi >= 0 ? 'bg-green-500/60' : 'bg-red-500/60'}`}
-                          style={{ height: `${height}%`, minHeight: '2px' }}
-                        />
-                      </div>
-                      <span className="text-[8px] text-white/30">{d.month.slice(5)}</span>
-                    </div>
-                  );
-                })}
+          {player.stats.totalTournaments > 0 ? (
+            <>
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {stats.map((s) => (
+                  <Card key={s.label} className="border-white/[0.06] bg-[#111318]">
+                    <CardContent className="pt-4 pb-4 text-center">
+                      <s.icon className={`mx-auto h-5 w-5 ${s.color} mb-2`} />
+                      <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
+                      <p className="text-[10px] text-white/40">{s.label}</p>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </CardContent>
-          </Card>
+
+              {/* ROI Chart */}
+              {roiData.length > 0 && (
+                <Card className="border-white/[0.06] bg-[#111318]">
+                  <CardHeader><CardTitle className="text-white text-sm">{t('roiHistory')}</CardTitle></CardHeader>
+                  <CardContent>
+                    <div className="flex items-end gap-1 h-32">
+                      {roiData.map((d) => {
+                        const height = Math.abs(d.roi) / maxROI * 100;
+                        return (
+                          <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
+                            <div className="w-full flex flex-col items-center" style={{ height: '100px' }}>
+                              <div className="flex-1" />
+                              <div
+                                className={`w-full rounded-sm ${d.roi >= 0 ? 'bg-green-500/60' : 'bg-red-500/60'}`}
+                                style={{ height: `${height}%`, minHeight: '2px' }}
+                              />
+                            </div>
+                            <span className="text-[8px] text-white/30">{d.month.slice(5)}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          ) : (
+            /* New player notice */
+            <Card className={`${tone.border} bg-[#111318]`}>
+              <CardContent className="py-10 text-center">
+                <Sparkles className={`mx-auto h-8 w-8 mb-3 ${tone.accent}`} />
+                <Badge variant="outline" className={`text-xs mb-2 ${tone.accent} ${tone.border}`}>
+                  {t('newPlayer')}
+                </Badge>
+                <p className="text-sm text-white/50 max-w-md mx-auto">{t('newPlayerProfileDesc')}</p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Reviews */}
           <Card className="border-white/[0.06] bg-[#111318]">
