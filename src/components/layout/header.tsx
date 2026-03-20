@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { LanguageSwitcher } from './language-switcher';
-import { Menu, User, LayoutDashboard, LogOut, Spade, Shield, List } from 'lucide-react';
+import { Menu, User, LayoutDashboard, LogOut, Shield, List } from 'lucide-react';
+import Image from 'next/image';
 import { NotificationBell } from '@/components/shared/notification-bell';
 
 export function Header() {
@@ -53,9 +54,7 @@ export function Header() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold-500 text-black">
-            <Spade className="h-5 w-5" />
-          </div>
+          <Image src="/images/logo.png" alt="BackerHub" width={32} height={32} className="h-8 w-8" />
           <span className="text-lg font-bold tracking-tight text-white">
             Backer<span className="text-gold-400">Hub</span>
           </span>

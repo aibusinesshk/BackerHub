@@ -28,6 +28,15 @@ export const metadata: Metadata = {
     template: '%s | BackerHub',
     default: 'BackerHub - Back Players. Share Victories.',
   },
+  icons: {
+    icon: [
+      { url: '/images/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/images/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/images/icon-192.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   description:
     'Invest in poker players or sell your tournament action. The first poker staking platform built for the Asian market.',
   metadataBase: new URL(siteUrl),
