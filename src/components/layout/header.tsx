@@ -113,7 +113,7 @@ export function Header() {
                 {user.isAdmin && (
                   <DropdownMenuItem render={<Link href={'/admin/kyc' as any} />} className="flex items-center gap-2">
                       <Shield className="h-4 w-4" />
-                      Admin
+                      {t('nav.admin')}
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
@@ -189,7 +189,7 @@ export function Header() {
                         onClick={() => setMobileOpen(false)}
                         className="rounded-lg px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
                       >
-                        Admin
+                        {t('nav.admin')}
                       </Link>
                     )}
                     <button

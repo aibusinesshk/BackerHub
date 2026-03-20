@@ -47,13 +47,13 @@ export function Footer() {
             <h3 className="mb-3 text-sm font-semibold text-white">{t('legal')}</h3>
             <div className="flex flex-wrap gap-2">
               <div className="flex items-center gap-1 text-xs text-white/40">
-                <Shield className="h-3 w-3" /> SSL Secured
+                <Shield className="h-3 w-3" /> {t('sslSecured')}
               </div>
               <div className="flex items-center gap-1 text-xs text-white/40">
-                <Shield className="h-3 w-3" /> Crypto-Native
+                <Shield className="h-3 w-3" /> {t('cryptoNative')}
               </div>
               <div className="flex items-center gap-1 text-xs text-white/40">
-                <Wallet className="h-3 w-3" /> Escrow Protected
+                <Wallet className="h-3 w-3" /> {t('escrowProtected')}
               </div>
             </div>
           </div>

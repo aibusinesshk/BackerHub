@@ -20,6 +20,7 @@ const KYC_DOCS = ['id-front', 'id-back', 'selfie', 'proof-of-address'] as const;
 
 export default function ProfilePage() {
   const t = useTranslations('profile');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const { refreshProfile } = useAuth();
 
@@ -57,7 +58,8 @@ export default function ProfilePage() {
   const [kycError, setKycError] = useState('');
 
   useEffect(() => {
-    fetch('/api/profile')
+    const controller = new AbortController();
+    fetch('/api/profile', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
         if (data.profile) {
@@ -74,9 +76,10 @@ export default function ProfilePage() {
           setMemberSince(p.member_since || p.created_at || '');
         }
       })
-      .catch(() => setError('Failed to load profile'))
+      .catch((err) => { if (err.name !== 'AbortError') setError(tc('failedToLoadProfile')); })
       .finally(() => setLoading(false));
-  }, []);
+    return () => controller.abort();
+  }, [tc]);
 
   const handleSave = async () => {
     if (!displayName.trim()) {
@@ -102,7 +105,7 @@ export default function ProfilePage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Failed to save');
+        setError(data.error || tc('failedToSave'));
         return;
       }
 
@@ -110,7 +113,7 @@ export default function ProfilePage() {
       await refreshProfile();
       setTimeout(() => setSaved(false), 3000);
     } catch {
-      setError('Network error');
+      setError(tc('networkError'));
     } finally {
       setSaving(false);
     }
@@ -147,13 +150,13 @@ export default function ProfilePage() {
       const res = await fetch('/api/profile/avatar', { method: 'POST', body: formData });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Upload failed');
+        setError(data.error || tc('uploadFailed'));
         return;
       }
       setAvatarUrl(data.avatar_url);
       await refreshProfile();
     } catch {
-      setError('Network error');
+      setError(tc('networkError'));
     } finally {
       setUploading(false);
     }
@@ -181,12 +184,12 @@ export default function ProfilePage() {
       const res = await fetch('/api/profile/kyc', { method: 'POST', body: formData });
       const data = await res.json();
       if (!res.ok) {
-        setKycError(data.error || 'Submission failed');
+        setKycError(data.error || tc('failedToSave'));
         return;
       }
       setKycStatus('pending');
     } catch {
-      setKycError('Network error');
+      setKycError(tc('networkError'));
     } finally {
       setKycSubmitting(false);
     }

@@ -18,7 +18,7 @@ export function PreLaunchBanner() {
           <div className="flex flex-1 items-center justify-center gap-3 flex-wrap">
             <span className="flex items-center gap-1.5 rounded-full bg-black/10 px-3 py-0.5 text-xs font-bold uppercase tracking-wider">
               <Zap className="h-3 w-3" />
-              FREE
+              {t('freeBadge')}
             </span>
             <p className="text-sm font-bold sm:text-base">
               {t('banner')}

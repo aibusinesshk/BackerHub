@@ -38,7 +38,10 @@
     "failedToCreateDeposit": "建立儲值請求失敗",
     "failedToSubmitWithdrawal": "提交提款請求失敗",
     "couldNotLoadListing": "無法載入項目詳情。",
-    "failedToSubmitResult": "提交結果失敗"
+    "failedToSubmitResult": "提交結果失敗",
+    "failedToLoadProfile": "載入個人資料失敗",
+    "failedToSave": "儲存失敗",
+    "uploadFailed": "上傳失敗"
   },
   "nav": {
     "marketplace": "市場",
@@ -48,6 +51,8 @@
     "profile": "個人資料",
     "settings": "設定",
     "logout": "登出",
+    "admin": "管理",
+    "home": "首頁",
     "contact": "聯絡",
     "players": "選手",
     "sellAction": "賣份額",
@@ -448,7 +453,10 @@
     "platform": "平台",
     "company": "公司",
     "legal": "法律",
-    "disclaimer": "BackerHub 是一個技術性智力運動競賽的選手贊助平台。撲克錦標賽（MTT）在台灣被認定為競技智力運動。這不是博弈或證券平台。"
+    "disclaimer": "BackerHub 是一個技術性智力運動競賽的選手贊助平台。撲克錦標賽（MTT）在台灣被認定為競技智力運動。這不是博弈或證券平台。",
+    "sslSecured": "SSL 安全加密",
+    "cryptoNative": "加密貨幣原生",
+    "escrowProtected": "託管保護"
   },
   "notFound": {
     "title": "找不到頁面",
@@ -823,7 +831,8 @@
   "preLaunch": {
     "banner": "預上線特惠：0% 平台手續費",
     "bannerSub": "預上線期間免費贊助選手 — 零佣金，零隱藏費用。",
-    "cta": "免費開始"
+    "cta": "免費開始",
+    "freeBadge": "免費"
   },
   "legal": {
     "termsTitle": "服務條款",

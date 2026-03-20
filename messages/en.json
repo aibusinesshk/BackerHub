@@ -38,7 +38,10 @@
     "failedToCreateDeposit": "Failed to create deposit",
     "failedToSubmitWithdrawal": "Failed to submit withdrawal",
     "couldNotLoadListing": "Could not load listing details.",
-    "failedToSubmitResult": "Failed to submit result"
+    "failedToSubmitResult": "Failed to submit result",
+    "failedToLoadProfile": "Failed to load profile",
+    "failedToSave": "Failed to save",
+    "uploadFailed": "Upload failed"
   },
   "nav": {
     "marketplace": "Marketplace",
@@ -48,6 +51,8 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Log Out",
+    "admin": "Admin",
+    "home": "Home",
     "contact": "Contact",
     "players": "Players",
     "sellAction": "Sell Action",
@@ -448,7 +453,10 @@
     "platform": "Platform",
     "company": "Company",
     "legal": "Legal",
-    "disclaimer": "BackerHub is a player sponsorship platform for skill-based mind sport competition. Tournament poker (MTT) is recognized as a competitive mind sport in Taiwan. This is not a gambling or securities platform."
+    "disclaimer": "BackerHub is a player sponsorship platform for skill-based mind sport competition. Tournament poker (MTT) is recognized as a competitive mind sport in Taiwan. This is not a gambling or securities platform.",
+    "sslSecured": "SSL Secured",
+    "cryptoNative": "Crypto-Native",
+    "escrowProtected": "Escrow Protected"
   },
   "notFound": {
     "title": "Page Not Found",
@@ -823,7 +831,8 @@
   "preLaunch": {
     "banner": "Pre-Launch Special: 0% Platform Fee",
     "bannerSub": "Back players for free during our launch period — no commission, no hidden costs.",
-    "cta": "Get Started Free"
+    "cta": "Get Started Free",
+    "freeBadge": "FREE"
   },
   "legal": {
     "termsTitle": "Terms of Service",
