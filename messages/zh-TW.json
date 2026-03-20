@@ -45,7 +45,11 @@
     "step2Title": "購買份額",
     "step2Desc": "以選手設定的加價率購買其錦標賽份額的百分比。",
     "step3Title": "共同獲勝",
-    "step3Desc": "當選手獲獎時，獎金會自動按比例分配給所有贊助者。"
+    "step3Desc": "當選手獲獎時，獎金會自動按比例分配給所有贊助者。",
+    "videoTitle": "觀看教學影片",
+    "videoSubtitle": "觀看快速教學，了解如何贊助選手並共享錦標賽獎金。",
+    "videoPlay": "播放教學",
+    "videoDuration": "2 分鐘"
   },
   "stats": {
     "totalInvested": "總贊助金額",

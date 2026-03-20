@@ -45,7 +45,11 @@
     "step2Title": "Buy Action",
     "step2Desc": "Purchase a percentage of a player's tournament action at their set markup rate.",
     "step3Title": "Win Together",
-    "step3Desc": "When the player cashes, winnings are distributed proportionally to all backers automatically."
+    "step3Desc": "When the player cashes, winnings are distributed proportionally to all backers automatically.",
+    "videoTitle": "See How It Works",
+    "videoSubtitle": "Watch our quick tutorial to learn how to back players and share in their tournament winnings.",
+    "videoPlay": "Watch Tutorial",
+    "videoDuration": "2 min"
   },
   "stats": {
     "totalInvested": "Total Backed",
