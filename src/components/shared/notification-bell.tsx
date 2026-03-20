@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Bell } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/providers/auth-provider';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 interface Notification {
   id: string;
@@ -31,15 +31,7 @@ export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    if (!user) return;
-    fetchNotifications();
-    // Poll every 60 seconds
-    const interval = setInterval(fetchNotifications, 60000);
-    return () => clearInterval(interval);
-  }, [user]);
-
-  async function fetchNotifications() {
+  const fetchNotifications = useCallback(async () => {
     try {
       const res = await fetch('/api/notifications');
       if (!res.ok) return;
@@ -49,7 +41,57 @@ export function NotificationBell() {
     } catch {
       // ignore
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchNotifications();
+
+    // Use Supabase Realtime if configured, otherwise fall back to polling
+    if (isSupabaseConfigured()) {
+      const supabase = createClient();
+      const channel = supabase
+        .channel(`notifications:${user.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            const n = payload.new as any;
+            const newNotif: Notification = {
+              id: n.id,
+              type: n.type,
+              title: n.title,
+              titleZh: n.title_zh,
+              message: n.message,
+              messageZh: n.message_zh,
+              listingId: n.listing_id,
+              isRead: n.is_read,
+              createdAt: n.created_at,
+            };
+            setNotifications((prev) => [newNotif, ...prev].slice(0, 50));
+            setUnreadCount((prev) => prev + 1);
+          }
+        )
+        .subscribe();
+
+      // Still poll as a fallback, but less frequently
+      const interval = setInterval(fetchNotifications, 300000); // 5 minutes
+
+      return () => {
+        supabase.removeChannel(channel);
+        clearInterval(interval);
+      };
+    } else {
+      // Polling fallback when Supabase Realtime isn't available
+      const interval = setInterval(fetchNotifications, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [user, fetchNotifications]);
 
   async function markAllRead() {
     try {
@@ -69,10 +111,16 @@ export function NotificationBell() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="relative rounded-lg p-2 text-white/50 hover:text-white hover:bg-white/5 transition-colors outline-none cursor-pointer">
-        <Bell className="h-5 w-5" />
+      <DropdownMenuTrigger
+        className="relative rounded-lg p-2 text-white/50 hover:text-white hover:bg-white/5 transition-colors outline-none cursor-pointer"
+        aria-label={t('title')}
+      >
+        <Bell className="h-5 w-5" aria-hidden="true" />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+          <span
+            className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white"
+            aria-label={`${unreadCount} unread notifications`}
+          >
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -89,11 +137,18 @@ export function NotificationBell() {
         {notifications.length === 0 ? (
           <div className="px-3 py-6 text-center text-xs text-white/30">{t('noNotifications')}</div>
         ) : (
-          <div className="max-h-64 overflow-y-auto">
+          <div className="max-h-64 overflow-y-auto" role="list">
             {notifications.slice(0, 10).map((n) => (
-              <DropdownMenuItem key={n.id} className={`flex flex-col items-start gap-1 px-3 py-2.5 cursor-default ${!n.isRead ? 'bg-gold-500/5' : ''}`}>
+              <DropdownMenuItem
+                key={n.id}
+                className={`flex flex-col items-start gap-1 px-3 py-2.5 cursor-default ${!n.isRead ? 'bg-gold-500/5' : ''}`}
+                role="listitem"
+              >
                 <div className="flex items-center gap-2 w-full">
-                  <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${!n.isRead ? 'bg-gold-400' : 'bg-transparent'}`} />
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full shrink-0 ${!n.isRead ? 'bg-gold-400' : 'bg-transparent'}`}
+                    aria-hidden="true"
+                  />
                   <span className="text-xs font-medium text-white truncate flex-1">
                     {locale === 'zh-TW' ? n.titleZh || n.title : n.title}
                   </span>

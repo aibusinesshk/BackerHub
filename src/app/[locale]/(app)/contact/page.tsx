@@ -28,12 +28,28 @@ export default function ContactPage() {
   const inputClassName =
     'w-full rounded-lg bg-white/[0.03] border border-white/10 text-white px-3 py-2.5 text-sm placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-gold-500/50';
 
+  const [error, setError] = useState('');
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    // Simulate submission
-    await new Promise((r) => setTimeout(r, 1200));
-    setSubmitted(true);
+    setError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Failed to send message');
+        setSubmitting(false);
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError('Network error. Please try again.');
+    }
     setSubmitting(false);
   }
 
@@ -195,6 +211,12 @@ export default function ContactPage() {
                       className={inputClassName}
                     />
                   </div>
+
+                  {error && (
+                    <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                      {error}
+                    </p>
+                  )}
 
                   <Button
                     type="submit"
