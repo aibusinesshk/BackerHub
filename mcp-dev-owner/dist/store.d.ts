@@ -53,6 +53,49 @@ export interface RoadmapMilestone {
     features: string[];
     createdAt: string;
 }
+export interface ImplementationPlan {
+    id: string;
+    storyId: string;
+    title: string;
+    approach: string;
+    steps: {
+        description: string;
+        files: string[];
+        done: boolean;
+    }[];
+    risks?: string;
+    testStrategy?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+export interface DevNote {
+    id: string;
+    category: 'tech-debt' | 'performance' | 'security' | 'dependency' | 'refactor' | 'testing' | 'devops';
+    title: string;
+    description: string;
+    severity: 'critical' | 'high' | 'medium' | 'low';
+    affectedFiles?: string[];
+    resolution?: string;
+    status: 'open' | 'in-progress' | 'resolved';
+    createdAt: string;
+    updatedAt: string;
+    resolvedAt?: string;
+}
+export interface CodeReview {
+    id: string;
+    title: string;
+    branch?: string;
+    filesChanged: string[];
+    summary: string;
+    findings: {
+        type: 'bug' | 'security' | 'performance' | 'style' | 'suggestion';
+        severity: 'critical' | 'high' | 'medium' | 'low';
+        file: string;
+        description: string;
+    }[];
+    status: 'pending' | 'approved' | 'changes-requested';
+    createdAt: string;
+}
 export interface ProjectData {
     projectName: string;
     version: string;
@@ -60,6 +103,9 @@ export interface ProjectData {
     sprints: Sprint[];
     decisions: ArchitectureDecision[];
     roadmap: RoadmapMilestone[];
+    plans: ImplementationPlan[];
+    devNotes: DevNote[];
+    codeReviews: CodeReview[];
     nextId: number;
 }
 export declare function initStore(projectRoot: string): void;
@@ -110,6 +156,42 @@ export declare function createMilestone(params: {
 }): RoadmapMilestone;
 export declare function updateMilestone(id: string, updates: Partial<Omit<RoadmapMilestone, 'id' | 'createdAt'>>): RoadmapMilestone | null;
 export declare function listMilestones(): RoadmapMilestone[];
+export declare function createPlan(params: {
+    storyId: string;
+    title: string;
+    approach: string;
+    steps: {
+        description: string;
+        files: string[];
+    }[];
+    risks?: string;
+    testStrategy?: string;
+}): ImplementationPlan;
+export declare function updatePlanStep(planId: string, stepIndex: number, done: boolean): ImplementationPlan | null;
+export declare function getPlan(id: string): ImplementationPlan | null;
+export declare function listPlans(storyId?: string): ImplementationPlan[];
+export declare function createDevNote(params: {
+    category: DevNote['category'];
+    title: string;
+    description: string;
+    severity: DevNote['severity'];
+    affectedFiles?: string[];
+}): DevNote;
+export declare function updateDevNote(id: string, updates: Partial<Omit<DevNote, 'id' | 'createdAt'>>): DevNote | null;
+export declare function listDevNotes(filters?: {
+    category?: DevNote['category'];
+    severity?: DevNote['severity'];
+    status?: DevNote['status'];
+}): DevNote[];
+export declare function createCodeReview(params: {
+    title: string;
+    branch?: string;
+    filesChanged: string[];
+    summary: string;
+    findings: CodeReview['findings'];
+}): CodeReview;
+export declare function updateCodeReview(id: string, status: CodeReview['status']): CodeReview | null;
+export declare function listCodeReviews(): CodeReview[];
 export declare function getProjectStats(): {
     total: number;
     byStatus: Record<string, number>;

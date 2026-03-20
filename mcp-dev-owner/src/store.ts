@@ -64,6 +64,43 @@ export interface RoadmapMilestone {
   createdAt: string;
 }
 
+export interface ImplementationPlan {
+  id: string;
+  storyId: string;
+  title: string;
+  approach: string;
+  steps: { description: string; files: string[]; done: boolean }[];
+  risks?: string;
+  testStrategy?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DevNote {
+  id: string;
+  category: 'tech-debt' | 'performance' | 'security' | 'dependency' | 'refactor' | 'testing' | 'devops';
+  title: string;
+  description: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  affectedFiles?: string[];
+  resolution?: string;
+  status: 'open' | 'in-progress' | 'resolved';
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt?: string;
+}
+
+export interface CodeReview {
+  id: string;
+  title: string;
+  branch?: string;
+  filesChanged: string[];
+  summary: string;
+  findings: { type: 'bug' | 'security' | 'performance' | 'style' | 'suggestion'; severity: 'critical' | 'high' | 'medium' | 'low'; file: string; description: string }[];
+  status: 'pending' | 'approved' | 'changes-requested';
+  createdAt: string;
+}
+
 export interface ProjectData {
   projectName: string;
   version: string;
@@ -71,6 +108,9 @@ export interface ProjectData {
   sprints: Sprint[];
   decisions: ArchitectureDecision[];
   roadmap: RoadmapMilestone[];
+  plans: ImplementationPlan[];
+  devNotes: DevNote[];
+  codeReviews: CodeReview[];
   nextId: number;
 }
 
@@ -83,6 +123,9 @@ const DEFAULT_DATA: ProjectData = {
   sprints: [],
   decisions: [],
   roadmap: [],
+  plans: [],
+  devNotes: [],
+  codeReviews: [],
   nextId: 1,
 };
 
@@ -326,6 +369,134 @@ export function updateMilestone(id: string, updates: Partial<Omit<RoadmapMilesto
 
 export function listMilestones(): RoadmapMilestone[] {
   return [...data.roadmap];
+}
+
+// ─── Implementation Plans ────────────────────────────────────────────
+
+export function createPlan(params: {
+  storyId: string;
+  title: string;
+  approach: string;
+  steps: { description: string; files: string[] }[];
+  risks?: string;
+  testStrategy?: string;
+}): ImplementationPlan {
+  const plan: ImplementationPlan = {
+    id: genId('PLAN'),
+    storyId: params.storyId,
+    title: params.title,
+    approach: params.approach,
+    steps: params.steps.map((s) => ({ ...s, done: false })),
+    risks: params.risks,
+    testStrategy: params.testStrategy,
+    createdAt: now(),
+    updatedAt: now(),
+  };
+  data.plans.push(plan);
+  save();
+  return plan;
+}
+
+export function updatePlanStep(planId: string, stepIndex: number, done: boolean): ImplementationPlan | null {
+  const plan = data.plans.find((p) => p.id === planId);
+  if (!plan || stepIndex < 0 || stepIndex >= plan.steps.length) return null;
+  plan.steps[stepIndex].done = done;
+  plan.updatedAt = now();
+  save();
+  return plan;
+}
+
+export function getPlan(id: string): ImplementationPlan | null {
+  return data.plans.find((p) => p.id === id) || null;
+}
+
+export function listPlans(storyId?: string): ImplementationPlan[] {
+  if (storyId) return data.plans.filter((p) => p.storyId === storyId);
+  return [...data.plans];
+}
+
+// ─── Dev Notes (Tech Debt, Security, Performance) ────────────────────
+
+export function createDevNote(params: {
+  category: DevNote['category'];
+  title: string;
+  description: string;
+  severity: DevNote['severity'];
+  affectedFiles?: string[];
+}): DevNote {
+  const note: DevNote = {
+    id: genId('DEV'),
+    category: params.category,
+    title: params.title,
+    description: params.description,
+    severity: params.severity,
+    affectedFiles: params.affectedFiles,
+    status: 'open',
+    createdAt: now(),
+    updatedAt: now(),
+  };
+  data.devNotes.push(note);
+  save();
+  return note;
+}
+
+export function updateDevNote(id: string, updates: Partial<Omit<DevNote, 'id' | 'createdAt'>>): DevNote | null {
+  const note = data.devNotes.find((n) => n.id === id);
+  if (!note) return null;
+  Object.assign(note, updates, { updatedAt: now() });
+  if (updates.status === 'resolved' && !note.resolvedAt) {
+    note.resolvedAt = now();
+  }
+  save();
+  return note;
+}
+
+export function listDevNotes(filters?: {
+  category?: DevNote['category'];
+  severity?: DevNote['severity'];
+  status?: DevNote['status'];
+}): DevNote[] {
+  let notes = [...data.devNotes];
+  if (filters?.category) notes = notes.filter((n) => n.category === filters.category);
+  if (filters?.severity) notes = notes.filter((n) => n.severity === filters.severity);
+  if (filters?.status) notes = notes.filter((n) => n.status === filters.status);
+  return notes;
+}
+
+// ─── Code Reviews ────────────────────────────────────────────────────
+
+export function createCodeReview(params: {
+  title: string;
+  branch?: string;
+  filesChanged: string[];
+  summary: string;
+  findings: CodeReview['findings'];
+}): CodeReview {
+  const review: CodeReview = {
+    id: genId('CR'),
+    title: params.title,
+    branch: params.branch,
+    filesChanged: params.filesChanged,
+    summary: params.summary,
+    findings: params.findings,
+    status: 'pending',
+    createdAt: now(),
+  };
+  data.codeReviews.push(review);
+  save();
+  return review;
+}
+
+export function updateCodeReview(id: string, status: CodeReview['status']): CodeReview | null {
+  const review = data.codeReviews.find((r) => r.id === id);
+  if (!review) return null;
+  review.status = status;
+  save();
+  return review;
+}
+
+export function listCodeReviews(): CodeReview[] {
+  return [...data.codeReviews];
 }
 
 // ─── Analytics ───────────────────────────────────────────────────────

@@ -12,6 +12,9 @@ const DEFAULT_DATA = {
     sprints: [],
     decisions: [],
     roadmap: [],
+    plans: [],
+    devNotes: [],
+    codeReviews: [],
     nextId: 1,
 };
 let dataPath;
@@ -212,6 +215,105 @@ export function updateMilestone(id, updates) {
 }
 export function listMilestones() {
     return [...data.roadmap];
+}
+// ─── Implementation Plans ────────────────────────────────────────────
+export function createPlan(params) {
+    const plan = {
+        id: genId('PLAN'),
+        storyId: params.storyId,
+        title: params.title,
+        approach: params.approach,
+        steps: params.steps.map((s) => ({ ...s, done: false })),
+        risks: params.risks,
+        testStrategy: params.testStrategy,
+        createdAt: now(),
+        updatedAt: now(),
+    };
+    data.plans.push(plan);
+    save();
+    return plan;
+}
+export function updatePlanStep(planId, stepIndex, done) {
+    const plan = data.plans.find((p) => p.id === planId);
+    if (!plan || stepIndex < 0 || stepIndex >= plan.steps.length)
+        return null;
+    plan.steps[stepIndex].done = done;
+    plan.updatedAt = now();
+    save();
+    return plan;
+}
+export function getPlan(id) {
+    return data.plans.find((p) => p.id === id) || null;
+}
+export function listPlans(storyId) {
+    if (storyId)
+        return data.plans.filter((p) => p.storyId === storyId);
+    return [...data.plans];
+}
+// ─── Dev Notes (Tech Debt, Security, Performance) ────────────────────
+export function createDevNote(params) {
+    const note = {
+        id: genId('DEV'),
+        category: params.category,
+        title: params.title,
+        description: params.description,
+        severity: params.severity,
+        affectedFiles: params.affectedFiles,
+        status: 'open',
+        createdAt: now(),
+        updatedAt: now(),
+    };
+    data.devNotes.push(note);
+    save();
+    return note;
+}
+export function updateDevNote(id, updates) {
+    const note = data.devNotes.find((n) => n.id === id);
+    if (!note)
+        return null;
+    Object.assign(note, updates, { updatedAt: now() });
+    if (updates.status === 'resolved' && !note.resolvedAt) {
+        note.resolvedAt = now();
+    }
+    save();
+    return note;
+}
+export function listDevNotes(filters) {
+    let notes = [...data.devNotes];
+    if (filters?.category)
+        notes = notes.filter((n) => n.category === filters.category);
+    if (filters?.severity)
+        notes = notes.filter((n) => n.severity === filters.severity);
+    if (filters?.status)
+        notes = notes.filter((n) => n.status === filters.status);
+    return notes;
+}
+// ─── Code Reviews ────────────────────────────────────────────────────
+export function createCodeReview(params) {
+    const review = {
+        id: genId('CR'),
+        title: params.title,
+        branch: params.branch,
+        filesChanged: params.filesChanged,
+        summary: params.summary,
+        findings: params.findings,
+        status: 'pending',
+        createdAt: now(),
+    };
+    data.codeReviews.push(review);
+    save();
+    return review;
+}
+export function updateCodeReview(id, status) {
+    const review = data.codeReviews.find((r) => r.id === id);
+    if (!review)
+        return null;
+    review.status = status;
+    save();
+    return review;
+}
+export function listCodeReviews() {
+    return [...data.codeReviews];
 }
 // ─── Analytics ───────────────────────────────────────────────────────
 export function getProjectStats() {
