@@ -98,19 +98,17 @@ export default function MarketplacePage() {
   const [showSortMenu, setShowSortMenu] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/listings').then((res) => res.json()),
-      fetch('/api/packages').then((res) => res.json()),
-    ])
-      .then(([listingsData, packagesData]) => {
-        setAllListings(listingsData.listings || []);
-        setAllPackages(packagesData.packages || []);
-      })
-      .catch(() => {
-        setAllListings([]);
-        setAllPackages([]);
-      })
-      .finally(() => setLoading(false));
+    const fetchListings = fetch('/api/listings')
+      .then((res) => res.json())
+      .then((data) => setAllListings(data.listings || []))
+      .catch(() => setAllListings([]));
+
+    const fetchPackages = fetch('/api/packages')
+      .then((res) => res.json())
+      .then((data) => setAllPackages(data.packages || []))
+      .catch(() => setAllPackages([]));
+
+    Promise.all([fetchListings, fetchPackages]).finally(() => setLoading(false));
   }, []);
 
   // Build unified items list
