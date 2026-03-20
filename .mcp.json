@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "backerhub-dev-owner": {
+      "command": "node",
+      "args": ["/home/user/BackerHub/mcp-dev-owner/dist/index.js"],
+      "env": {
+        "PROJECT_ROOT": "/home/user/BackerHub"
+      }
+    }
+  }
+}
