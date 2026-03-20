@@ -12,6 +12,19 @@
       "env": {
         "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
       }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/playwright-mcp@latest"]
+    },
+    "netlify": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/netlify-mcp@latest"],
+      "env": {
+        "NETLIFY_ACCESS_TOKEN": "${NETLIFY_ACCESS_TOKEN}"
+      }
     }
   }
 }
