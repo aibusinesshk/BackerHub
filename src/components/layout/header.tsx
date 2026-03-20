@@ -54,8 +54,7 @@ export function Header() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/images/logo-transparent.png" alt="BackerHub" width={48} height={48} className="h-10 w-10" />
-          <span className="text-xl font-bold tracking-tight"><span className="text-white">Backer</span><span className="text-gold-400">Hub</span></span>
+          <Image src="/images/logo-nav.png" alt="BackerHub" width={495} height={80} className="h-8 sm:h-9 w-auto" priority />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
