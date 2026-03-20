@@ -22,9 +22,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Header />
       <main className="pb-28 md:pb-0">
         <HeroSection />
+        <FeaturedPlayers />
         <HowItWorks />
         <StatsCounter />
-        <FeaturedPlayers />
         <Testimonials />
         <PaymentMethods />
         <TrustBadges />
