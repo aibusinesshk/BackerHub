@@ -1,5 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { logger } from '@/lib/logger';
+import { z } from 'zod';
+
+const createListingSchema = z.object({
+  tournamentId: z.string().uuid('Invalid tournament ID'),
+  markup: z.number().min(1, 'Markup must be at least 1.0').max(2, 'Markup cannot exceed 2.0'),
+  totalActionOffered: z.number().int().min(1).max(100, 'Max 100% action'),
+  minThreshold: z.number().int().min(0).max(100).optional().default(0),
+});
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -108,12 +117,13 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { tournamentId, markup, totalActionOffered: totalSharesOffered, minThreshold } = body;
-
-  // Validate
-  if (!tournamentId || !markup || !totalSharesOffered) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+  const parsed = createListingSchema.safeParse(body);
+  if (!parsed.success) {
+    const msg = parsed.error.issues.map((i) => i.message).join(', ');
+    return NextResponse.json({ error: msg || 'Invalid input' }, { status: 400 });
   }
+
+  const { tournamentId, markup, totalActionOffered: totalSharesOffered, minThreshold } = parsed.data;
 
   const { data: listing, error } = await (supabase
     .from('listings') as any)
@@ -122,17 +132,19 @@ export async function POST(request: Request) {
       tournament_id: tournamentId,
       markup,
       total_shares_offered: totalSharesOffered,
-      min_threshold: minThreshold || 0,
+      min_threshold: minThreshold,
     })
     .select('*')
     .single() as { data: any | null; error: any };
 
   if (error) {
+    logger.apiError('/api/listings', 'POST', error, user.id);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   // Create escrow record for this listing
   await (supabase.from('escrow') as any).insert({ listing_id: listing!.id });
 
+  logger.info('Listing created', { userId: user.id, action: 'create_listing', listingId: listing!.id });
   return NextResponse.json({ listing }, { status: 201 });
 }
