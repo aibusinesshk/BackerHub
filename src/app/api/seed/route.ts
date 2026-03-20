@@ -522,6 +522,42 @@ const tournaments = [
   { id: 't14', name: 'TMT Championship 2026 Main Event', nameZh: 'TMT錦標賽2026主賽事', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-10-18', buyIn: 2000, guaranteedPool: 1000000, type: 'MTT', game: 'NLHE', region: 'TW' },
   // === APT Championship 2026 (Nov 13–29) — Season finale ===
   { id: 't15', name: 'APT Championship 2026 Main Event', nameZh: 'APT年度總冠軍賽2026主賽事', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-11-20', buyIn: 10000, guaranteedPool: 5000000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  // === CTP Taipei Weekly Events — Ongoing ===
+  { id: 't16', name: 'CTP Weekly Main Event', nameZh: 'CTP每週主賽事', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-04-05', buyIn: 350, guaranteedPool: 150000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't17', name: 'CTP Turbo Bounty', nameZh: 'CTP快速賞金賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-04-12', buyIn: 200, guaranteedPool: 80000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't18', name: 'CTP Sunday Deepstack', nameZh: 'CTP週日深籌碼賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-04-19', buyIn: 500, guaranteedPool: 200000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  // === APT Taipei 2026 Additional Side Events ===
+  { id: 't19', name: 'APT Omaha Hi-Lo Championship', nameZh: 'APT奧馬哈高低分冠軍賽', venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區', date: '2026-04-23', buyIn: 635, guaranteedPool: 95000, type: 'MTT', game: 'PLO', region: 'TW' },
+  { id: 't20', name: 'APT Kick Off', nameZh: 'APT開幕賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-04-22', buyIn: 475, guaranteedPool: 317000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't21', name: 'APT Deepstack Turbo', nameZh: 'APT深籌碼快速賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-04-27', buyIn: 317, guaranteedPool: 159000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't22', name: 'APT Mix Max', nameZh: 'APT混合桌型賽', venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區', date: '2026-04-29', buyIn: 795, guaranteedPool: 159000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't23', name: 'APT Championships Trophy Event', nameZh: 'APT冠軍獎盃賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-05-01', buyIn: 1270, guaranteedPool: 475000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  // === TMT 20 Additional Events (Jul 8 – Aug 3) ===
+  { id: 't24', name: 'TMT 20 Opening Event', nameZh: 'TMT 20 開幕賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-07-08', buyIn: 400, guaranteedPool: 300000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't25', name: 'TMT 20 Monster Stack', nameZh: 'TMT 20 怪獸籌碼賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-07-12', buyIn: 800, guaranteedPool: 500000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't26', name: 'TMT 20 Mini Main', nameZh: 'TMT 20 迷你主賽事', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-07-18', buyIn: 600, guaranteedPool: 400000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't27', name: 'TMT 20 PLO Championship', nameZh: 'TMT 20 PLO冠軍賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-07-22', buyIn: 1000, guaranteedPool: 200000, type: 'MTT', game: 'PLO', region: 'TW' },
+  { id: 't28', name: 'TMT 20 Super High Roller', nameZh: 'TMT 20 超高額賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-07-25', buyIn: 8000, guaranteedPool: 800000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't29', name: 'TMT 20 Closer', nameZh: 'TMT 20 閉幕賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-08-01', buyIn: 500, guaranteedPool: 250000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  // === TMT Championship 2026 Additional Events (Oct 16–26) ===
+  { id: 't30', name: 'TMT Championship Warm-Up', nameZh: 'TMT錦標賽熱身賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-10-16', buyIn: 600, guaranteedPool: 300000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't31', name: 'TMT Championship High Roller', nameZh: 'TMT錦標賽高額賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-10-22', buyIn: 5000, guaranteedPool: 500000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't32', name: 'TMT Championship Mystery Bounty', nameZh: 'TMT錦標賽神秘賞金賽', venue: 'CTP Chinese Texas Hold\'em Poker Club, Taipei', venueZh: 'CTP中華德州撲克協會，台北', date: '2026-10-19', buyIn: 800, guaranteedPool: 400000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  // === APT Championship 2026 Additional Events (Nov 13–29) ===
+  { id: 't33', name: 'APT Championship 2026 Kick Off', nameZh: 'APT年度總冠軍賽2026開幕賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-11-13', buyIn: 475, guaranteedPool: 475000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't34', name: 'APT Championship 2026 High Roller', nameZh: 'APT年度總冠軍賽2026高額賽', venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區', date: '2026-11-17', buyIn: 3175, guaranteedPool: 793000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't35', name: 'APT Championship 2026 Mystery Bounty', nameZh: 'APT年度總冠軍賽2026神秘賞金賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-11-15', buyIn: 795, guaranteedPool: 635000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't36', name: 'APT Championship 2026 Super High Roller', nameZh: 'APT年度總冠軍賽2026超高額賽', venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區', date: '2026-11-22', buyIn: 15900, guaranteedPool: 1585000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't37', name: 'APT Championship 2026 Zodiac Classic', nameZh: 'APT年度總冠軍賽2026生肖經典賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-11-25', buyIn: 3175, guaranteedPool: 1585000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  // === CPPT Taiwan (Chinese Poker Players Tour) — May 2026 ===
+  { id: 't38', name: 'CPPT Taiwan Main Event', nameZh: 'CPPT台灣主賽事', venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區', date: '2026-05-15', buyIn: 1200, guaranteedPool: 800000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't39', name: 'CPPT Taiwan High Roller', nameZh: 'CPPT台灣高額賽', venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區', date: '2026-05-18', buyIn: 3000, guaranteedPool: 400000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't40', name: 'CPPT Taiwan Bounty Hunter', nameZh: 'CPPT台灣賞金獵人賽', venue: 'Asia Poker Arena, Zhongshan District, Taipei', venueZh: 'Asia Poker Arena，台北中山區', date: '2026-05-16', buyIn: 500, guaranteedPool: 300000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  // === WPT Taiwan (Jun 2026) ===
+  { id: 't41', name: 'WPT Taiwan Main Event', nameZh: 'WPT台灣主賽事', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-06-12', buyIn: 2500, guaranteedPool: 2000000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't42', name: 'WPT Taiwan High Roller', nameZh: 'WPT台灣高額賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-06-15', buyIn: 5000, guaranteedPool: 800000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't43', name: 'WPT Taiwan Kickoff', nameZh: 'WPT台灣開幕賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-06-10', buyIn: 600, guaranteedPool: 500000, type: 'MTT', game: 'NLHE', region: 'TW' },
+  { id: 't44', name: 'WPT Taiwan Mystery Bounty', nameZh: 'WPT台灣神秘賞金賽', venue: 'Red Space, Songshan District, Taipei', venueZh: 'Red Space 多元商務空間，台北松山區', date: '2026-06-13', buyIn: 800, guaranteedPool: 600000, type: 'MTT', game: 'NLHE', region: 'TW' },
 ];
 
 const listings = [
@@ -558,6 +594,44 @@ const listings = [
   // 查理 Charlie Chiu listings
   { id: 'l29', playerId: 'p15', tournamentId: 't6', markup: 1.20, totalActionOffered: 50, actionSold: 35, minThreshold: 30, status: 'active', createdAt: '2026-03-07T12:00:00Z' },
   { id: 'l30', playerId: 'p15', tournamentId: 't15', markup: 1.22, totalActionOffered: 45, actionSold: 28, minThreshold: 30, status: 'active', createdAt: '2026-03-11T09:00:00Z' },
+  // === New listings for CTP events ===
+  { id: 'l31', playerId: 'p1', tournamentId: 't16', markup: 1.08, totalActionOffered: 80, actionSold: 45, minThreshold: 50, status: 'active', createdAt: '2026-03-12T08:00:00Z' },
+  { id: 'l32', playerId: 'p5', tournamentId: 't17', markup: 1.05, totalActionOffered: 90, actionSold: 32, minThreshold: 60, status: 'active', createdAt: '2026-03-12T10:00:00Z' },
+  { id: 'l33', playerId: 'p10', tournamentId: 't18', markup: 1.10, totalActionOffered: 70, actionSold: 28, minThreshold: 50, status: 'active', createdAt: '2026-03-12T12:00:00Z' },
+  // === APT side events ===
+  { id: 'l34', playerId: 'p3', tournamentId: 't20', markup: 1.12, totalActionOffered: 65, actionSold: 40, minThreshold: 45, status: 'active', createdAt: '2026-03-13T09:00:00Z' },
+  { id: 'l35', playerId: 'p7', tournamentId: 't22', markup: 1.10, totalActionOffered: 75, actionSold: 55, minThreshold: 50, status: 'active', createdAt: '2026-03-13T11:00:00Z' },
+  { id: 'l36', playerId: 'p6', tournamentId: 't23', markup: 1.15, totalActionOffered: 60, actionSold: 38, minThreshold: 40, status: 'active', createdAt: '2026-03-13T14:00:00Z' },
+  { id: 'l37', playerId: 'p14', tournamentId: 't21', markup: 1.08, totalActionOffered: 85, actionSold: 60, minThreshold: 55, status: 'active', createdAt: '2026-03-13T16:00:00Z' },
+  // === TMT 20 events ===
+  { id: 'l38', playerId: 'p1', tournamentId: 't24', markup: 1.10, totalActionOffered: 75, actionSold: 50, minThreshold: 50, status: 'active', createdAt: '2026-03-14T08:00:00Z' },
+  { id: 'l39', playerId: 'p13', tournamentId: 't28', markup: 1.30, totalActionOffered: 35, actionSold: 35, minThreshold: 20, status: 'filled', createdAt: '2026-03-14T10:00:00Z' },
+  { id: 'l40', playerId: 'p2', tournamentId: 't25', markup: 1.15, totalActionOffered: 70, actionSold: 42, minThreshold: 45, status: 'active', createdAt: '2026-03-14T12:00:00Z' },
+  { id: 'l41', playerId: 'p14', tournamentId: 't25', markup: 1.18, totalActionOffered: 60, actionSold: 48, minThreshold: 40, status: 'active', createdAt: '2026-03-14T14:00:00Z' },
+  { id: 'l42', playerId: 'p7', tournamentId: 't27', markup: 1.12, totalActionOffered: 50, actionSold: 30, minThreshold: 35, status: 'active', createdAt: '2026-03-14T16:00:00Z' },
+  { id: 'l43', playerId: 'p3', tournamentId: 't26', markup: 1.10, totalActionOffered: 80, actionSold: 55, minThreshold: 60, status: 'active', createdAt: '2026-03-14T18:00:00Z' },
+  // === CPPT Taiwan ===
+  { id: 'l44', playerId: 'p13', tournamentId: 't38', markup: 1.25, totalActionOffered: 40, actionSold: 32, minThreshold: 25, status: 'active', createdAt: '2026-03-15T08:00:00Z' },
+  { id: 'l45', playerId: 'p14', tournamentId: 't39', markup: 1.20, totalActionOffered: 45, actionSold: 28, minThreshold: 30, status: 'active', createdAt: '2026-03-15T10:00:00Z' },
+  { id: 'l46', playerId: 'p5', tournamentId: 't40', markup: 1.08, totalActionOffered: 85, actionSold: 40, minThreshold: 60, status: 'active', createdAt: '2026-03-15T12:00:00Z' },
+  { id: 'l47', playerId: 'p6', tournamentId: 't38', markup: 1.14, totalActionOffered: 70, actionSold: 52, minThreshold: 50, status: 'active', createdAt: '2026-03-15T14:00:00Z' },
+  // === WPT Taiwan ===
+  { id: 'l48', playerId: 'p13', tournamentId: 't41', markup: 1.28, totalActionOffered: 30, actionSold: 30, minThreshold: 20, status: 'filled', createdAt: '2026-03-16T08:00:00Z' },
+  { id: 'l49', playerId: 'p14', tournamentId: 't41', markup: 1.20, totalActionOffered: 50, actionSold: 38, minThreshold: 35, status: 'active', createdAt: '2026-03-16T10:00:00Z' },
+  { id: 'l50', playerId: 'p7', tournamentId: 't42', markup: 1.15, totalActionOffered: 55, actionSold: 42, minThreshold: 35, status: 'active', createdAt: '2026-03-16T12:00:00Z' },
+  { id: 'l51', playerId: 'p1', tournamentId: 't43', markup: 1.10, totalActionOffered: 80, actionSold: 65, minThreshold: 55, status: 'active', createdAt: '2026-03-16T14:00:00Z' },
+  { id: 'l52', playerId: 'p3', tournamentId: 't44', markup: 1.12, totalActionOffered: 70, actionSold: 48, minThreshold: 50, status: 'active', createdAt: '2026-03-16T16:00:00Z' },
+  { id: 'l53', playerId: 'p2', tournamentId: 't41', markup: 1.22, totalActionOffered: 55, actionSold: 40, minThreshold: 35, status: 'active', createdAt: '2026-03-16T18:00:00Z' },
+  // === APT Championship 2026 side events ===
+  { id: 'l54', playerId: 'p13', tournamentId: 't36', markup: 1.35, totalActionOffered: 25, actionSold: 18, minThreshold: 15, status: 'active', createdAt: '2026-03-17T08:00:00Z' },
+  { id: 'l55', playerId: 'p14', tournamentId: 't34', markup: 1.20, totalActionOffered: 50, actionSold: 35, minThreshold: 30, status: 'active', createdAt: '2026-03-17T10:00:00Z' },
+  { id: 'l56', playerId: 'p7', tournamentId: 't37', markup: 1.15, totalActionOffered: 55, actionSold: 40, minThreshold: 35, status: 'active', createdAt: '2026-03-17T12:00:00Z' },
+  { id: 'l57', playerId: 'p15', tournamentId: 't35', markup: 1.18, totalActionOffered: 60, actionSold: 32, minThreshold: 40, status: 'active', createdAt: '2026-03-17T14:00:00Z' },
+  { id: 'l58', playerId: 'p1', tournamentId: 't33', markup: 1.10, totalActionOffered: 75, actionSold: 58, minThreshold: 50, status: 'active', createdAt: '2026-03-17T16:00:00Z' },
+  // === TMT Championship side events ===
+  { id: 'l59', playerId: 'p2', tournamentId: 't30', markup: 1.12, totalActionOffered: 70, actionSold: 45, minThreshold: 50, status: 'active', createdAt: '2026-03-18T08:00:00Z' },
+  { id: 'l60', playerId: 'p14', tournamentId: 't31', markup: 1.22, totalActionOffered: 45, actionSold: 30, minThreshold: 30, status: 'active', createdAt: '2026-03-18T10:00:00Z' },
+  { id: 'l61', playerId: 'p5', tournamentId: 't32', markup: 1.08, totalActionOffered: 80, actionSold: 50, minThreshold: 55, status: 'active', createdAt: '2026-03-18T12:00:00Z' },
 ];
 
 const testimonials = [

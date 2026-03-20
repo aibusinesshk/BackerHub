@@ -6,6 +6,7 @@ export async function GET(request: Request) {
   const region = searchParams.get('region');
   const verified = searchParams.get('verified');
   const search = searchParams.get('search');
+  const sort = searchParams.get('sort'); // 'top' = sort by performance
   const limit = parseInt(searchParams.get('limit') || '50');
   const offset = parseInt(searchParams.get('offset') || '0');
 
@@ -23,6 +24,62 @@ export async function GET(request: Request) {
   }
   if (search) {
     query = query.or(`display_name.ilike.%${search}%,display_name_zh.ilike.%${search}%`);
+  }
+
+  // When sorting by top performance, fetch via player_stats join
+  if (sort === 'top') {
+    const statsQuery = (supabase.from('player_stats') as any)
+      .select('*, profiles!inner(*)', { count: 'exact' })
+      .gt('total_tournaments', 0);
+
+    // Apply profile-level filters on the joined profiles table
+    let sq = statsQuery.in('profiles.role', ['player', 'both']);
+    if (verified === 'true') sq = sq.eq('profiles.is_verified', true);
+    if (region && region !== 'all') sq = sq.eq('profiles.region', region);
+    if (search) sq = sq.or(`profiles.display_name.ilike.%${search}%,profiles.display_name_zh.ilike.%${search}%`);
+
+    const { data: statsRows, count: statsCount, error: statsError } = await sq
+      .order('biggest_win', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (statsError) {
+      return NextResponse.json({ error: statsError.message }, { status: 500 });
+    }
+    if (!statsRows || statsRows.length === 0) {
+      return NextResponse.json({ players: [], total: 0 });
+    }
+
+    const players = statsRows.map((row: any) => {
+      const p = row.profiles;
+      let avatarUrl = p.avatar_url || '';
+      if (avatarUrl && avatarUrl.includes('supabase.co/storage')) {
+        avatarUrl = `/api/avatar/${p.id}?t=${Date.now()}`;
+      }
+      return {
+        id: p.id,
+        displayName: p.display_name,
+        displayNameZh: p.display_name_zh,
+        avatarUrl,
+        region: p.region,
+        isVerified: p.is_verified,
+        memberSince: p.member_since,
+        bio: p.bio || '',
+        bioZh: p.bio_zh,
+        hendonMobUrl: p.hendon_mob_url || null,
+        colorTone: p.color_tone || null,
+        stats: {
+          lifetimeROI: Number(row.lifetime_roi),
+          totalTournaments: row.total_tournaments,
+          cashRate: Number(row.cash_rate),
+          totalStakedValue: Number(row.total_staked_value),
+          avgFinish: row.avg_finish,
+          biggestWin: Number(row.biggest_win),
+          monthlyROI: [],
+        },
+      };
+    });
+
+    return NextResponse.json({ players, total: statsCount });
   }
 
   const { data: profiles, count, error } = await query

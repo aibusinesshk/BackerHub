@@ -24,6 +24,8 @@ function detectBrand(name: string): string {
   if (upper.includes('TMT')) return 'TMT';
   if (upper.includes('WPT')) return 'WPT';
   if (upper.includes('WSOP')) return 'WSOP';
+  if (upper.includes('CTP')) return 'CTP';
+  if (upper.includes('CPPT')) return 'CPPT';
   return 'Other';
 }
 
