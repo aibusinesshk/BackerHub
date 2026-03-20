@@ -10,8 +10,8 @@ export async function GET() {
   }
 
   const [{ data: investments }, { data: transactions }] = await Promise.all([
-    (supabase.from('investments') as any).select('id,listing_id,investor_id,shares_purchased,amount_paid,platform_fee,status,payment_method,created_at').eq('investor_id', user.id).order('created_at', { ascending: false }),
-    (supabase.from('transactions') as any).select('id,type,amount,currency,payment_method,status,description,description_zh,created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
+    (supabase.from('investments') as any).select('*').eq('investor_id', user.id).order('created_at', { ascending: false }),
+    (supabase.from('transactions') as any).select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
   ]);
 
   const allInvestments = investments || [];
@@ -26,14 +26,14 @@ export async function GET() {
   const listingIds = [...new Set(allInvestments.map((inv: any) => inv.listing_id))] as string[];
   let portfolioListings: any[] = [];
   if (listingIds.length > 0) {
-    const { data: listings } = await (supabase.from('listings') as any).select('id,player_id,tournament_id,markup,status,total_shares_offered,shares_sold').in('id', listingIds);
+    const { data: listings } = await (supabase.from('listings') as any).select('*').in('id', listingIds);
     if (listings && listings.length > 0) {
       const playerIds = [...new Set(listings.map((l: any) => l.player_id))] as string[];
       const tournamentIds = [...new Set(listings.map((l: any) => l.tournament_id))] as string[];
       const [{ data: profiles }, { data: stats }, { data: tournaments }] = await Promise.all([
-        (supabase.from('profiles') as any).select('id,display_name,display_name_zh,avatar_url,is_verified,region,color_tone').in('id', playerIds),
-        (supabase.from('player_stats') as any).select('player_id,lifetime_roi').in('player_id', playerIds),
-        (supabase.from('tournaments') as any).select('id,name,name_zh,venue,venue_zh,date,buy_in,type,game,region,guaranteed_pool').in('id', tournamentIds),
+        (supabase.from('profiles') as any).select('*').in('id', playerIds),
+        (supabase.from('player_stats') as any).select('*').in('player_id', playerIds),
+        (supabase.from('tournaments') as any).select('*').in('id', tournamentIds),
       ]);
       const profileMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
       const statsMap = new Map<string, any>((stats || []).map((s: any) => [s.player_id, s]));

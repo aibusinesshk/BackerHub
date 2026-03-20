@@ -10,9 +10,9 @@ export async function GET() {
   }
 
   const [{ data: profile }, { data: listings }, { data: transactions }] = await Promise.all([
-    (supabase.from('profiles') as any).select('id,display_name,display_name_zh,avatar_url,region,is_verified,kyc_status,color_tone,wallet_balance').eq('id', user.id).single(),
-    (supabase.from('listings') as any).select('id,player_id,tournament_id,markup,total_shares_offered,shares_sold,min_threshold,status,created_at,registration_proof_url,deadline_registration,deadline_deposit').eq('player_id', user.id).order('created_at', { ascending: false }),
-    (supabase.from('transactions') as any).select('id,type,amount,currency,payment_method,status,description,description_zh,created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
+    (supabase.from('profiles') as any).select('*').eq('id', user.id).single(),
+    (supabase.from('listings') as any).select('*').eq('player_id', user.id).order('created_at', { ascending: false }),
+    (supabase.from('transactions') as any).select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(20),
   ]);
 
   const allListings = listings || [];
@@ -32,7 +32,7 @@ export async function GET() {
 
   const [tournamentResults, resultResults] = await Promise.all([
     tournamentIds.length > 0
-      ? (supabase.from('tournaments') as any).select('id,name,name_zh,venue,venue_zh,date,buy_in,guaranteed_pool,type,game,region').in('id', tournamentIds)
+      ? (supabase.from('tournaments') as any).select('*').in('id', tournamentIds)
       : { data: [] },
     listingIds.length > 0
       ? adminClient.from('tournament_results').select('listing_id, status, tournament_result, prize_amount').in('listing_id', listingIds)
