@@ -18,7 +18,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <Header />
-      <main className="pb-28 md:pb-0">
+      <main className="pt-16 pb-28 md:pb-0">
         <HeroSection />
         <FeaturedPlayers />
         <HowItWorks />
