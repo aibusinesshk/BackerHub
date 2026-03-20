@@ -7,8 +7,8 @@ import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Spade, TrendingUp, Gamepad2, Layers, Loader2, X } from 'lucide-react';
-import type { UserRole, Region } from '@/types';
+import { Spade, Loader2, X } from 'lucide-react';
+import type { Region } from '@/types';
 
 export default function SignupPage() {
   const t = useTranslations('auth');
@@ -16,7 +16,6 @@ export default function SignupPage() {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('investor');
   const [region, setRegion] = useState<Region>('TW');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,11 +32,11 @@ export default function SignupPage() {
     setIsSubmitting(true);
 
     try {
-      const result = await signup({ displayName, email, password, role, region });
+      const result = await signup({ displayName, email, password, role: 'both', region });
       if (result.success) {
         // Hard navigation so middleware picks up the new session cookie
         const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
-        window.location.href = `/${locale}/dashboard/investor`;
+        window.location.href = `/${locale}/dashboard/player`;
       } else {
         setError(result.error || 'Signup failed');
       }
@@ -47,12 +46,6 @@ export default function SignupPage() {
       setIsSubmitting(false);
     }
   };
-
-  const roles: { value: UserRole; label: string; icon: typeof TrendingUp }[] = [
-    { value: 'investor', label: t('roleInvestor'), icon: TrendingUp },
-    { value: 'player', label: t('rolePlayer'), icon: Gamepad2 },
-    { value: 'both', label: t('roleBoth'), icon: Layers },
-  ];
 
   return (
     <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">
@@ -101,28 +94,6 @@ export default function SignupPage() {
               minLength={6}
               disabled={isSubmitting}
             />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm text-white/70">{t('selectRole')}</label>
-            <div className="grid grid-cols-3 gap-2">
-              {roles.map((r) => (
-                <button
-                  key={r.value}
-                  type="button"
-                  onClick={() => setRole(r.value)}
-                  disabled={isSubmitting}
-                  className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-xs transition-all ${
-                    role === r.value
-                      ? 'border-gold-500 bg-gold-500/10 text-gold-400'
-                      : 'border-white/[0.06] text-white/50 hover:border-white/20'
-                  }`}
-                >
-                  <r.icon className="h-5 w-5" />
-                  {r.label}
-                </button>
-              ))}
-            </div>
           </div>
 
           <div>

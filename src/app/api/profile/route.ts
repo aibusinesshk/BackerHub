@@ -31,10 +31,10 @@ export async function PUT(request: Request) {
 
   const body = await request.json();
 
-  // Allowlist of editable fields only
+  // Allowlist of editable fields only (role and region are set at signup and cannot be changed)
   const allowedFields = [
     'display_name', 'display_name_zh', 'avatar_url',
-    'bio', 'bio_zh', 'role', 'region', 'color_tone',
+    'bio', 'bio_zh', 'color_tone',
   ];
   const updates: Record<string, any> = {};
   for (const key of allowedFields) {
@@ -46,12 +46,6 @@ export async function PUT(request: Request) {
   // Validation
   if (updates.display_name !== undefined && (!updates.display_name || updates.display_name.trim().length === 0)) {
     return NextResponse.json({ error: 'Display name is required' }, { status: 400 });
-  }
-  if (updates.role && !['investor', 'player', 'both'].includes(updates.role)) {
-    return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
-  }
-  if (updates.region && !['TW', 'HK', 'OTHER'].includes(updates.region)) {
-    return NextResponse.json({ error: 'Invalid region' }, { status: 400 });
   }
   if (updates.color_tone !== undefined && updates.color_tone !== null && !['red', 'blue', 'emerald', 'purple', 'amber', 'cyan', 'rose', 'gold'].includes(updates.color_tone)) {
     return NextResponse.json({ error: 'Invalid color tone' }, { status: 400 });

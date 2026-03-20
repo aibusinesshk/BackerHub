@@ -26,9 +26,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    if (role && !['investor', 'player', 'both'].includes(role)) {
-      return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
-    }
     if (region && !['TW', 'HK', 'OTHER'].includes(region)) {
       return NextResponse.json({ error: 'Invalid region' }, { status: 400 });
     }
@@ -42,7 +39,7 @@ export async function POST(request: Request) {
       email_confirm: true,
       user_metadata: {
         display_name: displayName,
-        role: role || 'investor',
+        role: 'both',
         region: region || 'TW',
       },
     });
@@ -60,7 +57,7 @@ export async function POST(request: Request) {
             email_confirm: true,
             user_metadata: {
               display_name: displayName,
-              role: role || 'investor',
+              role: 'both',
               region: region || 'TW',
             },
           });
@@ -69,7 +66,7 @@ export async function POST(request: Request) {
             id: existing.id,
             email,
             display_name: displayName,
-            role: role || 'investor',
+            role: 'both',
             region: region || 'TW',
             member_since: new Date().toISOString(),
             created_at: new Date().toISOString(),
@@ -103,7 +100,7 @@ export async function POST(request: Request) {
         id: authData.user.id,
         email: authData.user.email,
         display_name: displayName,
-        role: role || 'investor',
+        role: 'both',
         region: region || 'TW',
         member_since: new Date().toISOString(),
         created_at: new Date().toISOString(),

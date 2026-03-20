@@ -35,7 +35,6 @@ export default function ProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [bio, setBio] = useState('');
   const [bioZh, setBioZh] = useState('');
-  const [role, setRole] = useState('investor');
   const [region, setRegion] = useState('TW');
 
   // Read-only fields
@@ -68,7 +67,6 @@ export default function ProfilePage() {
           setAvatarUrl(p.avatar_url || '');
           setBio(p.bio || '');
           setBioZh(p.bio_zh || '');
-          setRole(p.role || 'investor');
           setRegion(p.region || 'TW');
           setEmail(p.email || '');
           setIsVerified(p.is_verified || false);
@@ -99,8 +97,6 @@ export default function ProfilePage() {
           display_name_zh: displayNameZh.trim() || null,
           bio: bio.trim() || null,
           bio_zh: bioZh.trim() || null,
-          role,
-          region,
         }),
       });
 
@@ -195,12 +191,6 @@ export default function ProfilePage() {
       setKycSubmitting(false);
     }
   };
-
-  const roleOptions = [
-    { value: 'investor', label: t('roleInvestor') },
-    { value: 'player', label: t('rolePlayer') },
-    { value: 'both', label: t('roleBoth') },
-  ] as const;
 
   const regionOptions = [
     { value: 'TW', label: t('regionTW'), flag: '\u{1F1F9}\u{1F1FC}' },
@@ -337,45 +327,12 @@ export default function ProfilePage() {
 
               <Separator className="bg-white/[0.06]" />
 
-              {/* Role Selector */}
+              {/* Region (read-only, set during signup) */}
               <div>
-                <label className="mb-2 block text-xs text-white/50">{t('role')}</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {roleOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => setRole(opt.value)}
-                      className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-all ${
-                        role === opt.value
-                          ? 'border-gold-500/50 bg-gold-500/10 text-gold-400'
-                          : 'border-white/10 text-white/50 hover:border-white/20'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Region Selector */}
-              <div>
-                <label className="mb-2 block text-xs text-white/50">{t('region')}</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {regionOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => setRegion(opt.value)}
-                      className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-all ${
-                        region === opt.value
-                          ? 'border-gold-500/50 bg-gold-500/10 text-gold-400'
-                          : 'border-white/10 text-white/50 hover:border-white/20'
-                      }`}
-                    >
-                      {opt.flag} {opt.label}
-                    </button>
-                  ))}
+                <label className="mb-1.5 block text-xs text-white/50">{t('region')}</label>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-white/60">
+                  {regionOptions.find((r) => r.value === region)?.flag}{' '}
+                  {regionOptions.find((r) => r.value === region)?.label}
                 </div>
               </div>
 
@@ -506,9 +463,6 @@ export default function ProfilePage() {
                 <Separator className="bg-white/[0.06]" />
 
                 <div className="flex flex-wrap justify-center gap-2">
-                  <Badge variant="outline" className="border-gold-500/30 text-gold-400">
-                    {roleOptions.find((r) => r.value === role)?.label}
-                  </Badge>
                   <Badge variant="outline" className="border-white/20 text-white/60">
                     <MapPin className="mr-1 h-3 w-3" />
                     {regionOptions.find((r) => r.value === region)?.flag}{' '}
