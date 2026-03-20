@@ -12,6 +12,7 @@ import type { Region } from '@/types';
 
 export default function SignupPage() {
   const t = useTranslations('auth');
+  const tc = useTranslations('common');
   const { signup } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ export default function SignupPage() {
     setError('');
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(tc('passwordMinLength'));
       return;
     }
 
@@ -38,10 +39,10 @@ export default function SignupPage() {
         const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
         window.location.href = `/${locale}/dashboard/player`;
       } else {
-        setError(result.error || 'Signup failed');
+        setError(result.error || tc('signupFailed'));
       }
     } catch {
-      setError('An unexpected error occurred');
+      setError(tc('unexpectedError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -88,7 +89,7 @@ export default function SignupPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimum 6 characters"
+              placeholder={tc('passwordPlaceholder')}
               className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
               required
               minLength={6}
@@ -125,7 +126,7 @@ export default function SignupPage() {
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account...</>
+              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {tc('creatingAccount')}</>
             ) : (
               t('signupTitle')
             )}

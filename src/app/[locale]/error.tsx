@@ -21,10 +21,10 @@ export default function Error({
       <div className="text-center max-w-md">
         <div className="text-6xl font-bold text-yellow-500 mb-4">500</div>
         <h1 className="text-2xl font-semibold text-white mb-2">
-          Something went wrong
+          {t('somethingWentWrong')}
         </h1>
         <p className="text-zinc-400 mb-8">
-          An unexpected error occurred. Please try again or contact support if the problem persists.
+          {t('errorDescription500')}
         </p>
         {error.digest && (
           <p className="text-xs text-zinc-600 mb-4">Error ID: {error.digest}</p>
@@ -34,7 +34,7 @@ export default function Error({
             onClick={reset}
             className="px-6 py-2.5 bg-yellow-500 text-black font-medium rounded-lg hover:bg-yellow-400 transition-colors"
           >
-            Try Again
+            {t('tryAgain')}
           </button>
           <a
             href="/"

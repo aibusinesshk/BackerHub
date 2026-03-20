@@ -25,7 +25,20 @@
     "proofUploaded": "Proof uploaded",
     "listYourAction": "List Your Action",
     "failedToLoad": "Failed to load data.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "unexpectedError": "An unexpected error occurred",
+    "errorDescription": "We encountered an unexpected error. Please try again.",
+    "errorDescription500": "An unexpected error occurred. Please try again or contact support if the problem persists.",
+    "oops": "Oops",
+    "creatingAccount": "Creating account...",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordPlaceholder": "Minimum 6 characters",
+    "signupFailed": "Signup failed",
+    "invalidCredentials": "Invalid credentials",
+    "failedToCreateDeposit": "Failed to create deposit",
+    "failedToSubmitWithdrawal": "Failed to submit withdrawal",
+    "couldNotLoadListing": "Could not load listing details.",
+    "failedToSubmitResult": "Failed to submit result"
   },
   "nav": {
     "marketplace": "Marketplace",

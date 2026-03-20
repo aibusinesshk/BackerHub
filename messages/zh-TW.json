@@ -25,7 +25,20 @@
     "proofUploaded": "已上傳證明",
     "listYourAction": "出售份額",
     "failedToLoad": "載入失敗。",
-    "retry": "重試"
+    "retry": "重試",
+    "unexpectedError": "發生意外錯誤",
+    "errorDescription": "遇到意外錯誤，請重試。",
+    "errorDescription500": "發生意外錯誤，請重試或聯絡客服。",
+    "oops": "糟糕",
+    "creatingAccount": "建立帳號中...",
+    "passwordMinLength": "密碼至少需要6個字元",
+    "passwordPlaceholder": "至少6個字元",
+    "signupFailed": "註冊失敗",
+    "invalidCredentials": "帳號或密碼錯誤",
+    "failedToCreateDeposit": "建立儲值請求失敗",
+    "failedToSubmitWithdrawal": "提交提款請求失敗",
+    "couldNotLoadListing": "無法載入項目詳情。",
+    "failedToSubmitResult": "提交結果失敗"
   },
   "nav": {
     "marketplace": "市場",

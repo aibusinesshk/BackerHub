@@ -11,6 +11,7 @@ import { Spade, Loader2, X } from 'lucide-react';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
+  const tc = useTranslations('common');
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,10 +33,10 @@ export default function LoginPage() {
         const redirect = params.get('redirect') || `/${locale}/dashboard/investor`;
         window.location.href = redirect;
       } else {
-        setError(result.error || 'Invalid credentials');
+        setError(result.error || tc('invalidCredentials'));
       }
     } catch {
-      setError('An unexpected error occurred');
+      setError(tc('unexpectedError'));
     } finally {
       setIsSubmitting(false);
     }

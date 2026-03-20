@@ -315,7 +315,7 @@ export default function PlayerDashboardPage() {
                           {/* Deadline warning badges */}
                           {needsRegistrationProof && isDeadlineOverdue(l.deadlineRegistration) && (
                             <Badge variant="outline" className="text-[10px] border-red-500/30 bg-red-500/10 text-red-400 animate-pulse">
-                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> Overdue
+                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> {tc('overdue')}
                             </Badge>
                           )}
                           {needsRegistrationProof && isDeadlineWarning(l.deadlineRegistration) && (
@@ -325,7 +325,7 @@ export default function PlayerDashboardPage() {
                           )}
                           {needsPrizeDeposit && isDeadlineOverdue(l.deadlineDeposit) && (
                             <Badge variant="outline" className="text-[10px] border-red-500/30 bg-red-500/10 text-red-400 animate-pulse">
-                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> Overdue
+                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> {tc('overdue')}
                             </Badge>
                           )}
                         </div>
@@ -379,7 +379,7 @@ export default function PlayerDashboardPage() {
                         </div>
                         {l.registrationProofUrl ? (
                           <div className="flex items-center gap-2 text-xs text-green-400">
-                            <span>✓ Proof uploaded</span>
+                            <span>✓ {tc('proofUploaded')}</span>
                             <a href={l.registrationProofUrl} target="_blank" rel="noopener noreferrer" className="underline text-blue-400 hover:text-blue-300">View</a>
                           </div>
                         ) : (

@@ -22,6 +22,7 @@ interface WithdrawDialogProps {
 
 export function WithdrawDialog({ open, onOpenChange, balance, currency, onSuccess }: WithdrawDialogProps) {
   const t = useTranslations('wallet');
+  const tc = useTranslations('common');
   const [amount, setAmount] = useState('');
   const [coin, setCoin] = useState<'usdt' | 'usdc'>('usdt');
   const [walletAddress, setWalletAddress] = useState('');
@@ -74,14 +75,14 @@ export function WithdrawDialog({ open, onOpenChange, balance, currency, onSucces
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Failed to submit withdrawal');
+        setError(data.error || tc('failedToSubmitWithdrawal'));
         return;
       }
 
       setSuccess(true);
       onSuccess();
     } catch {
-      setError('Network error');
+      setError(tc('networkError'));
     } finally {
       setLoading(false);
     }
