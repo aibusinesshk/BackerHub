@@ -45,11 +45,11 @@ export async function GET(request: Request) {
   const playerIds = [...new Set(listings.map((l: any) => l.player_id))] as string[];
   const tournamentIds = [...new Set(listings.map((l: any) => l.tournament_id))] as string[];
 
-  // Fetch related data in parallel — select only needed columns
+  // Fetch related data in parallel
   const [{ data: profiles }, { data: playerStats }, { data: tournaments }] = await Promise.all([
-    (supabase.from('profiles') as any).select('id,display_name,display_name_zh,avatar_url,region,is_verified,member_since,bio,bio_zh,color_tone').in('id', playerIds),
-    (supabase.from('player_stats') as any).select('player_id,lifetime_roi,total_tournaments,cash_rate,total_staked_value,avg_finish,biggest_win').in('player_id', playerIds),
-    (supabase.from('tournaments') as any).select('id,name,name_zh,venue,venue_zh,date,buy_in,guaranteed_pool,type,game,region').in('id', tournamentIds),
+    (supabase.from('profiles') as any).select('*').in('id', playerIds),
+    (supabase.from('player_stats') as any).select('*').in('player_id', playerIds),
+    (supabase.from('tournaments') as any).select('*').in('id', tournamentIds),
   ]);
 
   const profileMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
@@ -105,9 +105,7 @@ export async function GET(request: Request) {
     };
   });
 
-  return NextResponse.json({ listings: joined, total: count }, {
-    headers: { 'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=30' },
-  });
+  return NextResponse.json({ listings: joined, total: count });
 }
 
 export async function POST(request: Request) {
