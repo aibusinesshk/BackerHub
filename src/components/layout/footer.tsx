@@ -17,7 +17,10 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4">
-              <Image src="/images/logo-full.png" alt="BackerHub" width={160} height={160} className="h-10 w-auto" />
+              <div className="flex items-center gap-2">
+                <Image src="/images/logo-transparent.png" alt="BackerHub" width={48} height={48} className="h-10 w-10" />
+                <span className="text-xl font-bold tracking-tight"><span className="text-white">Backer</span><span className="text-gold-400">Hub</span></span>
+              </div>
             </div>
             <p className="text-sm text-white/50 max-w-xs">{t('tagline')}</p>
           </div>
