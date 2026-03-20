@@ -117,6 +117,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Enforce KYC — only approved players can sell action
+  const { data: profile } = await (supabase.from('profiles') as any)
+    .select('kyc_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile || profile.kyc_status !== 'approved') {
+    return NextResponse.json(
+      { error: 'KYC verification required. Please complete identity verification before creating listings.' },
+      { status: 403 }
+    );
+  }
+
   const body = await request.json();
   const parsed = createListingSchema.safeParse(body);
   if (!parsed.success) {

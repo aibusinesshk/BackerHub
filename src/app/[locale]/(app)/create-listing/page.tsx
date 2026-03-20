@@ -2,20 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
+import { useRouter, Link } from '@/i18n/navigation';
+import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, formatMarkup } from '@/lib/format';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, Loader2, ShieldAlert, ShieldCheck, Clock } from 'lucide-react';
 import type { Tournament } from '@/types';
 
 export default function CreateListingPage() {
   const t = useTranslations('createListing');
   const locale = useLocale();
   const router = useRouter();
+  const { user } = useAuth();
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loadingTournaments, setLoadingTournaments] = useState(true);
   const [selectedTournament, setSelectedTournament] = useState('');
@@ -77,6 +79,49 @@ export default function CreateListingPage() {
         <CheckCircle className="mx-auto h-16 w-16 text-green-400 mb-4" />
         <h2 className="text-2xl font-bold text-white mb-2">{t('success')}</h2>
         <p className="text-white/50">{t('successMessage')}</p>
+      </div>
+    );
+  }
+
+  // KYC gate — block non-approved players
+  if (user && user.kycStatus !== 'approved') {
+    const isPending = user.kycStatus === 'pending';
+    const isRejected = user.kycStatus === 'rejected';
+
+    return (
+      <div className="mx-auto max-w-lg px-4 py-20">
+        <Card className={`border bg-[#111318] overflow-hidden ${isPending ? 'border-yellow-500/20' : isRejected ? 'border-red-500/20' : 'border-white/[0.06]'}`}>
+          <CardContent className="py-10 text-center space-y-4">
+            {isPending ? (
+              <Clock className="mx-auto h-12 w-12 text-yellow-400" />
+            ) : isRejected ? (
+              <ShieldAlert className="mx-auto h-12 w-12 text-red-400" />
+            ) : (
+              <ShieldAlert className="mx-auto h-12 w-12 text-white/30" />
+            )}
+
+            <div>
+              <h2 className="text-xl font-bold text-white mb-2">{t('kycRequired')}</h2>
+              <p className="text-sm text-white/50 max-w-sm mx-auto">
+                {isPending ? t('kycPendingMessage') : isRejected ? t('kycRejectedMessage') : t('kycRequiredMessage')}
+              </p>
+            </div>
+
+            {isPending ? (
+              <Badge variant="outline" className="text-xs border-yellow-500/30 bg-yellow-500/10 text-yellow-400">
+                {t('kycPendingBadge')}
+              </Badge>
+            ) : (
+              <Button
+                render={<Link href="/profile" />}
+                className="bg-gold-500 text-black font-semibold hover:bg-gold-400"
+              >
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                {t('kycStartVerification')}
+              </Button>
+            )}
+          </CardContent>
+        </Card>
       </div>
     );
   }
