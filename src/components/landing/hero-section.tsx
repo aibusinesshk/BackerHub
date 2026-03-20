@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
@@ -19,10 +19,12 @@ export function HeroSection() {
   });
 
   useEffect(() => {
-    fetch('/api/stats')
+    const controller = new AbortController();
+    fetch('/api/stats', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setPlatformStats(data))
       .catch(() => {});
+    return () => controller.abort();
   }, []);
 
   const stats = [
@@ -37,7 +39,7 @@ export function HeroSection() {
       <div className="absolute inset-0">
         <Image
           src="/images/hero-poker.jpg"
-          alt=""
+          alt="Poker table background"
           fill
           className="object-cover object-center"
           priority

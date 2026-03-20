@@ -41,7 +41,8 @@ export function AvatarCropModal({ open, onOpenChange, imageSrc, onCropped }: Ava
     const size = 400;
     canvas.width = size;
     canvas.height = size;
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) { setProcessing(false); return; }
 
     const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
     const scaleY = imgRef.current.naturalHeight / imgRef.current.height;

@@ -17,6 +17,7 @@ import type { StakingListing } from '@/types';
 export default function CheckoutPage({ params }: { params: Promise<{ listingId: string }> }) {
   const { listingId } = use(params);
   const t = useTranslations('checkout');
+  const tc = useTranslations('common');
   const tLegal = useTranslations('legal');
   const locale = useLocale();
   const router = useRouter();
@@ -31,20 +32,24 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
   const [showDeposit, setShowDeposit] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/listings/${listingId}`)
+    const controller = new AbortController();
+    fetch(`/api/listings/${listingId}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setListing(data.listing || null))
-      .catch(() => setListing(null))
+      .catch((err) => { if (err.name !== 'AbortError') setListing(null); })
       .finally(() => setLoading(false));
+    return () => controller.abort();
   }, [listingId]);
 
   // Fetch wallet balance when user is authenticated
   useEffect(() => {
     if (!user) return;
-    fetch('/api/wallet')
+    const controller = new AbortController();
+    fetch('/api/wallet', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setWalletBalance(data.balance ?? null))
-      .catch(() => setWalletBalance(null));
+      .catch((err) => { if (err.name !== 'AbortError') setWalletBalance(null); });
+    return () => controller.abort();
   }, [user]);
 
   const refreshBalance = () => {
@@ -52,6 +57,12 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
       .then((r) => r.json())
       .then((data) => setWalletBalance(data.balance ?? null))
       .catch(() => {});
+  };
+
+  // Auto-refresh wallet balance when deposit dialog closes
+  const handleDepositClose = (open: boolean) => {
+    setShowDeposit(open);
+    if (!open) refreshBalance();
   };
 
   if (loading || authLoading) {
@@ -64,16 +75,16 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
       <div className="mx-auto max-w-lg py-20 text-center">
         <AlertCircle className="mx-auto h-16 w-16 text-gold-400 mb-4" />
         <h2 className="text-2xl font-bold text-white mb-2">{t('title')}</h2>
-        <p className="text-white/50 mb-6">You need to be logged in to purchase action.</p>
+        <p className="text-white/50 mb-6">{tc('loginRequired')}</p>
         <Button render={<Link href="/login" />} className="bg-gold-500 text-black font-semibold hover:bg-gold-400">
-          Log In
+          {tc('login')}
         </Button>
       </div>
     );
   }
 
   if (!listing || !listing.player || !listing.tournament) {
-    return <div className="py-20 text-center text-white/50">Listing not found</div>;
+    return <div className="py-20 text-center text-white/50">{tc('listingNotFound')}</div>;
   }
 
   const availableShares = listing.totalActionOffered - listing.actionSold;
@@ -104,7 +115,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Purchase failed');
+        setError(data.error || tc('purchaseFailed'));
         setProcessing(false);
         return;
       }
@@ -112,7 +123,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
       setProcessing(false);
       setSuccess(true);
     } catch {
-      setError('Network error. Please try again.');
+      setError(tc('networkError'));
       setProcessing(false);
     }
   };
@@ -194,7 +205,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
                     <Wallet className="h-5 w-5 text-gold-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">Wallet Balance</p>
+                    <p className="text-sm font-medium text-white">{tc('walletBalance')}</p>
                     <p className={`text-lg font-bold ${hasInsufficientBalance ? 'text-red-400' : 'text-gold-400'}`}>
                       {walletBalance !== null ? formatCurrency(walletBalance) : '—'}
                     </p>
@@ -204,7 +215,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
                 {hasInsufficientBalance && (
                   <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 mb-3">
                     <p className="text-xs text-red-400">
-                      Insufficient balance. You need {formatCurrency(total - (walletBalance || 0))} more.
+                      {tc('insufficientBalance', { amount: formatCurrency(total - (walletBalance || 0)) })}
                     </p>
                   </div>
                 )}
@@ -215,7 +226,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
                   onClick={() => setShowDeposit(true)}
                   className="w-full border-gold-500/20 text-gold-400 hover:bg-gold-500/10 text-xs"
                 >
-                  Deposit Funds
+                  {tc('depositFunds')}
                 </Button>
               </div>
 
@@ -246,7 +257,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
 
       <DepositDialog
         open={showDeposit}
-        onOpenChange={setShowDeposit}
+        onOpenChange={handleDepositClose}
         onSuccess={refreshBalance}
       />
     </div>

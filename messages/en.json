@@ -9,7 +9,42 @@
     "viewAll": "View All",
     "loading": "Loading...",
     "backToHome": "Back to Home",
-    "or": "or"
+    "or": "or",
+    "networkError": "Network error. Please try again.",
+    "notFound": "Not found",
+    "somethingWentWrong": "Something went wrong",
+    "tryAgain": "Try Again",
+    "buyShares": "Buy Shares",
+    "depositFunds": "Deposit Funds",
+    "walletBalance": "Wallet Balance",
+    "insufficientBalance": "Insufficient balance. You need {amount} more.",
+    "loginRequired": "You need to be logged in to purchase action.",
+    "listingNotFound": "Listing not found",
+    "playerNotFound": "Player not found",
+    "overdue": "Overdue",
+    "proofUploaded": "Proof uploaded",
+    "listYourAction": "List Your Action",
+    "failedToLoad": "Failed to load data.",
+    "retry": "Retry",
+    "unexpectedError": "An unexpected error occurred",
+    "errorDescription": "We encountered an unexpected error. Please try again.",
+    "errorDescription500": "An unexpected error occurred. Please try again or contact support if the problem persists.",
+    "oops": "Oops",
+    "creatingAccount": "Creating account...",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordPlaceholder": "Minimum 6 characters",
+    "signupFailed": "Signup failed",
+    "invalidCredentials": "Invalid credentials",
+    "failedToCreateDeposit": "Failed to create deposit",
+    "failedToSubmitWithdrawal": "Failed to submit withdrawal",
+    "couldNotLoadListing": "Could not load listing details.",
+    "failedToSubmitResult": "Failed to submit result",
+    "failedToLoadProfile": "Failed to load profile",
+    "failedToSave": "Failed to save",
+    "uploadFailed": "Upload failed",
+    "purchaseFailed": "Purchase failed",
+    "unknownPlayer": "Player",
+    "unknownTournament": "Tournament"
   },
   "nav": {
     "marketplace": "Marketplace",
@@ -19,6 +54,8 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Log Out",
+    "admin": "Admin",
+    "home": "Home",
     "contact": "Contact",
     "players": "Players",
     "sellAction": "Sell Action",
@@ -178,7 +215,9 @@
     "viewPackage": "View Package",
     "listingTypeAll": "All Listings",
     "listingTypeSingle": "Single Tournament",
-    "listingTypePackage": "Festival Package"
+    "listingTypePackage": "Festival Package",
+    "filterType": "Type",
+    "bulletsFired": "{count} fired"
   },
   "player": {
     "verified": "Verified Player",
@@ -370,7 +409,13 @@
     "kycPendingMessage": "Your identity verification is being reviewed. You'll be able to create listings once approved — usually within 24 hours.",
     "kycRejectedMessage": "Your previous verification was not approved. Please re-submit your documents to start selling action.",
     "kycPendingBadge": "Verification Under Review",
-    "kycStartVerification": "Start Verification"
+    "kycStartVerification": "Start Verification",
+    "previewBuyIn": "Buy-in",
+    "previewMarkup": "Markup",
+    "previewShares": "Shares",
+    "previewThreshold": "Threshold",
+    "investorCostPer10": "Investor cost per 10%",
+    "selectTournamentToPreview": "Select a tournament to preview"
   },
   "about": {
     "title": "About BackerHub",
@@ -419,7 +464,10 @@
     "platform": "Platform",
     "company": "Company",
     "legal": "Legal",
-    "disclaimer": "BackerHub is a player sponsorship platform for skill-based mind sport competition. Tournament poker (MTT) is recognized as a competitive mind sport in Taiwan. This is not a gambling or securities platform."
+    "disclaimer": "BackerHub is a player sponsorship platform for skill-based mind sport competition. Tournament poker (MTT) is recognized as a competitive mind sport in Taiwan. This is not a gambling or securities platform.",
+    "sslSecured": "SSL Secured",
+    "cryptoNative": "Crypto-Native",
+    "escrowProtected": "Escrow Protected"
   },
   "notFound": {
     "title": "Page Not Found",
@@ -791,10 +839,15 @@
       "signup": "Create Account"
     }
   },
+  "tournamentBanner": {
+    "gtd": "GTD",
+    "buyIn": "buy-in"
+  },
   "preLaunch": {
     "banner": "Pre-Launch Special: 0% Platform Fee",
     "bannerSub": "Back players for free during our launch period — no commission, no hidden costs.",
-    "cta": "Get Started Free"
+    "cta": "Get Started Free",
+    "freeBadge": "FREE"
   },
   "legal": {
     "termsTitle": "Terms of Service",

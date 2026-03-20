@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
+import { logger } from '@/lib/logger';
 
 /**
  * POST /api/admin/promote
@@ -40,7 +41,7 @@ export async function POST() {
 
     return NextResponse.json({ success: true, message: 'You are now an admin.' });
   } catch (err) {
-    console.error('Admin promote error:', err);
+    logger.apiError('/api/admin/promote', 'POST', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

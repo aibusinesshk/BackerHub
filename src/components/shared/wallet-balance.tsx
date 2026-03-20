@@ -17,17 +17,22 @@ export function WalletBalance() {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
 
   const fetchBalance = useCallback(() => {
-    fetch('/api/wallet')
+    const controller = new AbortController();
+    fetch('/api/wallet', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
         setBalance(data.balance || 0);
         setCurrency(data.currency || 'USD');
       })
-      .catch(() => {})
+      .catch((err) => { if (err.name !== 'AbortError') { /* silent */ } })
       .finally(() => setLoading(false));
+    return controller;
   }, []);
 
-  useEffect(() => { fetchBalance(); }, [fetchBalance]);
+  useEffect(() => {
+    const controller = fetchBalance();
+    return () => controller.abort();
+  }, [fetchBalance]);
 
   const handleSuccess = () => {
     fetchBalance();

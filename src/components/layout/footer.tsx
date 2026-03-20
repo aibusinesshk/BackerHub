@@ -12,8 +12,8 @@ export function Footer() {
   const paymentIcons = [...PAYMENT_BADGES];
 
   return (
-    <footer className="hidden md:block border-t border-white/[0.06] bg-[#080a0e]">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <footer className="border-t border-white/[0.06] bg-[#080a0e] pb-20 md:pb-0">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4">
@@ -47,13 +47,13 @@ export function Footer() {
             <h3 className="mb-3 text-sm font-semibold text-white">{t('legal')}</h3>
             <div className="flex flex-wrap gap-2">
               <div className="flex items-center gap-1 text-xs text-white/40">
-                <Shield className="h-3 w-3" /> SSL Secured
+                <Shield className="h-3 w-3" /> {t('sslSecured')}
               </div>
               <div className="flex items-center gap-1 text-xs text-white/40">
-                <Shield className="h-3 w-3" /> Crypto-Native
+                <Shield className="h-3 w-3" /> {t('cryptoNative')}
               </div>
               <div className="flex items-center gap-1 text-xs text-white/40">
-                <Wallet className="h-3 w-3" /> Escrow Protected
+                <Wallet className="h-3 w-3" /> {t('escrowProtected')}
               </div>
             </div>
           </div>

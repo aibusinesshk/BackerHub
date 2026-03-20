@@ -18,6 +18,7 @@ import type { Player, StakingListing, Review } from '@/types';
 export default function PlayerProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations('player');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const [player, setPlayer] = useState<Player | null>(null);
   const [listings, setListings] = useState<StakingListing[]>([]);
@@ -25,17 +26,19 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
     Promise.all([
-      fetch(`/api/players/${id}`).then((r) => r.json()),
-      fetch(`/api/players/${id}/reviews`).then((r) => r.json()),
+      fetch(`/api/players/${id}`, { signal: controller.signal }).then((r) => r.json()),
+      fetch(`/api/players/${id}/reviews`, { signal: controller.signal }).then((r) => r.json()),
     ])
       .then(([playerData, reviewData]) => {
         setPlayer(playerData.player || null);
         setListings(playerData.listings || []);
         setReviews(reviewData.reviews || []);
       })
-      .catch(() => {})
+      .catch((err) => { if (err.name !== 'AbortError') setPlayer(null); })
       .finally(() => setLoading(false));
+    return () => controller.abort();
   }, [id]);
 
   if (loading) {
@@ -45,7 +48,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
   const activeListings = listings.filter((l) => l.status === 'active');
 
   if (!player) {
-    return <div className="py-20 text-center text-white/50">Player not found</div>;
+    return <div className="py-20 text-center text-white/50">{tc('playerNotFound')}</div>;
   }
 
   const name = locale === 'zh-TW' && player.displayNameZh ? player.displayNameZh : player.displayName;
@@ -89,7 +92,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
                 </div>
                 <div className="flex items-center gap-3 mt-1">
                   <p className="text-sm text-white/60">
-                    {player.region === 'TW' ? '🇹🇼' : '🇭🇰'} · {t('memberSince', { date: formatDate(player.memberSince, locale) })}
+                    <span role="img" aria-label={player.region === 'TW' ? 'Taiwan' : 'Hong Kong'}>{player.region === 'TW' ? '🇹🇼' : '🇭🇰'}</span> · {t('memberSince', { date: formatDate(player.memberSince, locale) })}
                   </p>
                   {reviews.length > 0 && (
                     <div className="flex items-center gap-1">
@@ -229,7 +232,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
                         className="w-full bg-gold-500 text-black text-xs font-semibold hover:bg-gold-400"
                         size="sm"
                       >
-                        Buy Shares
+                        {tc('buyShares')}
                       </Button>
                     </div>
                   );

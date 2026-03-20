@@ -18,7 +18,7 @@ export function MobileTabBar() {
   // Center button: "Sell Action" for players, "Home" for others
   const centerTab = isPlayer
     ? { href: '/create-listing' as any, label: t('sellAction'), icon: Plus }
-    : { href: '/' as const, label: 'Home', icon: Spade };
+    : { href: '/' as const, label: t('home'), icon: Spade };
 
   const tabs = [
     { href: '/marketplace' as const, label: t('marketplace'), icon: Store },

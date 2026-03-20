@@ -21,6 +21,7 @@ type Step = 'form' | 'address';
 
 export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogProps) {
   const t = useTranslations('wallet');
+  const tc = useTranslations('common');
   const [step, setStep] = useState<Step>('form');
   const [amount, setAmount] = useState('');
   const [coin, setCoin] = useState<'usdt' | 'usdc'>('usdt');
@@ -65,14 +66,14 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Failed to create deposit');
+        setError(data.error || tc('failedToCreateDeposit'));
         return;
       }
 
       setReferenceNumber(data.referenceNumber);
       setStep('address');
     } catch {
-      setError('Network error');
+      setError(tc('networkError'));
     } finally {
       setLoading(false);
     }

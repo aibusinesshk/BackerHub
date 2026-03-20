@@ -26,9 +26,11 @@ export default function CreateListingPage() {
   const [threshold, setThreshold] = useState(50);
   const [published, setPublished] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState('');
 
   useEffect(() => {
-    fetch('/api/tournaments?upcoming=true')
+    const controller = new AbortController();
+    fetch('/api/tournaments?upcoming=true', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => {
         const mapped = (data.tournaments || []).map((t: any) => ({
@@ -39,8 +41,9 @@ export default function CreateListingPage() {
         }));
         setTournaments(mapped);
       })
-      .catch(() => setTournaments([]))
+      .catch((err) => { if (err.name !== 'AbortError') setTournaments([]); })
       .finally(() => setLoadingTournaments(false));
+    return () => controller.abort();
   }, []);
 
   const tournament = tournaments.find((t) => t.id === selectedTournament);
@@ -48,6 +51,7 @@ export default function CreateListingPage() {
   const handlePublish = async () => {
     if (!selectedTournament) return;
     setPublishing(true);
+    setPublishError('');
     try {
       const res = await fetch('/api/listings', {
         method: 'POST',
@@ -64,10 +68,10 @@ export default function CreateListingPage() {
         setTimeout(() => router.push('/dashboard/player'), 2000);
       } else {
         const data = await res.json().catch(() => null);
-        alert(data?.error || t('publishError'));
+        setPublishError(data?.error || t('publishError'));
       }
-    } catch (err) {
-      alert(t('publishError'));
+    } catch {
+      setPublishError(t('publishError'));
     } finally {
       setPublishing(false);
     }
@@ -225,34 +229,39 @@ export default function CreateListingPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="rounded-lg bg-white/[0.03] p-2">
-                      <span className="text-white/40">Buy-in</span>
+                      <span className="text-white/40">{t('previewBuyIn')}</span>
                       <p className="font-semibold text-white">{formatCurrency(tournament.buyIn)}</p>
                     </div>
                     <div className="rounded-lg bg-white/[0.03] p-2">
-                      <span className="text-white/40">Markup</span>
+                      <span className="text-white/40">{t('previewMarkup')}</span>
                       <p className="font-semibold text-gold-400">{formatMarkup(markup)}</p>
                     </div>
                     <div className="rounded-lg bg-white/[0.03] p-2">
-                      <span className="text-white/40">Shares</span>
+                      <span className="text-white/40">{t('previewShares')}</span>
                       <p className="font-semibold text-white">{sharesOffered}%</p>
                     </div>
                     <div className="rounded-lg bg-white/[0.03] p-2">
-                      <span className="text-white/40">Threshold</span>
+                      <span className="text-white/40">{t('previewThreshold')}</span>
                       <p className="font-semibold text-white">{threshold}%</p>
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs text-white/40 mb-1">Investor cost per 10%</p>
+                    <p className="text-xs text-white/40 mb-1">{t('investorCostPer10')}</p>
                     <p className="text-lg font-bold text-gold-400">
                       {formatCurrency(tournament.buyIn * 0.1 * markup)}
                     </p>
                   </div>
+                  {publishError && (
+                    <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+                      <p className="text-xs text-red-400">{publishError}</p>
+                    </div>
+                  )}
                   <Button onClick={handlePublish} disabled={publishing} className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow">
                     {publishing ? <Loader2 className="h-4 w-4 animate-spin" /> : t('publish')}
                   </Button>
                 </>
               ) : (
-                <p className="text-sm text-white/40 py-4 text-center">Select a tournament to preview</p>
+                <p className="text-sm text-white/40 py-4 text-center">{t('selectTournamentToPreview')}</p>
               )}
             </CardContent>
           </Card>

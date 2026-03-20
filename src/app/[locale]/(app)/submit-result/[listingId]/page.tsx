@@ -25,6 +25,7 @@ export default function SubmitResultPage() {
   const params = useParams();
   const listingId = params.listingId as string;
   const t = useTranslations('tournamentResults');
+  const tc = useTranslations('common');
   const { user } = useAuth();
 
   const [listing, setListing] = useState<ListingDetails | null>(null);
@@ -43,9 +44,10 @@ export default function SubmitResultPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchListing() {
       try {
-        const res = await fetch(`/api/listings/${listingId}`);
+        const res = await fetch(`/api/listings/${listingId}`, { signal: controller.signal });
         if (!res.ok) throw new Error('Failed to fetch listing');
         const data = await res.json();
         const l = data.listing || data;
@@ -56,8 +58,10 @@ export default function SubmitResultPage() {
           actionPercentage: l.actionSold || l.sharesSold || l.actionPercentage || 0,
           currency: l.tournament?.currency || l.currency,
         });
-      } catch {
-        setListingError('Could not load listing details.');
+      } catch (err) {
+        if (err instanceof Error && err.name !== 'AbortError') {
+          setListingError(tc('couldNotLoadListing'));
+        }
       } finally {
         setLoadingListing(false);
       }
@@ -66,7 +70,8 @@ export default function SubmitResultPage() {
     if (listingId) {
       fetchListing();
     }
-  }, [listingId]);
+    return () => controller.abort();
+  }, [listingId, tc]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -100,12 +105,12 @@ export default function SubmitResultPage() {
         if (res.status === 409) {
           throw new Error(t('alreadySubmitted'));
         }
-        throw new Error(data.error || 'Failed to submit result');
+        throw new Error(data.error || tc('failedToSubmitResult'));
       }
 
       setSubmitted(true);
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : 'An error occurred');
+      setSubmitError(err instanceof Error ? err.message : tc('unexpectedError'));
     } finally {
       setSubmitting(false);
     }

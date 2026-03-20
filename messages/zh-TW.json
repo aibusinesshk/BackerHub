@@ -9,7 +9,42 @@
     "viewAll": "查看全部",
     "loading": "載入中...",
     "backToHome": "返回首頁",
-    "or": "或"
+    "or": "或",
+    "networkError": "網路錯誤，請重試。",
+    "notFound": "未找到",
+    "somethingWentWrong": "發生錯誤",
+    "tryAgain": "重試",
+    "buyShares": "購買份額",
+    "depositFunds": "充值",
+    "walletBalance": "錢包餘額",
+    "insufficientBalance": "餘額不足，還需 {amount}。",
+    "loginRequired": "您需要登入才能購買。",
+    "listingNotFound": "找不到此項目",
+    "playerNotFound": "找不到此選手",
+    "overdue": "已逾期",
+    "proofUploaded": "已上傳證明",
+    "listYourAction": "出售份額",
+    "failedToLoad": "載入失敗。",
+    "retry": "重試",
+    "unexpectedError": "發生意外錯誤",
+    "errorDescription": "遇到意外錯誤，請重試。",
+    "errorDescription500": "發生意外錯誤，請重試或聯絡客服。",
+    "oops": "糟糕",
+    "creatingAccount": "建立帳號中...",
+    "passwordMinLength": "密碼至少需要6個字元",
+    "passwordPlaceholder": "至少6個字元",
+    "signupFailed": "註冊失敗",
+    "invalidCredentials": "帳號或密碼錯誤",
+    "failedToCreateDeposit": "建立儲值請求失敗",
+    "failedToSubmitWithdrawal": "提交提款請求失敗",
+    "couldNotLoadListing": "無法載入項目詳情。",
+    "failedToSubmitResult": "提交結果失敗",
+    "failedToLoadProfile": "載入個人資料失敗",
+    "failedToSave": "儲存失敗",
+    "uploadFailed": "上傳失敗",
+    "purchaseFailed": "購買失敗",
+    "unknownPlayer": "選手",
+    "unknownTournament": "錦標賽"
   },
   "nav": {
     "marketplace": "市場",
@@ -19,6 +54,8 @@
     "profile": "個人資料",
     "settings": "設定",
     "logout": "登出",
+    "admin": "管理",
+    "home": "首頁",
     "contact": "聯絡",
     "players": "選手",
     "sellAction": "賣份額",
@@ -178,7 +215,9 @@
     "viewPackage": "查看套餐",
     "listingTypeAll": "所有列表",
     "listingTypeSingle": "單場賽事",
-    "listingTypePackage": "系列賽套餐"
+    "listingTypePackage": "系列賽套餐",
+    "filterType": "類型",
+    "bulletsFired": "{count} 場已打"
   },
   "player": {
     "verified": "認證選手",
@@ -370,7 +409,13 @@
     "kycPendingMessage": "您的身份驗證正在審核中。審核通過後即可建立列表，通常在24小時內完成。",
     "kycRejectedMessage": "您之前的驗證未通過。請重新提交文件以開始出售份額。",
     "kycPendingBadge": "驗證審核中",
-    "kycStartVerification": "開始驗證"
+    "kycStartVerification": "開始驗證",
+    "previewBuyIn": "買入",
+    "previewMarkup": "溢價",
+    "previewShares": "份額",
+    "previewThreshold": "門檻",
+    "investorCostPer10": "投資者每10%成本",
+    "selectTournamentToPreview": "請選擇錦標賽以預覽"
   },
   "about": {
     "title": "關於 BackerHub",
@@ -419,7 +464,10 @@
     "platform": "平台",
     "company": "公司",
     "legal": "法律",
-    "disclaimer": "BackerHub 是一個技術性智力運動競賽的選手贊助平台。撲克錦標賽（MTT）在台灣被認定為競技智力運動。這不是博弈或證券平台。"
+    "disclaimer": "BackerHub 是一個技術性智力運動競賽的選手贊助平台。撲克錦標賽（MTT）在台灣被認定為競技智力運動。這不是博弈或證券平台。",
+    "sslSecured": "SSL 安全加密",
+    "cryptoNative": "加密貨幣原生",
+    "escrowProtected": "託管保護"
   },
   "notFound": {
     "title": "找不到頁面",
@@ -791,10 +839,15 @@
       "signup": "建立帳號"
     }
   },
+  "tournamentBanner": {
+    "gtd": "保底",
+    "buyIn": "買入"
+  },
   "preLaunch": {
     "banner": "預上線特惠：0% 平台手續費",
     "bannerSub": "預上線期間免費贊助選手 — 零佣金，零隱藏費用。",
-    "cta": "免費開始"
+    "cta": "免費開始",
+    "freeBadge": "免費"
   },
   "legal": {
     "termsTitle": "服務條款",

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { useAuth } from '@/providers/auth-provider';
@@ -12,6 +12,7 @@ import { formatCurrency, formatMarkup, formatDate } from '@/lib/format';
 import {
   DollarSign, TrendingUp, Layers, Tag, Plus, ArrowUpRight, Loader2,
   Trophy, Upload, Clock, AlertTriangle, XCircle, List, Palette, ShieldAlert, ShieldCheck,
+  AlertCircle, RefreshCw,
 } from 'lucide-react';
 import { WalletBalance } from '@/components/shared/wallet-balance';
 import { PLAYER_COLOR_TONES, ALL_COLOR_TONES, getPlayerColorTone } from '@/lib/player-colors';
@@ -19,34 +20,38 @@ import type { PlayerColorTone } from '@/types';
 
 export default function PlayerDashboardPage() {
   const t = useTranslations('dashboard.player');
+  const tc = useTranslations('common');
   const tr = useTranslations('tournamentResults');
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [proofUrl, setProofUrl] = useState<Record<string, string>>({});
   const [submittingProof, setSubmittingProof] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [selectedColorTone, setSelectedColorTone] = useState<PlayerColorTone | null>(null);
   const [savingColor, setSavingColor] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  function fetchData() {
-    fetch('/api/dashboard/player')
-      .then((r) => r.json())
+  const fetchData = useCallback((signal?: AbortSignal) => {
+    setError(false);
+    fetch('/api/dashboard/player', signal ? { signal } : undefined)
+      .then((r) => { if (!r.ok) throw new Error('Failed'); return r.json(); })
       .then((d) => {
         setData(d);
-        // Load color tone from profile included in dashboard response
         if (d.profile?.color_tone) {
           setSelectedColorTone(d.profile.color_tone);
         }
       })
-      .catch(() => {})
+      .catch((err) => { if (err.name !== 'AbortError') setError(true); })
       .finally(() => setLoading(false));
-  }
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchData(controller.signal);
+    return () => controller.abort();
+  }, [fetchData]);
 
   async function handleUploadProof(listingId: string) {
     const url = proofUrl[listingId];
@@ -228,7 +233,15 @@ export default function PlayerDashboardPage() {
         </CardContent>
       </Card>
 
-      {loading ? (
+      {error ? (
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
+          <AlertCircle className="h-8 w-8 text-red-400" />
+          <p className="text-sm text-white/50">{tc('failedToLoad')}</p>
+          <Button variant="outline" size="sm" onClick={() => { setLoading(true); fetchData(); }} className="border-white/10 text-white/60">
+            <RefreshCw className="mr-2 h-3 w-3" /> {tc('retry')}
+          </Button>
+        </div>
+      ) : loading ? (
         <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-gold-400" /></div>
       ) : (
       <Card className="border-white/[0.06] bg-[#111318]">
@@ -304,7 +317,7 @@ export default function PlayerDashboardPage() {
                           {/* Deadline warning badges */}
                           {needsRegistrationProof && isDeadlineOverdue(l.deadlineRegistration) && (
                             <Badge variant="outline" className="text-[10px] border-red-500/30 bg-red-500/10 text-red-400 animate-pulse">
-                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> Overdue
+                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> {tc('overdue')}
                             </Badge>
                           )}
                           {needsRegistrationProof && isDeadlineWarning(l.deadlineRegistration) && (
@@ -314,7 +327,7 @@ export default function PlayerDashboardPage() {
                           )}
                           {needsPrizeDeposit && isDeadlineOverdue(l.deadlineDeposit) && (
                             <Badge variant="outline" className="text-[10px] border-red-500/30 bg-red-500/10 text-red-400 animate-pulse">
-                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> Overdue
+                              <AlertTriangle className="h-2.5 w-2.5 mr-0.5" /> {tc('overdue')}
                             </Badge>
                           )}
                         </div>
@@ -368,7 +381,7 @@ export default function PlayerDashboardPage() {
                         </div>
                         {l.registrationProofUrl ? (
                           <div className="flex items-center gap-2 text-xs text-green-400">
-                            <span>✓ Proof uploaded</span>
+                            <span>✓ {tc('proofUploaded')}</span>
                             <a href={l.registrationProofUrl} target="_blank" rel="noopener noreferrer" className="underline text-blue-400 hover:text-blue-300">View</a>
                           </div>
                         ) : (

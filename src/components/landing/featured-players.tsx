@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { ScrollReveal } from '@/components/shared/scroll-reveal';
@@ -17,10 +17,12 @@ export function FeaturedPlayers() {
   const [featured, setFeatured] = useState<Player[]>([]);
 
   useEffect(() => {
-    fetch('/api/players?verified=true&sort=top&limit=6')
+    const controller = new AbortController();
+    fetch('/api/players?verified=true&sort=top&limit=6', { signal: controller.signal })
       .then((r) => r.json())
       .then((data) => setFeatured(data.players || []))
       .catch(() => {});
+    return () => controller.abort();
   }, []);
 
   if (featured.length === 0) return null;
@@ -57,7 +59,7 @@ export function FeaturedPlayers() {
                         </span>
                       </div>
                       <p className="text-sm text-white/50">
-                        {player.region === 'TW' ? '🇹🇼' : '🇭🇰'} {player.stats.totalTournaments} tournaments
+                        <span role="img" aria-label={player.region === 'TW' ? 'Taiwan' : 'Hong Kong'}>{player.region === 'TW' ? '🇹🇼' : '🇭🇰'}</span> {player.stats.totalTournaments} tournaments
                       </p>
                     </div>
                   </div>

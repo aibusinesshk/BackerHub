@@ -14,25 +14,29 @@ import { getPlayerColorTone } from '@/lib/player-colors';
 import {
   DollarSign, TrendingUp, BarChart3, Layers, ArrowUpRight, ArrowDownRight,
   Loader2, ChevronDown, ChevronUp, Calendar, MapPin, Users, CreditCard,
-  Check, ExternalLink,
+  Check, ExternalLink, AlertCircle, RefreshCw,
 } from 'lucide-react';
 import { WalletBalance } from '@/components/shared/wallet-balance';
 
 export default function InvestorDashboardPage() {
   const t = useTranslations('dashboard.investor');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [expandedPortfolio, setExpandedPortfolio] = useState<string | null>(null);
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/dashboard/investor')
-      .then((r) => r.json())
-      .then((d) => setData(d))
-      .catch(() => {})
+    const controller = new AbortController();
+    fetch('/api/dashboard/investor', { signal: controller.signal })
+      .then((r) => { if (!r.ok) throw new Error('Failed'); return r.json(); })
+      .then((d) => { setData(d); setError(false); })
+      .catch((err) => { if (err.name !== 'AbortError') setError(true); })
       .finally(() => setLoading(false));
+    return () => controller.abort();
   }, []);
 
   const apiStats = data?.stats || { totalBacked: 0, activeInvestments: 0, totalReturns: 0, roi: 0 };
@@ -105,7 +109,20 @@ export default function InvestorDashboardPage() {
         ))}
       </div>
 
-      {loading ? (
+      {error ? (
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
+          <AlertCircle className="h-8 w-8 text-red-400" />
+          <p className="text-sm text-white/50">{tc('failedToLoad')}</p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => { setError(false); setLoading(true); const c = new AbortController(); fetch('/api/dashboard/investor', { signal: c.signal }).then(r => r.json()).then(d => { setData(d); setError(false); }).catch(e => { if (e.name !== 'AbortError') setError(true); }).finally(() => setLoading(false)); }}
+            className="border-white/10 text-white/60"
+          >
+            <RefreshCw className="mr-2 h-3 w-3" /> {tc('retry')}
+          </Button>
+        </div>
+      ) : loading ? (
         <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-gold-400" /></div>
       ) : (
       <div className="grid gap-6 lg:grid-cols-2">
@@ -116,8 +133,8 @@ export default function InvestorDashboardPage() {
             {portfolio.length === 0 ? (
               <p className="text-sm text-white/40 py-4 text-center">{t('noInvestments')}</p>
             ) : portfolio.map((l: any) => {
-              const name = locale === 'zh-TW' && l.player?.displayNameZh ? l.player.displayNameZh : l.player?.displayName || 'Player';
-              const tName = locale === 'zh-TW' && l.tournament?.nameZh ? l.tournament.nameZh : l.tournament?.name || 'Tournament';
+              const name = locale === 'zh-TW' && l.player?.displayNameZh ? l.player.displayNameZh : l.player?.displayName || tc('unknownPlayer');
+              const tName = locale === 'zh-TW' && l.tournament?.nameZh ? l.tournament.nameZh : l.tournament?.name || tc('unknownTournament');
               const isExpanded = expandedPortfolio === l.id;
               const tone = getPlayerColorTone(l.player?.colorTone);
               const inv = l.investment;

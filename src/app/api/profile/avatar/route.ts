@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
+import { logger } from '@/lib/logger';
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2MB
 const BUCKET = 'avatars';
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
       .upload(filePath, buffer, { contentType: 'image/webp', upsert: true });
 
     if (uploadError) {
-      console.error('Storage upload error:', uploadError);
+      logger.error('Storage upload error', uploadError, { route: '/api/profile/avatar', action: 'upload' });
       return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
     }
 
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ avatar_url: avatarUrl });
   } catch (err) {
-    console.error('Avatar upload error:', err);
+    logger.apiError('/api/profile/avatar', 'POST', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -18,9 +18,9 @@ export const CRYPTO_COINS = [
 // Payment badges shown on landing page and footer
 export const PAYMENT_BADGES = ['USDT', 'USDC', 'Bitcoin', 'Ethereum'] as const;
 
-// Platform wallet address for receiving deposits (demo TRC-20 address)
+// Platform wallet address for receiving deposits
 export const PLATFORM_WALLET = {
-  address: 'TJYMpMCx4goDn6yWUnrSJaLb8uXtoFains',
+  address: process.env.NEXT_PUBLIC_PLATFORM_WALLET_ADDRESS || 'TJYMpMCx4goDn6yWUnrSJaLb8uXtoFains',
   network: 'Tron (TRC-20)',
   networkShort: 'TRC-20',
 } as const;

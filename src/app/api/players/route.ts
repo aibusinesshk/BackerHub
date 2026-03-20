@@ -7,8 +7,8 @@ export async function GET(request: Request) {
   const verified = searchParams.get('verified');
   const search = searchParams.get('search');
   const sort = searchParams.get('sort'); // 'top' = sort by performance
-  const limit = parseInt(searchParams.get('limit') || '50');
-  const offset = parseInt(searchParams.get('offset') || '0');
+  const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '50') || 50, 1), 200);
+  const offset = Math.max(parseInt(searchParams.get('offset') || '0') || 0, 0);
 
   const supabase = await createClient();
 
