@@ -32,7 +32,7 @@ export function HeroSection() {
   ];
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-16 pb-28 md:pb-0">
+    <section className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden pt-16 pb-24 md:pb-0">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
@@ -52,9 +52,9 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,184,28,0.08)_0%,transparent_70%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(245,184,28,0.05)_0%,transparent_50%)]" />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 py-10 sm:py-20 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center animate-fade-in-up">
-          <Badge variant="outline" className="mb-6 border-gold-500/30 bg-gold-500/10 text-gold-400 px-4 py-1.5 text-sm backdrop-blur-sm">
+          <Badge variant="outline" className="mb-4 sm:mb-6 border-gold-500/30 bg-gold-500/10 text-gold-400 px-4 py-1.5 text-sm backdrop-blur-sm">
             {t('badge')}
           </Badge>
 
@@ -70,12 +70,12 @@ export function HeroSection() {
             ))}
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg text-white/70 sm:text-xl drop-shadow-md">
+          <p className="mt-4 sm:mt-6 max-w-2xl text-base text-white/70 sm:text-xl drop-shadow-md">
             {t('subtitle')}
           </p>
 
           {/* Pre-launch 0% fee callout */}
-          <Link href={'/pricing' as any} className="mt-8 inline-flex items-center gap-3 rounded-2xl border border-gold-500/30 bg-gold-500/10 backdrop-blur-sm px-6 py-3 transition-colors hover:bg-gold-500/20 hover:border-gold-500/40 cursor-pointer">
+          <Link href={'/pricing' as any} className="mt-5 sm:mt-8 inline-flex items-center gap-3 rounded-2xl border border-gold-500/30 bg-gold-500/10 backdrop-blur-sm px-5 py-2.5 sm:px-6 sm:py-3 transition-colors hover:bg-gold-500/20 hover:border-gold-500/40 cursor-pointer">
             <Sparkles className="h-5 w-5 text-gold-400" />
             <div className="text-left">
               <span className="block text-lg font-bold text-gold-400 sm:text-xl">{t('freeTag')}</span>
@@ -84,7 +84,7 @@ export function HeroSection() {
             <ArrowRight className="h-4 w-4 text-gold-400/60" />
           </Link>
 
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-5 sm:mt-8 flex flex-col gap-3 sm:gap-4 sm:flex-row">
             <Button
               size="lg"
               render={<Link href={user ? '/marketplace' as const : '/signup' as const} />}
@@ -102,7 +102,7 @@ export function HeroSection() {
             </Button>
           </div>
 
-          <div className="mt-16 flex flex-wrap justify-center gap-8 sm:gap-12">
+          <div className="mt-8 sm:mt-16 flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12">
             {stats.map((stat) => (
               <div key={stat.label} className="flex items-center gap-3 backdrop-blur-sm bg-black/20 rounded-xl px-4 py-3 border border-white/[0.06]">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-500/10">
