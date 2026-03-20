@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const supabase = await createClient();
 
   let query = (supabase.from('profiles') as any)
-    .select('*', { count: 'exact' })
+    .select('id, display_name, display_name_zh, avatar_url, region, is_verified, member_since, bio, bio_zh, hendon_mob_url, color_tone', { count: 'exact' })
     .in('role', ['player', 'both']);
 
   if (region && region !== 'all') {
@@ -40,7 +40,7 @@ export async function GET(request: Request) {
   // Fetch player stats for all profiles
   const playerIds = profiles.map((p: any) => p.id);
   const { data: allStats } = await (supabase.from('player_stats') as any)
-    .select('*').in('player_id', playerIds);
+    .select('player_id, lifetime_roi, total_tournaments, cash_rate, total_staked_value, avg_finish, biggest_win').in('player_id', playerIds);
   const statsMap = new Map<string, any>((allStats || []).map((s: any) => [s.player_id, s]));
 
   const players = profiles.map((p: any) => {
@@ -74,5 +74,7 @@ export async function GET(request: Request) {
     };
   });
 
-  return NextResponse.json({ players, total: count });
+  return NextResponse.json({ players, total: count }, {
+    headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' },
+  });
 }

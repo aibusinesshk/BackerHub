@@ -32,21 +32,18 @@ export default function PlayerDashboardPage() {
 
   useEffect(() => {
     fetchData();
-    // Load current color tone from profile
-    fetch('/api/profile')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.profile?.color_tone) {
-          setSelectedColorTone(d.profile.color_tone);
-        }
-      })
-      .catch(() => {});
   }, []);
 
   function fetchData() {
     fetch('/api/dashboard/player')
       .then((r) => r.json())
-      .then((d) => setData(d))
+      .then((d) => {
+        setData(d);
+        // Load color tone from profile included in dashboard response
+        if (d.profile?.color_tone) {
+          setSelectedColorTone(d.profile.color_tone);
+        }
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }

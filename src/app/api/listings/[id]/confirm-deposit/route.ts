@@ -97,29 +97,28 @@ export async function POST(
     amount: number;
   }> = [];
 
-  for (const inv of investments) {
+  // Process all investor distributions in parallel
+  await Promise.all(investments.map(async (inv: any) => {
     const investorShare = (Number(inv.shares_purchased) / totalSharesSold) * depositAmount;
 
-    // Credit backer wallet
-    await adminClient.rpc('adjust_wallet_balance', {
-      p_user_id: inv.investor_id,
-      p_amount: investorShare,
-    });
-
-    // Create payout transaction for backer
-    await adminClient.from('transactions').insert({
-      user_id: inv.investor_id,
-      type: 'payout' as const,
-      investment_id: inv.id,
-      listing_id: listingId,
-      amount: investorShare,
-      currency: inv.currency,
-      status: 'completed' as const,
-      description: `Prize distribution: ${inv.shares_purchased}% of $${prizeAmount} prize (deposit confirmed)`,
-    });
-
-    // Mark investment as settled
-    await adminClient.from('investments').update({ status: 'settled' as const }).eq('id', inv.id);
+    // Credit wallet, create payout tx, and settle investment in parallel
+    await Promise.all([
+      adminClient.rpc('adjust_wallet_balance', {
+        p_user_id: inv.investor_id,
+        p_amount: investorShare,
+      }),
+      adminClient.from('transactions').insert({
+        user_id: inv.investor_id,
+        type: 'payout' as const,
+        investment_id: inv.id,
+        listing_id: listingId,
+        amount: investorShare,
+        currency: inv.currency,
+        status: 'completed' as const,
+        description: `Prize distribution: ${inv.shares_purchased}% of $${prizeAmount} prize (deposit confirmed)`,
+      }),
+      adminClient.from('investments').update({ status: 'settled' as const }).eq('id', inv.id),
+    ]);
 
     distributions.push({
       investorId: inv.investor_id,
@@ -127,7 +126,7 @@ export async function POST(
       sharePercent: Number(inv.shares_purchased),
       amount: investorShare,
     });
-  }
+  }));
 
   // 6. Create prize_deposit transaction for the player (recording what they deposited)
   await adminClient.from('transactions').insert({
@@ -173,13 +172,17 @@ export async function POST(
       .select('*')
       .in('listing_id', settledListings.map((l: any) => l.id));
 
+    // Batch fetch all tournament buy-ins instead of N+1
+    const settledTournamentIds = [...new Set(settledListings.map((l: any) => l.tournament_id))];
+    const { data: settledTournaments } = await adminClient.from('tournaments').select('id, buy_in').in('id', settledTournamentIds);
+    const buyInMap = new Map<string, number>((settledTournaments || []).map((t: any) => [t.id, Number(t.buy_in)]));
+
     let totalBuyIns = 0;
     let totalPrize = 0;
     let cashedCount = 0;
 
     for (const sl of settledListings) {
-      const { data: t } = await adminClient.from('tournaments').select('buy_in').eq('id', sl.tournament_id).single();
-      if (t) totalBuyIns += Number(t.buy_in);
+      totalBuyIns += buyInMap.get(sl.tournament_id) || 0;
       const esc = (escrowRecords || []).find((e: any) => e.listing_id === sl.id);
       if (esc && esc.tournament_result === 'win') {
         totalPrize += Number(esc.prize_amount || 0);
