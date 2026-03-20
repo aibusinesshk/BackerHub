@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 180" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4A843"/>
+      <stop offset="50%" stop-color="#C9993A"/>
+      <stop offset="100%" stop-color="#B8882F"/>
+    </linearGradient>
+  </defs>
+  <!-- BackerHub text -->
+  <text x="300" y="105" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="400" fill="url(#gold)" letter-spacing="-1">
+    BackerHub
+  </text>
+  <!-- Decorative swirl/handshake line between Backer and Hub -->
+  <path d="M195 72 C210 62, 225 62, 240 72 C255 82, 270 82, 285 72 C300 62, 315 62, 330 72 C345 82, 360 82, 375 72"
+        stroke="url(#gold)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- PREMIUM POKER STAKING subtitle -->
+  <text x="300" y="145" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="400" fill="url(#gold)" letter-spacing="8">
+    PREMIUM POKER STAKING
+  </text>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 50" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4A843"/>
+      <stop offset="50%" stop-color="#C9993A"/>
+      <stop offset="100%" stop-color="#B8882F"/>
+    </linearGradient>
+  </defs>
+  <text x="130" y="35" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="36" font-weight="400" fill="url(#gold)" letter-spacing="-0.5">
+    BackerHub
+  </text>
+  <!-- Decorative swirl -->
+  <path d="M82 18 C90 13, 98 13, 106 18 C114 23, 122 23, 130 18 C138 13, 146 13, 154 18 C162 23, 170 23, 178 18"
+        stroke="url(#gold)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

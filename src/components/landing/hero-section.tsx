@@ -54,6 +54,18 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-7xl px-4 py-10 sm:py-20 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center animate-fade-in-up">
+          {/* Large Logo Display */}
+          <div className="mb-6 sm:mb-10">
+            <Image
+              src="/images/logo-full.svg"
+              alt="BackerHub - Premium Poker Staking"
+              width={500}
+              height={150}
+              className="h-24 sm:h-32 md:h-40 lg:h-48 w-auto drop-shadow-lg"
+              priority
+            />
+          </div>
+
           <Badge variant="outline" className="mb-4 sm:mb-6 border-gold-500/30 bg-gold-500/10 text-gold-400 px-4 py-1.5 text-sm backdrop-blur-sm">
             {t('badge')}
           </Badge>
