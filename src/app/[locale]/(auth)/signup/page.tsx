@@ -7,7 +7,8 @@ import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Spade, Loader2, X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
+import Image from 'next/image';
 import type { Region } from '@/types';
 
 export default function SignupPage() {
@@ -54,8 +55,8 @@ export default function SignupPage() {
         <X className="h-5 w-5" />
       </Link>
       <CardHeader className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gold-500 text-black">
-          <Spade className="h-7 w-7" />
+        <div className="mx-auto mb-4">
+          <Image src="/images/logo-transparent.png" alt="BackerHub" width={160} height={80} className="h-16 w-auto" priority />
         </div>
         <CardTitle className="text-2xl text-white">{t('signupTitle')}</CardTitle>
         <CardDescription className="text-white/50">{t('signupSubtitle')}</CardDescription>

@@ -6,7 +6,8 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Spade, ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 
 export default function ForgotPasswordPage() {
   const t = useTranslations('auth');
@@ -21,8 +22,8 @@ export default function ForgotPasswordPage() {
   return (
     <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">
       <CardHeader className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gold-500 text-black">
-          <Spade className="h-7 w-7" />
+        <div className="mx-auto mb-4">
+          <Image src="/images/logo-transparent.png" alt="BackerHub" width={160} height={80} className="h-16 w-auto" priority />
         </div>
         <CardTitle className="text-2xl text-white">{t('resetTitle')}</CardTitle>
         <CardDescription className="text-white/50">{t('resetSubtitle')}</CardDescription>
