@@ -170,8 +170,8 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
             <div className="rounded-xl bg-gold-500/5 border border-gold-500/20 p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-white/50">{t('referenceNumber')}</span>
-                <button onClick={copyReference} className="flex items-center gap-1 text-gold-400 text-xs hover:text-gold-300">
-                  {copiedRef ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                <button onClick={copyReference} className="flex items-center gap-1.5 text-gold-400 text-xs hover:text-gold-300 min-h-[36px] px-2 -mr-2 active:opacity-70">
+                  {copiedRef ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   {copiedRef ? t('copied') : t('copy')}
                 </button>
               </div>
@@ -188,10 +188,10 @@ export function DepositDialog({ open, onOpenChange, onSuccess }: DepositDialogPr
 
               <div className="text-center">
                 <p className="text-xs text-white/40 mb-1">{t('sendTo')} ({selectedCoin?.name} - {PLATFORM_WALLET.networkShort})</p>
-                <div className="flex items-center gap-2 bg-white/5 rounded-lg p-2">
-                  <code className="flex-1 text-xs text-white/80 break-all font-mono">{PLATFORM_WALLET.address}</code>
-                  <button onClick={copyAddress} className="flex-shrink-0 text-gold-400 hover:text-gold-300">
-                    {copiedAddr ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <div className="flex items-center gap-2 bg-white/5 rounded-lg p-2.5">
+                  <code className="flex-1 text-[11px] leading-relaxed text-white/80 break-all font-mono">{PLATFORM_WALLET.address}</code>
+                  <button onClick={copyAddress} className="flex-shrink-0 text-gold-400 hover:text-gold-300 min-w-[36px] min-h-[36px] flex items-center justify-center active:opacity-70">
+                    {copiedAddr ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
                   </button>
                 </div>
               </div>

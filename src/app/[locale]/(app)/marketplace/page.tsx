@@ -12,7 +12,7 @@ import { formatCurrency, formatMarkup, formatPercent, formatDate } from '@/lib/f
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { TournamentBrandBanner } from '@/components/shared/tournament-brand-banner';
 import { getPlayerColorTone } from '@/lib/player-colors';
-import { Search, Filter, Check, TrendingUp, Loader2, ArrowUpDown, ChevronDown, Package, Calendar } from 'lucide-react';
+import { Search, Filter, Check, TrendingUp, Loader2, ArrowUpDown, ChevronDown, ChevronUp, Package, Calendar, SlidersHorizontal } from 'lucide-react';
 import type { StakingListing, PackageListing } from '@/types';
 
 type SortOption = 'newest' | 'priceLow' | 'priceHigh' | 'markupLow' | 'dateSoon' | 'roi';
@@ -96,6 +96,7 @@ export default function MarketplacePage() {
   const [allPackages, setAllPackages] = useState<PackageListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -254,8 +255,29 @@ export default function MarketplacePage() {
         </div>
       </div>
 
-      {/* Filter rows */}
-      <div className="mb-6 space-y-3">
+      {/* Mobile filter toggle */}
+      <div className="mb-3 md:hidden">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+          className="w-full border-white/10 text-white/60 hover:text-white gap-2 justify-between"
+        >
+          <span className="flex items-center gap-2">
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            {t('filterByTournament')}
+            {activeFilterCount > 0 && (
+              <Badge variant="outline" className="text-[10px] border-gold-500/30 bg-gold-500/10 text-gold-400 ml-1">
+                {activeFilterCount}
+              </Badge>
+            )}
+          </span>
+          {showMobileFilters ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+        </Button>
+      </div>
+
+      {/* Filter rows — always visible on desktop, collapsible on mobile */}
+      <div className={`mb-6 space-y-3 ${showMobileFilters ? 'block' : 'hidden md:block'}`}>
         {/* Row 0: Listing type (Single vs Package) */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xs text-white/30 w-14 flex-shrink-0">{t('filterType')}</span>

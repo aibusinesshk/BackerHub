@@ -121,7 +121,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
                     <CardContent className="pt-4 pb-4 text-center">
                       <s.icon className={`mx-auto h-5 w-5 ${s.color} mb-2`} />
                       <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-                      <p className="text-[10px] text-white/40">{s.label}</p>
+                      <p className="text-xs text-white/40">{s.label}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -144,7 +144,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
                                 style={{ height: `${height}%`, minHeight: '2px' }}
                               />
                             </div>
-                            <span className="text-[8px] text-white/30">{d.month.slice(5)}</span>
+                            <span className="text-[10px] text-white/30">{d.month.slice(5)}</span>
                           </div>
                         );
                       })}
@@ -200,7 +200,7 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
 
         {/* Sidebar - Active Listings */}
         <div className="space-y-6">
-          <Card className="border-white/[0.06] bg-[#111318] sticky top-20">
+          <Card className="border-white/[0.06] bg-[#111318] lg:sticky lg:top-20">
             <CardHeader><CardTitle className="text-white text-sm">{t('activeListings')} ({activeListings.length})</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               {activeListings.length === 0 ? (

@@ -116,15 +116,15 @@ export function HeroSection() {
             </Button>
           </div>
 
-          <div className="mt-8 sm:mt-16 flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12">
+          <div className="mt-8 sm:mt-16 flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-3 px-2 -mx-2 sm:flex-wrap sm:justify-center sm:gap-8 md:gap-12 sm:overflow-visible sm:px-0 sm:mx-0">
             {stats.map((stat) => (
-              <div key={stat.label} className="flex items-center gap-3 backdrop-blur-sm bg-black/20 rounded-xl px-4 py-3 border border-white/[0.06]">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-500/10">
+              <div key={stat.label} className="flex items-center gap-3 backdrop-blur-sm bg-black/20 rounded-xl px-4 py-3 border border-white/[0.06] snap-center flex-shrink-0 min-w-[160px] sm:min-w-0 sm:flex-shrink">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-500/10 flex-shrink-0">
                   <stat.icon className="h-5 w-5 text-gold-400" />
                 </div>
                 <div>
                   <p className="text-xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-white/50">{stat.label}</p>
+                  <p className="text-xs text-white/50 whitespace-nowrap">{stat.label}</p>
                 </div>
               </div>
             ))}

@@ -179,7 +179,7 @@ export default function CreateListingPage() {
                   step="0.01"
                   value={markup}
                   onChange={(e) => setMarkup(parseFloat(e.target.value))}
-                  className="w-full accent-gold-500"
+                  className="w-full"
                 />
                 <p className="text-xs text-white/40 mt-1">{t('markupHelp')}</p>
               </div>
@@ -193,7 +193,7 @@ export default function CreateListingPage() {
                   step="5"
                   value={sharesOffered}
                   onChange={(e) => setSharesOffered(parseInt(e.target.value))}
-                  className="w-full accent-gold-500"
+                  className="w-full"
                 />
                 <p className="text-xs text-white/40 mt-1">{t('sharesHelp')}</p>
               </div>
@@ -207,7 +207,7 @@ export default function CreateListingPage() {
                   step="5"
                   value={threshold}
                   onChange={(e) => setThreshold(parseInt(e.target.value))}
-                  className="w-full accent-gold-500"
+                  className="w-full"
                 />
                 <p className="text-xs text-white/40 mt-1">{t('thresholdHelp')}</p>
               </div>

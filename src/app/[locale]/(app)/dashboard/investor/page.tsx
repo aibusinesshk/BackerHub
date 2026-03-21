@@ -77,12 +77,12 @@ export default function InvestorDashboardPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
           <p className="text-sm text-white/50">{t('welcome', { name: user?.displayName || 'Backer' })}</p>
         </div>
-        <Button render={<Link href="/marketplace" />} className="bg-gold-500 text-black font-semibold hover:bg-gold-400">
+        <Button render={<Link href="/marketplace" />} className="bg-gold-500 text-black font-semibold hover:bg-gold-400 w-full sm:w-auto">
           {t('browseMarketplace')}
         </Button>
       </div>

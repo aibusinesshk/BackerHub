@@ -50,7 +50,7 @@ export default function SignupPage() {
 
   return (
     <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">
-      <Link href="/" className="absolute right-4 top-4 rounded-full p-1.5 text-white/40 hover:bg-white/10 hover:text-white transition-colors">
+      <Link href="/" className="absolute right-3 top-3 rounded-full p-2.5 text-white/40 hover:bg-white/10 hover:text-white transition-colors active:opacity-70">
         <X className="h-5 w-5" />
       </Link>
       <CardHeader className="text-center">
@@ -106,7 +106,7 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => setRegion(val as Region)}
                   disabled={isSubmitting}
-                  className={`flex items-center justify-center gap-1.5 rounded-xl border p-2.5 text-xs transition-all ${
+                  className={`flex items-center justify-center gap-1.5 rounded-xl border p-3 text-sm transition-all min-h-[44px] ${
                     region === val
                       ? 'border-gold-500 bg-gold-500/10 text-gold-400'
                       : 'border-white/[0.06] text-white/50 hover:border-white/20'
@@ -122,7 +122,7 @@ export default function SignupPage() {
 
           <Button
             type="submit"
-            className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow"
+            className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow h-12 text-base"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
