@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const supabase = createClient();
 
   const fetchProfile = useCallback(async (authUser: User) => {
-    // Retry up to 3 times with delay — profile may not exist yet due to DB trigger timing
+    // Retry up to 3 times with shorter delays — profile may not exist yet due to DB trigger timing
     for (let attempt = 0; attempt < 3; attempt++) {
       const { data: profile } = await supabase
         .from('profiles')
@@ -143,9 +143,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Wait before retrying (500ms, 1000ms)
+      // Wait before retrying (200ms, 400ms)
       if (attempt < 2) {
-        await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
+        await new Promise((r) => setTimeout(r, 200 * (attempt + 1)));
       }
     }
     // If all retries failed, log but don't crash
@@ -162,20 +162,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Supabase mode
-    const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        await fetchProfile(session.user);
+    // Supabase mode — use getUser() for server-validated auth (more reliable than getSession())
+    let initialLoadDone = false;
+
+    const getInitialUser = async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        await fetchProfile(authUser);
       }
       setIsLoading(false);
+      initialLoadDone = true;
     };
 
-    getInitialSession();
+    getInitialUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
+          // Skip if initial load already fetched the profile (avoids double fetch)
+          if (!initialLoadDone) return;
           await fetchProfile(session.user);
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
@@ -279,9 +284,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (saved) setUser(saved);
       return;
     }
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await fetchProfile(session.user);
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (authUser) {
+      await fetchProfile(authUser);
     }
   };
 

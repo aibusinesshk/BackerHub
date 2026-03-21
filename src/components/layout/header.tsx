@@ -10,7 +10,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LanguageSwitcher } from './language-switcher';
 import { Menu, User, LayoutDashboard, LogOut, Shield, List } from 'lucide-react';
 import Image from 'next/image';
@@ -90,6 +90,7 @@ export function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-center rounded-full p-1 hover:bg-white/5 transition-colors outline-none cursor-pointer">
                   <Avatar className="h-8 w-8 border border-gold-500/30">
+                    {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.displayName} />}
                     <AvatarFallback className="bg-gold-500/20 text-gold-400 text-xs">
                       {user.displayName.charAt(0)}
                     </AvatarFallback>
