@@ -927,7 +927,21 @@
     "kycApprovedMessage": "Your identity has been verified.",
     "kycRejectedMessage": "Your submission was rejected. Please resubmit with valid documents.",
     "kycResubmit": "Resubmit Documents",
-    "kycFileSelected": "File selected"
+    "kycFileSelected": "File selected",
+    "roleTitle": "Account Type",
+    "roleDescription": "Choose how you want to use BackerHub",
+    "hendonMobUrl": "Hendon Mob Profile",
+    "hendonMobUrlPlaceholder": "https://www.thehendonmob.com/player.php?a=r&b=...",
+    "hendonMobUrlHelp": "Link your Hendon Mob profile to verify your tournament history",
+    "phone": "Phone Number",
+    "phonePlaceholder": "+886 912 345 678",
+    "socialLinks": "Social Media",
+    "socialTwitter": "X (Twitter)",
+    "socialTwitterPlaceholder": "@username",
+    "socialInstagram": "Instagram",
+    "socialInstagramPlaceholder": "@username",
+    "socialFacebook": "Facebook",
+    "socialFacebookPlaceholder": "Profile URL or username"
   },
   "adminKyc": {
     "title": "KYC Verification",

@@ -31,10 +31,11 @@ export async function PUT(request: Request) {
 
   const body = await request.json();
 
-  // Allowlist of editable fields only (role and region are set at signup and cannot be changed)
+  // Allowlist of editable fields (region is set at signup and cannot be changed)
   const allowedFields = [
     'display_name', 'display_name_zh', 'avatar_url',
-    'bio', 'bio_zh', 'color_tone',
+    'bio', 'bio_zh', 'color_tone', 'role',
+    'hendon_mob_url', 'phone', 'social_twitter', 'social_instagram', 'social_facebook',
   ];
   const updates: Record<string, any> = {};
   for (const key of allowedFields) {
@@ -49,6 +50,9 @@ export async function PUT(request: Request) {
   }
   if (updates.color_tone !== undefined && updates.color_tone !== null && !['red', 'blue', 'emerald', 'purple', 'amber', 'cyan', 'rose', 'gold'].includes(updates.color_tone)) {
     return NextResponse.json({ error: 'Invalid color tone' }, { status: 400 });
+  }
+  if (updates.role !== undefined && !['investor', 'player', 'both'].includes(updates.role)) {
+    return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
   }
 
   updates.updated_at = new Date().toISOString();

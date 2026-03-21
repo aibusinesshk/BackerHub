@@ -927,7 +927,21 @@
     "kycApprovedMessage": "您的身份已通過驗證。",
     "kycRejectedMessage": "您的提交被拒絕。請重新提交有效文件。",
     "kycResubmit": "重新提交文件",
-    "kycFileSelected": "已選擇檔案"
+    "kycFileSelected": "已選擇檔案",
+    "roleTitle": "帳號類型",
+    "roleDescription": "選擇您使用 BackerHub 的方式",
+    "hendonMobUrl": "Hendon Mob 個人資料",
+    "hendonMobUrlPlaceholder": "https://www.thehendonmob.com/player.php?a=r&b=...",
+    "hendonMobUrlHelp": "連結您的 Hendon Mob 個人資料以驗證錦標賽歷史",
+    "phone": "電話號碼",
+    "phonePlaceholder": "+886 912 345 678",
+    "socialLinks": "社群媒體",
+    "socialTwitter": "X (Twitter)",
+    "socialTwitterPlaceholder": "@使用者名稱",
+    "socialInstagram": "Instagram",
+    "socialInstagramPlaceholder": "@使用者名稱",
+    "socialFacebook": "Facebook",
+    "socialFacebookPlaceholder": "個人檔案網址或使用者名稱"
   },
   "adminKyc": {
     "title": "KYC 身份驗證",

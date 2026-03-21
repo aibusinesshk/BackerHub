@@ -13,7 +13,8 @@ import { AvatarCropModal } from '@/components/shared/avatar-crop-modal';
 import { formatDate } from '@/lib/format';
 import {
   Loader2, CheckCircle, Shield, User, MapPin, Calendar,
-  Camera, Upload, FileCheck, AlertTriangle,
+  Camera, Upload, FileCheck, AlertTriangle, Globe, Phone,
+  Twitter, Instagram, Facebook, ExternalLink,
 } from 'lucide-react';
 
 const KYC_DOCS = ['id-front', 'id-back', 'selfie', 'proof-of-address'] as const;
@@ -37,6 +38,12 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('');
   const [bioZh, setBioZh] = useState('');
   const [region, setRegion] = useState('TW');
+  const [role, setRole] = useState('both');
+  const [hendonMobUrl, setHendonMobUrl] = useState('');
+  const [phone, setPhone] = useState('');
+  const [socialTwitter, setSocialTwitter] = useState('');
+  const [socialInstagram, setSocialInstagram] = useState('');
+  const [socialFacebook, setSocialFacebook] = useState('');
 
   // Read-only fields
   const [email, setEmail] = useState('');
@@ -70,6 +77,12 @@ export default function ProfilePage() {
           setBio(p.bio || '');
           setBioZh(p.bio_zh || '');
           setRegion(p.region || 'TW');
+          setRole(p.role || 'both');
+          setHendonMobUrl(p.hendon_mob_url || '');
+          setPhone(p.phone || '');
+          setSocialTwitter(p.social_twitter || '');
+          setSocialInstagram(p.social_instagram || '');
+          setSocialFacebook(p.social_facebook || '');
           setEmail(p.email || '');
           setIsVerified(p.is_verified || false);
           setKycStatus(p.kyc_status || 'none');
@@ -100,6 +113,12 @@ export default function ProfilePage() {
           display_name_zh: displayNameZh.trim() || null,
           bio: bio.trim() || null,
           bio_zh: bioZh.trim() || null,
+          role,
+          hendon_mob_url: hendonMobUrl.trim() || null,
+          phone: phone.trim() || null,
+          social_twitter: socialTwitter.trim() || null,
+          social_instagram: socialInstagram.trim() || null,
+          social_facebook: socialFacebook.trim() || null,
         }),
       });
 
@@ -330,6 +349,106 @@ export default function ProfilePage() {
 
               <Separator className="bg-white/[0.06]" />
 
+              {/* Account Type */}
+              <div>
+                <label className="mb-1.5 block text-xs text-white/50">{t('roleTitle')}</label>
+                <p className="mb-2 text-[10px] text-white/30">{t('roleDescription')}</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {([['investor', t('roleInvestor')], ['player', t('rolePlayer')], ['both', t('roleBoth')]] as const).map(([val, label]) => (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => setRole(val)}
+                      className={`rounded-xl border p-2.5 text-sm transition-all ${
+                        role === val
+                          ? 'border-gold-500 bg-gold-500/10 text-gold-400'
+                          : 'border-white/[0.06] text-white/50 hover:border-white/20'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <Separator className="bg-white/[0.06]" />
+
+              {/* Hendon Mob URL */}
+              <div>
+                <label className="mb-1.5 block text-xs text-white/50 flex items-center gap-1">
+                  <Globe className="h-3 w-3" />
+                  {t('hendonMobUrl')}
+                </label>
+                <Input
+                  value={hendonMobUrl}
+                  onChange={(e) => setHendonMobUrl(e.target.value)}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                  placeholder={t('hendonMobUrlPlaceholder')}
+                />
+                <p className="mt-1 text-[10px] text-white/30">{t('hendonMobUrlHelp')}</p>
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="mb-1.5 block text-xs text-white/50 flex items-center gap-1">
+                  <Phone className="h-3 w-3" />
+                  {t('phone')}
+                </label>
+                <Input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                  placeholder={t('phonePlaceholder')}
+                />
+              </div>
+
+              <Separator className="bg-white/[0.06]" />
+
+              {/* Social Links */}
+              <div>
+                <label className="mb-3 block text-xs text-white/50">{t('socialLinks')}</label>
+                <div className="space-y-3">
+                  <div>
+                    <label className="mb-1 block text-[10px] text-white/40 flex items-center gap-1">
+                      <Twitter className="h-3 w-3" />
+                      {t('socialTwitter')}
+                    </label>
+                    <Input
+                      value={socialTwitter}
+                      onChange={(e) => setSocialTwitter(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                      placeholder={t('socialTwitterPlaceholder')}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[10px] text-white/40 flex items-center gap-1">
+                      <Instagram className="h-3 w-3" />
+                      {t('socialInstagram')}
+                    </label>
+                    <Input
+                      value={socialInstagram}
+                      onChange={(e) => setSocialInstagram(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                      placeholder={t('socialInstagramPlaceholder')}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[10px] text-white/40 flex items-center gap-1">
+                      <Facebook className="h-3 w-3" />
+                      {t('socialFacebook')}
+                    </label>
+                    <Input
+                      value={socialFacebook}
+                      onChange={(e) => setSocialFacebook(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                      placeholder={t('socialFacebookPlaceholder')}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator className="bg-white/[0.06]" />
+
               {/* Region (read-only, set during signup) */}
               <div>
                 <label className="mb-1.5 block text-xs text-white/50">{t('region')}</label>
@@ -471,7 +590,39 @@ export default function ProfilePage() {
                     {regionOptions.find((r) => r.value === region)?.flag}{' '}
                     {regionOptions.find((r) => r.value === region)?.label}
                   </Badge>
+                  <Badge variant="outline" className="border-gold-500/30 text-gold-400">
+                    {role === 'investor' ? t('roleInvestor') : role === 'player' ? t('rolePlayer') : t('roleBoth')}
+                  </Badge>
                 </div>
+
+                {(socialTwitter || socialInstagram || socialFacebook) && (
+                  <div className="flex justify-center gap-3">
+                    {socialTwitter && (
+                      <span className="text-white/40 hover:text-white/70 transition-colors" title={socialTwitter}>
+                        <Twitter className="h-4 w-4" />
+                      </span>
+                    )}
+                    {socialInstagram && (
+                      <span className="text-white/40 hover:text-white/70 transition-colors" title={socialInstagram}>
+                        <Instagram className="h-4 w-4" />
+                      </span>
+                    )}
+                    {socialFacebook && (
+                      <span className="text-white/40 hover:text-white/70 transition-colors" title={socialFacebook}>
+                        <Facebook className="h-4 w-4" />
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {hendonMobUrl && (
+                  <div className="flex items-center justify-center">
+                    <a href={hendonMobUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[10px] text-gold-400 hover:underline">
+                      <ExternalLink className="h-3 w-3" />
+                      Hendon Mob
+                    </a>
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">

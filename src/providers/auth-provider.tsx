@@ -272,10 +272,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (useDemo) {
       clearDemoSession();
       setUser(null);
-      return;
+    } else {
+      await supabase.auth.signOut();
+      setUser(null);
     }
-    await supabase.auth.signOut();
-    setUser(null);
+    // Hard navigation to clear all client state and let middleware handle redirect
+    const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
+    window.location.href = `/${locale}`;
   };
 
   const refreshProfile = async () => {
