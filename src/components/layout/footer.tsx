@@ -17,7 +17,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4">
-              <Image src="/backerhub2.png" alt="BackerHub" width={200} height={200} className="h-12 w-auto" />
+              <Image src="/images/logo-transparent.png" alt="BackerHub" width={200} height={200} className="h-12 w-auto" />
             </div>
             <p className="text-sm text-white/50 max-w-xs">{t('tagline')}</p>
           </div>
