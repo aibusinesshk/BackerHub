@@ -125,11 +125,11 @@ export function NotificationBell() {
           </span>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80 bg-[#111318] border-white/[0.06]">
-        <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.06]">
+      <DropdownMenuContent align="end" className="w-[calc(100vw-2rem)] max-w-80 bg-[#111318] border-white/[0.06]">
+        <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/[0.06]">
           <span className="text-sm font-medium text-white">{t('title')}</span>
           {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-[10px] text-gold-400 hover:underline">
+            <button onClick={markAllRead} className="text-xs text-gold-400 hover:underline min-h-[32px] flex items-center px-1">
               {t('markAllRead')}
             </button>
           )}
@@ -137,11 +137,11 @@ export function NotificationBell() {
         {notifications.length === 0 ? (
           <div className="px-3 py-6 text-center text-xs text-white/30">{t('noNotifications')}</div>
         ) : (
-          <div className="max-h-64 overflow-y-auto">
+          <div className="max-h-72 overflow-y-auto">
             {notifications.slice(0, 10).map((n) => (
               <DropdownMenuItem
                 key={n.id}
-                className={`flex flex-col items-start gap-1 px-3 py-2.5 cursor-default ${!n.isRead ? 'bg-gold-500/5' : ''}`}
+                className={`flex flex-col items-start gap-1 px-3 py-3 cursor-default ${!n.isRead ? 'bg-gold-500/5' : ''}`}
               >
                 <div className="flex items-center gap-2 w-full">
                   <span
@@ -155,7 +155,7 @@ export function NotificationBell() {
                     {new Date(n.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                <p className="text-[10px] text-white/40 pl-3.5 line-clamp-2">
+                <p className="text-xs text-white/40 pl-3.5 line-clamp-2">
                   {locale === 'zh-TW' ? n.messageZh || n.message : n.message}
                 </p>
               </DropdownMenuItem>

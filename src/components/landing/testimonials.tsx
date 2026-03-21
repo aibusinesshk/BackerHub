@@ -48,7 +48,7 @@ export function Testimonials() {
           </div>
         </ScrollReveal>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.slice(0, 3).map((item, i) => (
             <ScrollReveal key={item.id} delay={i * 0.1}>
               <div className="rounded-2xl border border-white/[0.06] bg-[#111318] p-6">
@@ -66,7 +66,7 @@ export function Testimonials() {
                     <p className="text-sm font-medium text-white">
                       {locale === 'zh-TW' ? item.nameZh : item.name}
                     </p>
-                    <Badge variant="outline" className="text-[10px] border-gold-500/20 text-gold-400">
+                    <Badge variant="outline" className="text-xs border-gold-500/20 text-gold-400">
                       {item.role === 'investor' ? t('investor') : t('player')} · <span role="img" aria-label={item.region === 'TW' ? 'Taiwan' : 'Hong Kong'}>{item.region === 'TW' ? '🇹🇼' : '🇭🇰'}</span>
                     </Badge>
                   </div>

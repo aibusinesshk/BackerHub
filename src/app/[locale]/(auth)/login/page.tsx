@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   return (
     <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">
-      <Link href="/" className="absolute right-4 top-4 rounded-full p-1.5 text-white/40 hover:bg-white/10 hover:text-white transition-colors">
+      <Link href="/" className="absolute right-3 top-3 rounded-full p-2.5 text-white/40 hover:bg-white/10 hover:text-white transition-colors active:opacity-70">
         <X className="h-5 w-5" />
       </Link>
       <CardHeader className="text-center">
@@ -84,13 +84,13 @@ export default function LoginPage() {
           {error && <p className="text-sm text-red-400">{error}</p>}
 
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none min-h-[44px]">
               <input
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
                 disabled={isSubmitting}
-                className="h-4 w-4 rounded border-white/20 bg-white/5 text-gold-500 focus:ring-gold-500/50 focus:ring-offset-0 accent-[#F5B81C]"
+                className="h-5 w-5 rounded border-white/20 bg-white/5 text-gold-500 focus:ring-gold-500/50 focus:ring-offset-0 accent-[#F5B81C]"
               />
               <span className="text-sm text-white/50">{t('rememberMe')}</span>
             </label>
@@ -101,7 +101,7 @@ export default function LoginPage() {
 
           <Button
             type="submit"
-            className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow"
+            className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow h-12 text-base"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

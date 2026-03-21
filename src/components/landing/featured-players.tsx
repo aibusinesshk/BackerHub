@@ -67,16 +67,16 @@ export function FeaturedPlayers() {
                     <div className="rounded-lg bg-white/[0.03] p-3 text-center">
                       <TrendingUp className="mx-auto h-4 w-4 text-green-400 mb-1" />
                       <p className="text-sm font-semibold text-green-400">{formatPercent(player.stats.lifetimeROI)}</p>
-                      <p className="text-[10px] text-white/40">ROI</p>
+                      <p className="text-xs text-white/40">ROI</p>
                     </div>
                     <div className="rounded-lg bg-white/[0.03] p-3 text-center">
                       <Trophy className="mx-auto h-4 w-4 text-gold-400 mb-1" />
                       <p className="text-sm font-semibold text-white">{formatCurrency(player.stats.biggestWin)}</p>
-                      <p className="text-[10px] text-white/40">Best Win</p>
+                      <p className="text-xs text-white/40">Best Win</p>
                     </div>
                     <div className="rounded-lg bg-white/[0.03] p-3 text-center">
                       <p className="text-sm font-semibold text-white mt-4">{player.stats.cashRate}%</p>
-                      <p className="text-[10px] text-white/40">Cash Rate</p>
+                      <p className="text-xs text-white/40">Cash Rate</p>
                     </div>
                   </div>
 

@@ -37,6 +37,13 @@ export const metadata: Metadata = {
       { url: '/images/icon-192.png', sizes: '180x180', type: 'image/png' },
     ],
   },
+  manifest: '/manifest.json',
+  other: {
+    'theme-color': '#0a0a0a',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'mobile-web-app-capable': 'yes',
+  },
   description:
     'Invest in poker players or sell your tournament action. The first poker staking platform built for the Asian market.',
   metadataBase: new URL(siteUrl),
@@ -68,6 +75,14 @@ export const metadata: Metadata = {
       'zh-TW': `${siteUrl}/zh-TW`,
     },
   },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover' as const,
+  themeColor: '#0a0a0a',
 };
 
 export default function RootLayout({

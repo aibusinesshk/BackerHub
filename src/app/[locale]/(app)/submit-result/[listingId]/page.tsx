@@ -117,7 +117,7 @@ export default function SubmitResultPage() {
   }
 
   const inputClassName =
-    'w-full rounded-lg bg-white/[0.03] border border-white/10 text-white px-3 py-2 text-sm placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-gold-500/50';
+    'w-full rounded-lg bg-white/[0.03] border border-white/10 text-white px-3 py-3 text-sm placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-gold-500/50 min-h-[48px]';
 
   if (submitted) {
     return (
@@ -198,25 +198,25 @@ export default function SubmitResultPage() {
                 <label className="block text-sm font-medium text-white/70">
                   {t('resultLabel')}
                 </label>
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                   {(['win', 'loss', 'cancelled'] as TournamentResult[]).map((value) => (
                     <label
                       key={value}
-                      className={`flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2.5 text-sm transition-colors ${
+                      className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-4 py-3 text-sm transition-colors min-h-[48px] active:opacity-80 ${
                         tournamentResult === value
                           ? 'border-gold-500/50 bg-gold-500/10 text-gold-500'
                           : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/20'
                       }`}
                     >
                       <div
-                        className={`flex h-4 w-4 items-center justify-center rounded-full border ${
+                        className={`flex h-5 w-5 items-center justify-center rounded-full border ${
                           tournamentResult === value
                             ? 'border-gold-500 bg-gold-500'
                             : 'border-white/30'
                         }`}
                       >
                         {tournamentResult === value && (
-                          <div className="h-1.5 w-1.5 rounded-full bg-black" />
+                          <div className="h-2 w-2 rounded-full bg-black" />
                         )}
                       </div>
                       <input
@@ -252,7 +252,7 @@ export default function SubmitResultPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <label className="block text-sm font-medium text-white/70">
                         {t('finishPosition')}
@@ -323,7 +323,7 @@ export default function SubmitResultPage() {
               <Button
                 type="submit"
                 disabled={!tournamentResult || submitting || (tournamentResult === 'win' && !prizeAmount)}
-                className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 disabled:opacity-40"
+                className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 disabled:opacity-40 h-12 text-base"
               >
                 {submitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
