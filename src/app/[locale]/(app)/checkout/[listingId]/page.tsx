@@ -142,7 +142,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
   }
 
   return (
-    <div className="mx-auto max-w-5xl overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl overflow-x-hidden px-4 py-8 pb-32 md:pb-8 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-bold text-white mb-8">{t('title')}</h1>
 
       <div className="grid gap-8 lg:grid-cols-5">
@@ -173,7 +173,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
                   max={availableShares}
                   value={sharePercent}
                   onChange={(e) => { setSharePercent(parseInt(e.target.value)); setError(''); }}
-                  className="w-full accent-gold-500"
+                  className="w-full"
                 />
                 <div className="flex justify-between text-xs text-white/40 mt-1">
                   <span>1%</span>
@@ -252,6 +252,31 @@ export default function CheckoutPage({ params }: { params: Promise<{ listingId: 
               <p className="mt-4 text-xs text-white/30 text-center">{tLegal('checkoutDisclaimer')}</p>
             </CardContent>
           </Card>
+        </div>
+      </div>
+
+      {/* Sticky mobile CTA bar */}
+      <div className="fixed bottom-16 left-0 right-0 z-40 md:hidden">
+        <div className="mx-auto max-w-5xl px-4 pb-2">
+          <div className="rounded-xl border border-white/[0.06] bg-[#111318]/95 backdrop-blur-md p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.4)]">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <span className="text-xs text-white/50">{t('total')}</span>
+              <span className="text-lg font-bold text-gold-400">{formatCurrency(total)}</span>
+            </div>
+            <Button
+              onClick={handlePurchase}
+              disabled={processing || hasInsufficientBalance || walletBalance === null}
+              className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow h-11 text-sm disabled:opacity-50"
+            >
+              {processing ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('processing')}</>
+              ) : hasInsufficientBalance ? (
+                t('depositRequired') ?? t('payNow')
+              ) : (
+                t('payNow')
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 

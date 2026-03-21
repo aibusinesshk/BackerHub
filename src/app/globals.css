@@ -146,3 +146,59 @@
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out both;
 }
+
+/* ─── Mobile web optimizations ─────────────────────────────── */
+
+/* Prevent 300ms tap delay and improve touch responsiveness */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+/* Smooth momentum scrolling on iOS */
+.overflow-y-auto,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better range slider for mobile */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f5b81c;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(245, 184, 28, 0.3);
+  border: 2px solid #0a0a0a;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f5b81c;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(245, 184, 28, 0.3);
+  border: 2px solid #0a0a0a;
+}
+
+/* Hide scrollbar for horizontal scroll containers on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

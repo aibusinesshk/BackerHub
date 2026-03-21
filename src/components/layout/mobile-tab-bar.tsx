@@ -51,9 +51,9 @@ export function MobileTabBar() {
                 <Link
                   key="center"
                   href={tab.href}
-                  className="flex-1 relative -mt-5 flex flex-col items-center"
+                  className="flex-1 relative -mt-5 flex flex-col items-center min-h-[48px]"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gold-500 shadow-[0_0_20px_rgba(245,184,28,0.3)] transition-transform active:scale-95">
+                  <div className="flex h-13 w-13 items-center justify-center rounded-full bg-gold-500 shadow-[0_0_20px_rgba(245,184,28,0.3)] transition-transform active:scale-90">
                     <Icon className="h-6 w-6 text-black" />
                   </div>
                   <span className={`mt-1 text-[10px] font-medium ${isActive ? 'text-gold-400' : 'text-white/50'}`}>
@@ -67,10 +67,10 @@ export function MobileTabBar() {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className="flex-1 flex flex-col items-center py-2"
+                className="flex-1 flex flex-col items-center py-2 min-h-[48px] justify-center active:opacity-70 transition-opacity"
               >
                 <Icon className={`h-5 w-5 transition-colors ${isActive ? 'text-gold-400' : 'text-white/40'}`} />
-                <span className={`mt-1 text-[10px] font-medium transition-colors ${isActive ? 'text-gold-400' : 'text-white/40'}`}>
+                <span className={`mt-1 text-[11px] font-medium transition-colors ${isActive ? 'text-gold-400' : 'text-white/40'}`}>
                   {tab.label}
                 </span>
               </Link>
