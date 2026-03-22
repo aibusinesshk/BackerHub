@@ -31,7 +31,8 @@ export default function ForgotPasswordPage() {
 
       const supabase = createClient();
       const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
-      const redirectTo = `${window.location.origin}/api/auth/callback?next=/${locale}/reset-password`;
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+      const redirectTo = `${siteUrl}/api/auth/callback?next=/${locale}/reset-password`;
 
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo,
