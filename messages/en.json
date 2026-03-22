@@ -386,7 +386,18 @@
     "resetSubtitle": "Enter your email to receive a password reset link",
     "sendResetLink": "Send Reset Link",
     "resetSent": "Reset link sent! Check your email.",
-    "backToLogin": "Back to Login"
+    "resetError": "Something went wrong. Please try again.",
+    "backToLogin": "Back to Login",
+    "newPasswordTitle": "Set New Password",
+    "newPasswordSubtitle": "Enter your new password below",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "passwordMismatch": "Passwords do not match",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "updatePassword": "Update Password",
+    "passwordUpdated": "Your password has been updated successfully!"
   },
   "createListing": {
     "title": "Create Staking Listing",

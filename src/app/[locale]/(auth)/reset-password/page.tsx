@@ -6,41 +6,49 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, CheckCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
-export default function ForgotPasswordPage() {
+export default function ResetPasswordPage() {
   const t = useTranslations('auth');
-  const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [done, setDone] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (password.length < 6) {
+      setError(t('passwordMinLength'));
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError(t('passwordMismatch'));
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       if (!isSupabaseConfigured()) {
-        // Demo mode: just show success
-        setSent(true);
+        setDone(true);
         return;
       }
 
       const supabase = createClient();
-      const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
-      const redirectTo = `${window.location.origin}/api/auth/callback?next=/${locale}/reset-password`;
-
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo,
+      const { error: updateError } = await supabase.auth.updateUser({
+        password,
       });
 
-      if (resetError) {
-        setError(resetError.message);
+      if (updateError) {
+        setError(updateError.message);
       } else {
-        setSent(true);
+        setDone(true);
       }
     } catch {
       setError(t('resetError'));
@@ -55,17 +63,20 @@ export default function ForgotPasswordPage() {
         <div className="mx-auto mb-4">
           <Image src="/images/logo-hero.png" alt="BackerHub" width={350} height={100} className="h-14 w-auto" priority />
         </div>
-        <CardTitle className="text-2xl text-white">{t('resetTitle')}</CardTitle>
-        <CardDescription className="text-white/50">{t('resetSubtitle')}</CardDescription>
+        <CardTitle className="text-2xl text-white">{t('newPasswordTitle')}</CardTitle>
+        <CardDescription className="text-white/50">{t('newPasswordSubtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
-        {sent ? (
+        {done ? (
           <div className="text-center py-6">
             <CheckCircle className="mx-auto h-12 w-12 text-green-400 mb-4" />
-            <p className="text-white/70">{t('resetSent')}</p>
-            <Link href="/login" className="mt-4 inline-flex items-center gap-2 text-sm text-gold-400 hover:underline">
-              <ArrowLeft className="h-4 w-4" /> {t('backToLogin')}
-            </Link>
+            <p className="text-white/70 mb-4">{t('passwordUpdated')}</p>
+            <Button
+              render={<Link href="/login" />}
+              className="bg-gold-500 text-black font-semibold hover:bg-gold-400"
+            >
+              {t('backToLogin')}
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -73,12 +84,24 @@ export default function ForgotPasswordPage() {
               <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-400">{error}</p>
             )}
             <div>
-              <label className="mb-1.5 block text-sm text-white/70">{t('email')}</label>
+              <label className="mb-1.5 block text-sm text-white/70">{t('newPassword')}</label>
               <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                placeholder={t('newPasswordPlaceholder')}
+                required
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm text-white/70">{t('confirmPassword')}</label>
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                placeholder={t('confirmPasswordPlaceholder')}
                 required
               />
             </div>
@@ -87,11 +110,8 @@ export default function ForgotPasswordPage() {
               disabled={isSubmitting}
               className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400 gold-glow"
             >
-              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : t('sendResetLink')}
+              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : t('updatePassword')}
             </Button>
-            <Link href="/login" className="flex items-center justify-center gap-2 text-sm text-white/40 hover:text-white/60">
-              <ArrowLeft className="h-4 w-4" /> {t('backToLogin')}
-            </Link>
           </form>
         )}
       </CardContent>
