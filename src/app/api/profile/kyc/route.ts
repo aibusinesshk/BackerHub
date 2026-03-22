@@ -15,12 +15,14 @@ export async function GET() {
     }
 
     const { data: profile } = await (supabase.from('profiles') as any)
-      .select('kyc_status')
+      .select('kyc_status, kyc_rejection_reason, kyc_approved_at')
       .eq('id', user.id)
       .single();
 
     return NextResponse.json({
       kyc_status: profile?.kyc_status || 'none',
+      rejection_reason: profile?.kyc_rejection_reason || null,
+      approved_at: profile?.kyc_approved_at || null,
     });
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

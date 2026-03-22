@@ -9,8 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import {
-  Shield, Loader2, CheckCircle, XCircle, ExternalLink, AlertTriangle,
+  Shield, Loader2, CheckCircle, XCircle, ExternalLink, AlertTriangle, Clock, User,
 } from 'lucide-react';
+import { formatDate } from '@/lib/format';
 
 const DOC_LABELS_EN: Record<string, string> = {
   'id-front': 'ID Front',
@@ -305,18 +306,18 @@ export default function AdminKycPage() {
           ) : (
             history.map((entry) => (
               <Card key={entry.id} className="border-white/[0.06] bg-[#111318]">
-                <CardContent className="pt-6">
+                <CardContent className="pt-6 space-y-3">
                   <div className="flex items-center gap-3">
                     <PlayerAvatar
                       src={entry.avatar_url}
                       name={entry.display_name || '?'}
                       className="h-10 w-10"
                     />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-white">{entry.display_name}</p>
                       <p className="text-xs text-white/40">{entry.email}</p>
                     </div>
-                    <div className="ml-auto">
+                    <div className="flex flex-col items-end gap-1">
                       {entry.kyc_status === 'approved' ? (
                         <Badge className="bg-green-500/20 text-green-400 border-green-500/30">{t('approved')}</Badge>
                       ) : (
@@ -324,6 +325,30 @@ export default function AdminKycPage() {
                       )}
                     </div>
                   </div>
+
+                  {/* Audit info */}
+                  <div className="flex flex-wrap items-center gap-3 text-[10px] text-white/30 pt-1 border-t border-white/[0.04]">
+                    {entry.reviewed_by_name && (
+                      <span className="flex items-center gap-1">
+                        <User className="h-3 w-3" />
+                        {t('reviewedBy')}: {entry.reviewed_by_name}
+                      </span>
+                    )}
+                    {(entry.kyc_approved_at || entry.updated_at) && (
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {formatDate(entry.kyc_approved_at || entry.updated_at, 'en')}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Rejection reason */}
+                  {entry.kyc_status === 'rejected' && entry.kyc_rejection_reason && (
+                    <div className="rounded-lg bg-red-500/5 border border-red-500/10 p-3">
+                      <p className="text-[10px] font-semibold text-red-400/70 uppercase tracking-wider mb-1">{t('rejectionReason')}</p>
+                      <p className="text-xs text-red-300/80">{entry.kyc_rejection_reason}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))

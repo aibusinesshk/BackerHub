@@ -23,6 +23,9 @@ export type Database = {
           avatar_url: string | null;
           is_verified: boolean;
           kyc_status: 'none' | 'pending' | 'approved' | 'rejected';
+          kyc_approved_at: string | null;
+          kyc_rejection_reason: string | null;
+          kyc_reviewed_by: string | null;
           is_admin: boolean;
           bio: string | null;
           bio_zh: string | null;
@@ -47,6 +50,9 @@ export type Database = {
           avatar_url?: string | null;
           is_verified?: boolean;
           kyc_status?: 'none' | 'pending' | 'approved' | 'rejected';
+          kyc_approved_at?: string | null;
+          kyc_rejection_reason?: string | null;
+          kyc_reviewed_by?: string | null;
           is_admin?: boolean;
           bio?: string | null;
           bio_zh?: string | null;
@@ -69,6 +75,9 @@ export type Database = {
           avatar_url?: string | null;
           is_verified?: boolean;
           kyc_status?: 'none' | 'pending' | 'approved' | 'rejected';
+          kyc_approved_at?: string | null;
+          kyc_rejection_reason?: string | null;
+          kyc_reviewed_by?: string | null;
           bio?: string | null;
           bio_zh?: string | null;
           wallet_balance?: number;
@@ -560,6 +569,27 @@ export type Database = {
           played_at?: string | null;
         };
       };
+      kyc_audit_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          action: 'approve' | 'reject';
+          reviewed_by: string;
+          reason: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          action: 'approve' | 'reject';
+          reviewed_by: string;
+          reason?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          reason?: string | null;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -579,6 +609,7 @@ export type Review = Database['public']['Tables']['reviews']['Row'];
 export type Escrow = Database['public']['Tables']['escrow']['Row'];
 export type Testimonial = Database['public']['Tables']['testimonials']['Row'];
 export type TournamentResultRecord = Database['public']['Tables']['tournament_results']['Row'];
+export type KycAuditLog = Database['public']['Tables']['kyc_audit_log']['Row'];
 
 // Joined types for API responses
 export type ListingWithDetails = Listing & {
