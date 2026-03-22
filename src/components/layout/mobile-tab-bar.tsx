@@ -1,13 +1,14 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Link, usePathname } from '@/i18n/navigation';
+import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { Store, Users, Spade, Plus, LayoutDashboard, UserCircle } from 'lucide-react';
 
 export function MobileTabBar() {
   const t = useTranslations('nav');
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useAuth();
 
   const isPlayer = user?.role === 'player';
@@ -47,19 +48,43 @@ export function MobileTabBar() {
             const Icon = tab.icon;
 
             if ('isCenter' in tab && tab.isCenter) {
+              // Players: Sell Action link; Others: Home button that always navigates to top
+              if (isPlayer) {
+                return (
+                  <Link
+                    key="center"
+                    href={tab.href}
+                    className="flex-1 relative -mt-5 flex flex-col items-center min-h-[48px]"
+                  >
+                    <div className="flex h-13 w-13 items-center justify-center rounded-full bg-gold-500 shadow-[0_0_20px_rgba(245,184,28,0.3)] transition-transform active:scale-90">
+                      <Icon className="h-6 w-6 text-black" />
+                    </div>
+                    <span className={`mt-1 text-[10px] font-medium ${isActive ? 'text-gold-400' : 'text-white/50'}`}>
+                      {tab.label}
+                    </span>
+                  </Link>
+                );
+              }
               return (
-                <Link
+                <button
                   key="center"
-                  href={tab.href}
+                  type="button"
+                  onClick={() => {
+                    if (pathname === '/') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                      router.push('/');
+                    }
+                  }}
                   className="flex-1 relative -mt-5 flex flex-col items-center min-h-[48px]"
                 >
                   <div className="flex h-13 w-13 items-center justify-center rounded-full bg-gold-500 shadow-[0_0_20px_rgba(245,184,28,0.3)] transition-transform active:scale-90">
-                    <Icon className="h-6 w-6 text-black" />
+                    <Spade className="h-6 w-6 text-black" />
                   </div>
-                  <span className={`mt-1 text-[10px] font-medium ${isActive ? 'text-gold-400' : 'text-white/50'}`}>
-                    {tab.label}
+                  <span className={`mt-1 text-[10px] font-medium ${pathname === '/' ? 'text-gold-400' : 'text-white/50'}`}>
+                    {t('home')}
                   </span>
-                </Link>
+                </button>
               );
             }
 
