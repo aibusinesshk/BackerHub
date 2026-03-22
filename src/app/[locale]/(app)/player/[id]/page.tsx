@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
-import { PlayerHeroImage } from '@/components/shared/player-hero-image';
 import { getPlayerColorTone } from '@/lib/player-colors';
 import { Check, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2, Sparkles } from 'lucide-react';
 import type { Player, StakingListing, Review } from '@/types';
@@ -72,44 +71,66 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          {/* Player Header with Large Photo */}
+          {/* Player Header with Circle Avatar */}
           <Card className={`${tone.border} bg-[#111318] overflow-hidden`}>
-            <div className={`relative h-56 sm:h-64 bg-gradient-to-br ${tone.gradient}`} style={{ backgroundImage: tone.pattern }}>
-              <PlayerHeroImage
-                src={player.avatarUrl}
-                alt={name}
-                initials={player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-              />
-              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#111318] to-transparent" />
-              <div className="absolute bottom-4 left-6 right-6">
-                <div className="flex items-center gap-3">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">{name}</h1>
-                  {player.isVerified ? (
-                    <Badge className="border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs backdrop-blur-sm"><span className="mr-1 inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-gold-400"><Check className="h-2 w-2 text-black" strokeWidth={3} /></span>{t('verified')}</Badge>
-                  ) : (
-                    <Badge variant="outline" className="text-xs border-white/10 text-white/40 backdrop-blur-sm">{t('unverified')}</Badge>
-                  )}
+            {/* Short gradient banner */}
+            <div className={`relative h-24 sm:h-28 bg-gradient-to-br ${tone.gradient}`} style={{ backgroundImage: tone.pattern }}>
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50" />
+            </div>
+
+            {/* Avatar + Info overlapping the banner */}
+            <div className="relative px-6 pb-5">
+              <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+                {/* Circle avatar */}
+                <div className={`-mt-14 sm:-mt-16 shrink-0 h-28 w-28 sm:h-32 sm:w-32 rounded-full border-4 border-[#111318] overflow-hidden bg-gradient-to-br ${tone.gradient}`} style={{ backgroundImage: tone.pattern }}>
+                  {player.avatarUrl ? (
+                    <img
+                      src={player.avatarUrl}
+                      alt={name}
+                      className="h-full w-full object-cover"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden'); }}
+                    />
+                  ) : null}
+                  <div className={`${player.avatarUrl ? 'hidden' : ''} flex h-full w-full items-center justify-center`}>
+                    <span className="text-3xl sm:text-4xl font-bold text-gold-500/40">
+                      {player.displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 mt-1">
-                  <p className="text-sm text-white/60">
-                    <span role="img" aria-label={player.region === 'TW' ? 'Taiwan' : 'Hong Kong'}>{player.region === 'TW' ? '🇹🇼' : '🇭🇰'}</span> · {t('memberSince', { date: formatDate(player.memberSince, locale) })}
-                  </p>
-                  {reviews.length > 0 && (
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`h-3.5 w-3.5 ${i < Math.round(avgRating) ? 'text-gold-400 fill-gold-400' : 'text-white/20'}`} />
-                      ))}
-                      <span className="text-xs text-white/40 ml-1">({reviews.length})</span>
-                    </div>
-                  )}
+
+                {/* Name + badges */}
+                <div className="flex-1 min-w-0 pb-1">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-white truncate">{name}</h1>
+                    {player.isVerified ? (
+                      <Badge className="border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs shrink-0"><span className="mr-1 inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-gold-400"><Check className="h-2 w-2 text-black" strokeWidth={3} /></span>{t('verified')}</Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-xs border-white/10 text-white/40 shrink-0">{t('unverified')}</Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 mt-1 flex-wrap">
+                    <p className="text-sm text-white/60">
+                      <span role="img" aria-label={player.region === 'TW' ? 'Taiwan' : 'Hong Kong'}>{player.region === 'TW' ? '🇹🇼' : '🇭🇰'}</span> · {t('memberSince', { date: formatDate(player.memberSince, locale) })}
+                    </p>
+                    {reviews.length > 0 && (
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className={`h-3.5 w-3.5 ${i < Math.round(avgRating) ? 'text-gold-400 fill-gold-400' : 'text-white/20'}`} />
+                        ))}
+                        <span className="text-xs text-white/40 ml-1">({reviews.length})</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
+
+              {bio && (
+                <>
+                  <Separator className="bg-white/[0.06] my-4" />
+                  <p className="text-sm text-white/60">{bio}</p>
+                </>
+              )}
             </div>
-            {bio && (
-              <CardContent className="pt-4 pb-5">
-                <p className="text-sm text-white/60">{bio}</p>
-              </CardContent>
-            )}
           </Card>
 
           {player.stats.totalTournaments > 0 ? (
