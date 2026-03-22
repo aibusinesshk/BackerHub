@@ -96,7 +96,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="text-sm font-medium text-white">{t('emailLabel')}</h4>
-                    <p className="text-sm text-white/50">support@backerhub.com</p>
+                    <p className="text-sm text-white/50">backerhubasia@gmail.com</p>
                   </div>
                 </div>
 
