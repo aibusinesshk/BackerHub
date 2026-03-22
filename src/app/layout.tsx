@@ -21,7 +21,7 @@ const notoSansTC = Noto_Sans_TC({
   display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhub.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhubasia.vercel.app';
 
 export const metadata: Metadata = {
   title: {
