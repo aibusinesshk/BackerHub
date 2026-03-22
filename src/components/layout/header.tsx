@@ -55,12 +55,14 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled || !isHome
-          ? 'glass-card border-b border-white/[0.06]'
+          ? 'glass-card-premium border-b border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.3)]'
           : 'bg-transparent'
       }`}
     >
+      {/* Bottom gold accent line when scrolled */}
+      <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent transition-opacity duration-500 ${scrolled || !isHome ? 'opacity-100' : 'opacity-0'}`} />
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" onClick={handleLogoClick} className="flex items-center gap-2">
           <Image src="/images/logo-nav.png" alt="BackerHub" width={495} height={80} className="h-6 w-auto" priority />
@@ -71,10 +73,10 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              className={`relative rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ${
                 pathname === link.href
                   ? 'text-gold-400'
-                  : 'text-white/70 hover:text-white'
+                  : 'text-white/60 hover:text-white'
               }`}
             >
               {link.label}
