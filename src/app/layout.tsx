@@ -55,7 +55,7 @@ export const metadata: Metadata = {
       "Asia's premier poker tournament staking platform. Back skilled players, share in their victories.",
     url: siteUrl,
     locale: 'en',
-    alternateLocale: 'zh-TW',
+    alternateLocale: ['zh-TW', 'zh-HK'],
   },
   twitter: {
     card: 'summary_large_image',
@@ -73,6 +73,7 @@ export const metadata: Metadata = {
     languages: {
       en: `${siteUrl}/en`,
       'zh-TW': `${siteUrl}/zh-TW`,
+      'zh-HK': `${siteUrl}/zh-HK`,
     },
   },
 };

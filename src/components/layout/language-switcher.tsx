@@ -10,8 +10,12 @@ export function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const localeOrder = ['en', 'zh-TW', 'zh-HK'] as const;
+  const localeLabels: Record<string, string> = { en: 'EN', 'zh-TW': '繁中(台)', 'zh-HK': '繁中(港)' };
+
   const toggle = () => {
-    const next = locale === 'en' ? 'zh-TW' : 'en';
+    const idx = localeOrder.indexOf(locale as (typeof localeOrder)[number]);
+    const next = localeOrder[(idx + 1) % localeOrder.length];
     router.replace(pathname, { locale: next });
   };
 
@@ -23,7 +27,7 @@ export function LanguageSwitcher() {
       className="gap-1.5 text-white/70 hover:text-white text-xs"
     >
       <Globe className="h-3.5 w-3.5" />
-      {locale === 'en' ? '繁中' : 'EN'}
+      {localeLabels[locale] || 'EN'}
     </Button>
   );
 }

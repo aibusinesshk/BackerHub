@@ -26,5 +26,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/(en|zh-TW)/:path*'],
+  matcher: ['/', '/(en|zh-TW|zh-HK)/:path*'],
 };
