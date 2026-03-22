@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Globe, Check } from 'lucide-react';
 
 const locales = [
-  { code: 'en', label: 'English' },
-  { code: 'zh-TW', label: '繁體中文（台灣）' },
-  { code: 'zh-HK', label: '繁體中文（香港）' },
+  { code: 'en', label: 'English', short: 'EN' },
+  { code: 'zh-TW', label: '繁體中文（台灣）', short: 'TW' },
+  { code: 'zh-HK', label: '繁體中文（香港）', short: 'HK' },
 ] as const;
 
 export function LanguageSwitcher() {
@@ -38,7 +38,8 @@ export function LanguageSwitcher() {
         className="gap-1.5 text-white/70 hover:text-white text-xs"
       >
         <Globe className="h-3.5 w-3.5" />
-        {current.label}
+        <span className="sm:hidden">{current.short}</span>
+        <span className="hidden sm:inline">{current.label}</span>
       </Button>
 
       {open && (
