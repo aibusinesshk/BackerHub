@@ -26,7 +26,10 @@ export function Footer() {
             <h3 className="mb-3 text-sm font-semibold text-white">{t('platform')}</h3>
             <ul className="space-y-2">
               <li><Link href="/marketplace" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('marketplace')}</Link></li>
+              <li><Link href="/players" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('players')}</Link></li>
               <li><Link href="/how-it-works" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('howItWorks')}</Link></li>
+              <li><Link href="/why-backerhub" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('whyBackerhub')}</Link></li>
+              <li><Link href="/pricing" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('pricing')}</Link></li>
               <li><Link href="/about" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('about')}</Link></li>
             </ul>
           </div>
@@ -36,7 +39,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/contact" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('support')}</Link></li>
               <li><Link href="/terms" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('terms')}</Link></li>
-              <li><span className="text-sm text-white/50">{t('privacy')}</span></li>
+              <li><Link href="/privacy" className="text-sm text-white/50 hover:text-gold-400 transition-colors">{t('privacy')}</Link></li>
             </ul>
           </div>
 

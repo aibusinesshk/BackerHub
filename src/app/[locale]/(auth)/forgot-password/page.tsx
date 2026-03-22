@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     <Card className="relative z-10 w-full max-w-md border-white/[0.06] bg-[#111318]">
       <CardHeader className="text-center">
         <div className="mx-auto mb-4">
-          <Image src="/images/logo-transparent.png" alt="BackerHub" width={160} height={80} className="h-16 w-auto" priority />
+          <Image src="/images/logo-hero.png" alt="BackerHub" width={350} height={100} className="h-14 w-auto" priority />
         </div>
         <CardTitle className="text-2xl text-white">{t('resetTitle')}</CardTitle>
         <CardDescription className="text-white/50">{t('resetSubtitle')}</CardDescription>

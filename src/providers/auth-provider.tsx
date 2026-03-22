@@ -269,13 +269,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
+    // Clear user state immediately so the navbar updates instantly
+    setUser(null);
+    setIsLoading(false);
+
     if (useDemo) {
       clearDemoSession();
-      setUser(null);
     } else {
       await supabase.auth.signOut();
-      setUser(null);
     }
+
+    // Small delay to let React re-render the logged-out UI before navigating
+    await new Promise((r) => setTimeout(r, 50));
+
     // Hard navigation to clear all client state and let middleware handle redirect
     const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
     window.location.href = `/${locale}`;

@@ -56,7 +56,7 @@ export default function SignupPage() {
       </Link>
       <CardHeader className="text-center">
         <div className="mx-auto mb-4">
-          <Image src="/images/logo-transparent.png" alt="BackerHub" width={160} height={80} className="h-16 w-auto" priority />
+          <Image src="/images/logo-hero.png" alt="BackerHub" width={350} height={100} className="h-14 w-auto" priority />
         </div>
         <CardTitle className="text-2xl text-white">{t('signupTitle')}</CardTitle>
         <CardDescription className="text-white/50">{t('signupSubtitle')}</CardDescription>

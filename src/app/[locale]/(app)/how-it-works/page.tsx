@@ -404,7 +404,7 @@ export default function HowItWorksPage() {
               {t('cta.browse')}
             </Button>
             <Button
-              render={<Link href="/auth/signup" />}
+              render={<Link href="/signup" />}
               className="bg-white/[0.06] text-white border border-white/10 hover:bg-white/10 px-6"
             >
               {t('cta.signup')}
