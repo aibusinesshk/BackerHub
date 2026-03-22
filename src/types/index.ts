@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'zh-TW';
+export type Locale = 'en' | 'zh-TW' | 'zh-HK';
 export type Currency = 'USD' | 'TWD' | 'HKD';
 export type Region = 'TW' | 'HK' | 'OTHER';
 export type UserRole = 'investor' | 'player' | 'both';
