@@ -34,12 +34,29 @@ export async function GET() {
       .eq('kyc_status', 'pending')
       .order('updated_at', { ascending: true });
 
-    // Get recently reviewed (approved/rejected) for history
+    // Get recently reviewed (approved/rejected) for history, including audit info
     const { data: history } = await (admin.from('profiles') as any)
-      .select('id, email, display_name, display_name_zh, avatar_url, role, region, kyc_status, updated_at')
+      .select('id, email, display_name, display_name_zh, avatar_url, role, region, kyc_status, kyc_approved_at, kyc_rejection_reason, kyc_reviewed_by, updated_at')
       .in('kyc_status', ['approved', 'rejected'])
       .order('updated_at', { ascending: false })
       .limit(50);
+
+    // Resolve reviewer names for history entries
+    const reviewerIds = [...new Set((history || []).map((h: any) => h.kyc_reviewed_by).filter(Boolean))];
+    let reviewerMap: Record<string, string> = {};
+    if (reviewerIds.length > 0) {
+      const { data: reviewers } = await (admin.from('profiles') as any)
+        .select('id, display_name')
+        .in('id', reviewerIds);
+      if (reviewers) {
+        reviewerMap = Object.fromEntries(reviewers.map((r: any) => [r.id, r.display_name]));
+      }
+    }
+
+    const historyWithReviewer = (history || []).map((h: any) => ({
+      ...h,
+      reviewed_by_name: h.kyc_reviewed_by ? reviewerMap[h.kyc_reviewed_by] || 'Unknown' : null,
+    }));
 
     // Generate signed URLs for pending submissions
     const pendingWithDocs = await Promise.all(
@@ -63,7 +80,7 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json({ pending: pendingWithDocs, history: history || [] });
+    return NextResponse.json({ pending: pendingWithDocs, history: historyWithReviewer });
   } catch (err) {
     logger.apiError('/api/admin/kyc', 'GET', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -85,13 +102,17 @@ export async function POST(request: Request) {
     }
 
     const admin = await createAdminClient();
+    const now = new Date().toISOString();
 
     if (action === 'approve') {
       await (admin.from('profiles') as any)
         .update({
           kyc_status: 'approved',
           is_verified: true,
-          updated_at: new Date().toISOString(),
+          kyc_approved_at: now,
+          kyc_rejection_reason: null,
+          kyc_reviewed_by: adminUser.id,
+          updated_at: now,
         })
         .eq('id', userId);
     } else {
@@ -99,10 +120,22 @@ export async function POST(request: Request) {
         .update({
           kyc_status: 'rejected',
           is_verified: false,
-          updated_at: new Date().toISOString(),
+          kyc_approved_at: null,
+          kyc_rejection_reason: reason || null,
+          kyc_reviewed_by: adminUser.id,
+          updated_at: now,
         })
         .eq('id', userId);
     }
+
+    // Write to audit log
+    await (admin.from('kyc_audit_log') as any)
+      .insert({
+        user_id: userId,
+        action,
+        reviewed_by: adminUser.id,
+        reason: reason || null,
+      });
 
     return NextResponse.json({ success: true, action });
   } catch (err) {

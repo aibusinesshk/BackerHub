@@ -291,7 +291,14 @@
       "txAmount": "Amount",
       "txPaymentMethod": "Payment Method",
       "txDate": "Date",
-      "txCurrency": "Currency"
+      "txCurrency": "Currency",
+      "kycRequiredTitle": "Complete Identity Verification",
+      "kycRequiredDesc": "Verify your identity to create listings and sell action.",
+      "kycPendingTitle": "Verification Under Review",
+      "kycPendingDesc": "Your documents are being reviewed. You'll be notified once approved.",
+      "kycRejectedTitle": "Verification Not Approved",
+      "kycRejectedDesc": "Please re-submit your documents to complete verification.",
+      "kycVerifyNow": "Verify Now"
     },
     "player": {
       "title": "Player Dashboard",
@@ -961,6 +968,12 @@
     "kycRejectedMessage": "Your submission was rejected. Please resubmit with valid documents.",
     "kycResubmit": "Resubmit Documents",
     "kycFileSelected": "File selected",
+    "kycRejectionReasonLabel": "Reason for Rejection",
+    "kycDocTipsTitle": "Document Quality Tips",
+    "kycDocTip1": "Make sure all 4 corners of your ID are visible and the text is legible",
+    "kycDocTip2": "Avoid flash or glare — use natural lighting in a well-lit area",
+    "kycDocTip3": "For your selfie, hold your ID next to your face so both are clearly visible",
+    "kycDocTip4": "Proof of address must be dated within the last 3 months (utility bill, bank statement, or government letter)",
     "roleTitle": "Account Type",
     "roleDescription": "Choose how you want to use BackerHub",
     "hendonMobUrl": "Hendon Mob Profile",
@@ -993,7 +1006,10 @@
     "idBack": "ID Back",
     "selfie": "Selfie",
     "proofOfAddress": "Proof of Address",
-    "viewDoc": "View Document"
+    "viewDoc": "View Document",
+    "reviewedBy": "Reviewed by",
+    "rejectionReason": "Rejection Reason",
+    "cancel": "Cancel"
   },
   "whyBackerHub": {
     "badge": "Why BackerHub",

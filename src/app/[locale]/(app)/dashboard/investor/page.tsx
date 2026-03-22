@@ -14,7 +14,7 @@ import { getPlayerColorTone } from '@/lib/player-colors';
 import {
   DollarSign, TrendingUp, BarChart3, Layers, ArrowUpRight, ArrowDownRight,
   Loader2, ChevronDown, ChevronUp, Calendar, MapPin, Users, CreditCard,
-  Check, ExternalLink, AlertCircle, RefreshCw,
+  Check, ExternalLink, AlertCircle, RefreshCw, ShieldAlert, ShieldCheck, Clock,
 } from 'lucide-react';
 import { WalletBalance } from '@/components/shared/wallet-balance';
 
@@ -88,6 +88,43 @@ export default function InvestorDashboardPage() {
       </div>
 
       <WalletBalance />
+
+      {/* KYC banner for investors who also play */}
+      {user && (user.role === 'player' || user.role === 'both') && user.kycStatus !== 'approved' && (
+        <div className={`mb-6 rounded-xl border p-4 flex items-start gap-4 ${
+          user.kycStatus === 'pending'
+            ? 'border-yellow-500/20 bg-yellow-500/5'
+            : user.kycStatus === 'rejected'
+            ? 'border-red-500/20 bg-red-500/5'
+            : 'border-gold-500/20 bg-gold-500/5'
+        }`}>
+          {user.kycStatus === 'pending' ? (
+            <Clock className="h-5 w-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+          ) : (
+            <ShieldAlert className={`h-5 w-5 mt-0.5 flex-shrink-0 ${user.kycStatus === 'rejected' ? 'text-red-400' : 'text-gold-400'}`} />
+          )}
+          <div className="flex-1 min-w-0">
+            <p className={`text-sm font-medium ${
+              user.kycStatus === 'pending' ? 'text-yellow-300' : user.kycStatus === 'rejected' ? 'text-red-300' : 'text-gold-300'
+            }`}>
+              {user.kycStatus === 'pending' ? t('kycPendingTitle') : user.kycStatus === 'rejected' ? t('kycRejectedTitle') : t('kycRequiredTitle')}
+            </p>
+            <p className="text-xs text-white/40 mt-0.5">
+              {user.kycStatus === 'pending' ? t('kycPendingDesc') : user.kycStatus === 'rejected' ? t('kycRejectedDesc') : t('kycRequiredDesc')}
+            </p>
+          </div>
+          {user.kycStatus !== 'pending' && (
+            <Button
+              render={<Link href={'/profile' as any} />}
+              size="sm"
+              className="bg-gold-500 text-black font-semibold hover:bg-gold-400 flex-shrink-0 text-xs"
+            >
+              <ShieldCheck className="mr-1 h-3 w-3" />
+              {t('kycVerifyNow')}
+            </Button>
+          )}
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {stats.map((s) => (

@@ -63,6 +63,7 @@ export default function ProfilePage() {
   });
   const [kycSubmitting, setKycSubmitting] = useState(false);
   const [kycError, setKycError] = useState('');
+  const [kycRejectionReason, setKycRejectionReason] = useState('');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -86,6 +87,7 @@ export default function ProfilePage() {
           setEmail(p.email || '');
           setIsVerified(p.is_verified || false);
           setKycStatus(p.kyc_status || 'none');
+          setKycRejectionReason(p.kyc_rejection_reason || '');
           setMemberSince(p.member_since || p.created_at || '');
         }
       })
@@ -506,11 +508,42 @@ export default function ProfilePage() {
               {(kycStatus === 'none' || kycStatus === 'rejected') && (
                 <div className="space-y-4">
                   {kycStatus === 'rejected' && (
-                    <div className="flex items-center gap-3 rounded-xl bg-red-500/10 border border-red-500/20 p-4 mb-4">
-                      <AlertTriangle className="h-5 w-5 text-red-400 shrink-0" />
-                      <p className="text-sm text-red-300">{t('kycRejectedMessage')}</p>
+                    <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 mb-4 space-y-2">
+                      <div className="flex items-center gap-3">
+                        <AlertTriangle className="h-5 w-5 text-red-400 shrink-0" />
+                        <p className="text-sm text-red-300">{t('kycRejectedMessage')}</p>
+                      </div>
+                      {kycRejectionReason && (
+                        <div className="ml-8 rounded-lg bg-red-500/5 border border-red-500/10 p-3">
+                          <p className="text-[10px] font-semibold text-red-400/70 uppercase tracking-wider mb-1">{t('kycRejectionReasonLabel')}</p>
+                          <p className="text-xs text-red-300/80">{kycRejectionReason}</p>
+                        </div>
+                      )}
                     </div>
                   )}
+
+                  {/* Document quality tips */}
+                  <div className="rounded-xl bg-gold-500/5 border border-gold-500/15 p-4">
+                    <p className="text-xs font-semibold text-gold-400 mb-2">{t('kycDocTipsTitle')}</p>
+                    <ul className="space-y-1">
+                      <li className="text-[11px] text-white/50 flex items-start gap-2">
+                        <span className="text-gold-400/60 mt-0.5">•</span>
+                        {t('kycDocTip1')}
+                      </li>
+                      <li className="text-[11px] text-white/50 flex items-start gap-2">
+                        <span className="text-gold-400/60 mt-0.5">•</span>
+                        {t('kycDocTip2')}
+                      </li>
+                      <li className="text-[11px] text-white/50 flex items-start gap-2">
+                        <span className="text-gold-400/60 mt-0.5">•</span>
+                        {t('kycDocTip3')}
+                      </li>
+                      <li className="text-[11px] text-white/50 flex items-start gap-2">
+                        <span className="text-gold-400/60 mt-0.5">•</span>
+                        {t('kycDocTip4')}
+                      </li>
+                    </ul>
+                  </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     {KYC_DOCS.map((docName) => (
