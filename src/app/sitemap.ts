@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhub.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhubasia.vercel.app';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const locales = ['en', 'zh-TW'];
