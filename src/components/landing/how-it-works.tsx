@@ -164,7 +164,11 @@ export function HowItWorks() {
   return (
     <section className="relative py-24 bg-[#080a0e] overflow-hidden">
       {/* Subtle background pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,184,28,0.03)_0%,transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,184,28,0.04)_0%,transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(245,184,28,0.02)_0%,transparent_50%)]" />
+
+      {/* Section divider at top */}
+      <div className="absolute top-0 left-0 right-0 section-divider" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
