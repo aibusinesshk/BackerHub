@@ -32,6 +32,7 @@ interface AuthContextType {
     role: UserRole;
     region: Region;
   }) => Promise<{ success: boolean; error?: string }>;
+  signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -268,6 +269,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signInWithGoogle = async () => {
+    if (useDemo) {
+      return { success: false, error: 'Google sign-in is not available in demo mode' };
+    }
+
+    const locale = window.location.pathname.match(/^\/(en|zh-TW)/)?.[1] || 'en';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+    const redirectTo = `${siteUrl}/api/auth/callback?next=/${locale}/dashboard/investor`;
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo },
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return { success: true };
+  };
+
   const logout = async () => {
     // Clear user state immediately so the navbar updates instantly
     setUser(null);
@@ -305,6 +326,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       signup,
+      signInWithGoogle,
       logout,
       refreshProfile,
     }}>
