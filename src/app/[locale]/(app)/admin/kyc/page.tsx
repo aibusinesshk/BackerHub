@@ -265,6 +265,7 @@ export default function AdminKycPage() {
   const [promoting, setPromoting] = useState(false);
   const [promoteError, setPromoteError] = useState('');
   const [rerunningAi, setRerunningAi] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -332,16 +333,22 @@ export default function AdminKycPage() {
 
   const handleRerunAi = async (userId: string) => {
     setRerunningAi(userId);
+    setAiError(null);
     try {
       const res = await fetch('/api/ai-kyc/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
       });
-      if (res.ok) {
-        // Wait briefly then refresh to get updated results
-        setTimeout(() => fetchData(), 1000);
+      const data = await res.json();
+      if (!res.ok) {
+        setAiError(data.error || `AI verification failed (${res.status})`);
+        return;
       }
+      // Refresh to show updated results
+      await fetchData();
+    } catch (err) {
+      setAiError('Network error: failed to reach AI verification service');
     } finally {
       setRerunningAi(null);
     }
@@ -554,6 +561,13 @@ export default function AdminKycPage() {
                         )}
                         {t('aiRerun')}
                       </Button>
+                    </div>
+                  )}
+
+                  {/* AI error feedback */}
+                  {aiError && (
+                    <div className="mt-2 rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+                      <p className="text-xs text-red-400">{aiError}</p>
                     </div>
                   )}
                 </CardContent>
