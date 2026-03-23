@@ -94,9 +94,8 @@ export async function POST(request: Request) {
       .eq('id', user.id);
 
     // Trigger AI verification in the background (fire-and-forget)
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
     fetch(`${baseUrl}/api/ai-kyc/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
