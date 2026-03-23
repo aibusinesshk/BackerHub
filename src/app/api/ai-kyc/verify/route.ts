@@ -374,9 +374,14 @@ export async function POST(request: Request) {
   } catch (err: any) {
     logger.apiError('/api/ai-kyc/verify', 'POST', err);
     // Anthropic SDK errors have status and error properties
-    if (err?.status && err?.error) {
+    if (err?.status) {
+      const detail = JSON.stringify(err?.error || err?.message || err?.body || 'no detail');
+      const keyHint = process.env.ANTHROPIC_API_KEY
+        ? `key=${process.env.ANTHROPIC_API_KEY.substring(0, 15)}...`
+        : 'key=MISSING';
+      const modelHint = process.env.AI_KYC_MODEL || 'claude-opus-4-6 (default)';
       return NextResponse.json({
-        error: `Anthropic API error (${err.status}): ${err.error?.message || 'Unknown error'}`,
+        error: `Anthropic ${err.status}: ${detail} [${keyHint}, model=${modelHint}]`,
       }, { status: 502 });
     }
     const message = err instanceof Error ? err.message : 'Internal server error';
