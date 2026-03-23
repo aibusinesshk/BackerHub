@@ -8,13 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { AvatarCropModal } from '@/components/shared/avatar-crop-modal';
 import { formatDate } from '@/lib/format';
 import {
   Loader2, CheckCircle, Shield, User, MapPin, Calendar,
   Camera, Upload, FileCheck, AlertTriangle, Globe, Phone,
-  Twitter, Instagram, Facebook, ExternalLink,
+  ExternalLink,
 } from 'lucide-react';
 
 const KYC_DOCS = ['id-front', 'id-back', 'selfie', 'proof-of-address'] as const;
@@ -38,12 +39,8 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('');
   const [bioZh, setBioZh] = useState('');
   const [region, setRegion] = useState('TW');
-  const [role, setRole] = useState('both');
   const [hendonMobUrl, setHendonMobUrl] = useState('');
   const [phone, setPhone] = useState('');
-  const [socialTwitter, setSocialTwitter] = useState('');
-  const [socialInstagram, setSocialInstagram] = useState('');
-  const [socialFacebook, setSocialFacebook] = useState('');
 
   // Read-only fields
   const [email, setEmail] = useState('');
@@ -82,12 +79,8 @@ export default function ProfilePage() {
           setBio(p.bio || '');
           setBioZh(p.bio_zh || '');
           setRegion(p.region || 'TW');
-          setRole(p.role || 'both');
           setHendonMobUrl(p.hendon_mob_url || '');
           setPhone(p.phone || '');
-          setSocialTwitter(p.social_twitter || '');
-          setSocialInstagram(p.social_instagram || '');
-          setSocialFacebook(p.social_facebook || '');
           setEmail(p.email || '');
           setIsVerified(p.is_verified || false);
           setKycStatus(p.kyc_status || 'none');
@@ -119,12 +112,8 @@ export default function ProfilePage() {
           display_name_zh: displayNameZh.trim() || null,
           bio: bio.trim() || null,
           bio_zh: bioZh.trim() || null,
-          role,
           hendon_mob_url: hendonMobUrl.trim() || null,
           phone: phone.trim() || null,
-          social_twitter: socialTwitter.trim() || null,
-          social_instagram: socialInstagram.trim() || null,
-          social_facebook: socialFacebook.trim() || null,
         }),
       });
 
@@ -278,396 +267,351 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-5">
-        {/* Edit Form */}
-        <div className="lg:col-span-3 space-y-8">
-          <Card className="border-white/[0.06] bg-[#111318]">
-            <CardHeader>
-              <CardTitle className="text-white text-sm flex items-center gap-2">
-                <User className="h-4 w-4 text-gold-400" />
+        {/* Main Content with Tabs */}
+        <div className="lg:col-span-3">
+          <Tabs defaultValue="profile">
+            <TabsList className="bg-white/5 border-white/10 mb-6">
+              <TabsTrigger value="profile" className="flex items-center gap-1.5">
+                <User className="h-3.5 w-3.5" />
                 {t('editInfo')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              {/* Avatar Upload */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('avatar')}</label>
-                <div className="flex items-center gap-4">
-                  <PlayerAvatar
-                    src={avatarUrl}
-                    name={displayName || 'U'}
-                    className="h-16 w-16 border-2 border-white/10"
-                    fallbackClassName="bg-gold-500/10 text-gold-400 text-lg font-bold"
-                  />
-                  <div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="border-white/10 text-white/60 hover:bg-white/5"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                    >
-                      {uploading ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <Camera className="mr-2 h-4 w-4" />
-                      )}
-                      {uploading ? t('avatarUploading') : t('avatarUpload')}
-                    </Button>
-                    <p className="mt-1 text-[10px] text-white/30">{t('avatarHelp')}</p>
-                  </div>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  className="hidden"
-                  onChange={handleFileSelect}
-                />
-              </div>
-
-              {/* Display Name */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('displayName')} *</label>
-                <Input
-                  value={displayName}
-                  onChange={(e) => { setDisplayName(e.target.value); setError(''); }}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                  placeholder="John Doe"
-                />
-              </div>
-
-              {/* Display Name Chinese */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('displayNameZh')}</label>
-                <Input
-                  value={displayNameZh}
-                  onChange={(e) => setDisplayNameZh(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                  placeholder={t('displayNameZhHelp')}
-                />
-              </div>
-
-              <Separator className="bg-white/[0.06]" />
-
-              {/* Bio */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('bio')}</label>
-                <textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  rows={3}
-                  className="w-full rounded-md bg-white/5 border border-white/10 text-white placeholder:text-white/30 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gold-500/50 resize-none"
-                  placeholder={t('bioPlaceholder')}
-                />
-              </div>
-
-              {/* Bio Chinese */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('bioZh')}</label>
-                <textarea
-                  value={bioZh}
-                  onChange={(e) => setBioZh(e.target.value)}
-                  rows={3}
-                  className="w-full rounded-md bg-white/5 border border-white/10 text-white placeholder:text-white/30 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gold-500/50 resize-none"
-                  placeholder={t('bioZhPlaceholder')}
-                />
-              </div>
-
-              <Separator className="bg-white/[0.06]" />
-
-              {/* Account Type */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('roleTitle')}</label>
-                <p className="mb-2 text-[10px] text-white/30">{t('roleDescription')}</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {([['investor', t('roleInvestor')], ['player', t('rolePlayer')], ['both', t('roleBoth')]] as const).map(([val, label]) => (
-                    <button
-                      key={val}
-                      type="button"
-                      onClick={() => setRole(val)}
-                      className={`rounded-xl border p-2.5 text-sm transition-all ${
-                        role === val
-                          ? 'border-gold-500 bg-gold-500/10 text-gold-400'
-                          : 'border-white/[0.06] text-white/50 hover:border-white/20'
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <Separator className="bg-white/[0.06]" />
-
-              {/* Hendon Mob URL */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50 flex items-center gap-1">
-                  <Globe className="h-3 w-3" />
-                  {t('hendonMobUrl')}
-                </label>
-                <Input
-                  value={hendonMobUrl}
-                  onChange={(e) => setHendonMobUrl(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                  placeholder={t('hendonMobUrlPlaceholder')}
-                />
-                <p className="mt-1 text-[10px] text-white/30">{t('hendonMobUrlHelp')}</p>
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50 flex items-center gap-1">
-                  <Phone className="h-3 w-3" />
-                  {t('phone')}
-                </label>
-                <Input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                  placeholder={t('phonePlaceholder')}
-                />
-              </div>
-
-              <Separator className="bg-white/[0.06]" />
-
-              {/* Social Links */}
-              <div>
-                <label className="mb-3 block text-xs text-white/50">{t('socialLinks')}</label>
-                <div className="space-y-3">
-                  <div>
-                    <label className="mb-1 block text-[10px] text-white/40 flex items-center gap-1">
-                      <Twitter className="h-3 w-3" />
-                      {t('socialTwitter')}
-                    </label>
-                    <Input
-                      value={socialTwitter}
-                      onChange={(e) => setSocialTwitter(e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                      placeholder={t('socialTwitterPlaceholder')}
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-[10px] text-white/40 flex items-center gap-1">
-                      <Instagram className="h-3 w-3" />
-                      {t('socialInstagram')}
-                    </label>
-                    <Input
-                      value={socialInstagram}
-                      onChange={(e) => setSocialInstagram(e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                      placeholder={t('socialInstagramPlaceholder')}
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-[10px] text-white/40 flex items-center gap-1">
-                      <Facebook className="h-3 w-3" />
-                      {t('socialFacebook')}
-                    </label>
-                    <Input
-                      value={socialFacebook}
-                      onChange={(e) => setSocialFacebook(e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
-                      placeholder={t('socialFacebookPlaceholder')}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <Separator className="bg-white/[0.06]" />
-
-              {/* Region (read-only, set during signup) */}
-              <div>
-                <label className="mb-1.5 block text-xs text-white/50">{t('region')}</label>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-white/60">
-                  {regionOptions.find((r) => r.value === region)?.flag}{' '}
-                  {regionOptions.find((r) => r.value === region)?.label}
-                </div>
-              </div>
-
-              {/* Error / Success */}
-              {error && <p className="text-xs text-red-400">{error}</p>}
-              {saved && (
-                <div className="flex items-center gap-2 text-xs text-green-400">
-                  <CheckCircle className="h-3.5 w-3.5" />
-                  {t('saved')}
-                </div>
-              )}
-
-              {/* Save Button */}
-              <Button
-                onClick={handleSave}
-                disabled={saving || !displayName.trim()}
-                className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400"
-              >
-                {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {saving ? t('saving') : t('save')}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* KYC Section */}
-          <Card className="border-white/[0.06] bg-[#111318]">
-            <CardHeader>
-              <CardTitle className="text-white text-sm flex items-center gap-2">
-                <Shield className="h-4 w-4 text-gold-400" />
+              </TabsTrigger>
+              <TabsTrigger value="kyc" className="flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5" />
                 {t('kycTitle')}
-              </CardTitle>
-              <p className="text-xs text-white/40">{t('kycSubtitle')}</p>
-            </CardHeader>
-            <CardContent>
-              {kycStatus === 'approved' && (
-                <div className="flex items-center gap-3 rounded-xl bg-green-500/10 border border-green-500/20 p-4">
-                  <CheckCircle className="h-5 w-5 text-green-400 shrink-0" />
-                  <p className="text-sm text-green-300">{t('kycApprovedMessage')}</p>
-                </div>
-              )}
+                {kycStatus === 'pending' && (
+                  <span className="ml-1 h-2 w-2 rounded-full bg-yellow-400 animate-pulse" />
+                )}
+                {kycStatus === 'rejected' && (
+                  <span className="ml-1 h-2 w-2 rounded-full bg-red-400" />
+                )}
+              </TabsTrigger>
+            </TabsList>
 
-              {kycStatus === 'pending' && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 p-4">
-                    <Loader2 className="h-5 w-5 text-yellow-400 animate-spin shrink-0" />
-                    <p className="text-sm text-yellow-300">{t('kycPendingMessage')}</p>
+            {/* ── Profile Tab ── */}
+            <TabsContent value="profile">
+              <Card className="border-white/[0.06] bg-[#111318]">
+                <CardContent className="pt-6 space-y-5">
+                  {/* Avatar Upload */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50">{t('avatar')}</label>
+                    <div className="flex items-center gap-4">
+                      <PlayerAvatar
+                        src={avatarUrl}
+                        name={displayName || 'U'}
+                        className="h-16 w-16 border-2 border-white/10"
+                        fallbackClassName="bg-gold-500/10 text-gold-400 text-lg font-bold"
+                      />
+                      <div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="border-white/10 text-white/60 hover:bg-white/5"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploading}
+                        >
+                          {uploading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Camera className="mr-2 h-4 w-4" />
+                          )}
+                          {uploading ? t('avatarUploading') : t('avatarUpload')}
+                        </Button>
+                        <p className="mt-1 text-[10px] text-white/30">{t('avatarHelp')}</p>
+                      </div>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      className="hidden"
+                      onChange={handleFileSelect}
+                    />
                   </div>
 
-                  {/* AI Verification Progress */}
-                  {aiLoading && (
-                    <div className="flex items-center gap-2 rounded-xl bg-purple-500/5 border border-purple-500/20 p-3">
-                      <Loader2 className="h-4 w-4 text-purple-400 animate-spin shrink-0" />
-                      <p className="text-xs text-purple-300">{t('kycAiAnalyzing')}</p>
-                    </div>
-                  )}
-                  {aiVerification && aiVerification.status === 'completed' && (
-                    <div className="rounded-xl bg-purple-500/5 border border-purple-500/20 p-4 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Shield className="h-4 w-4 text-purple-400" />
-                        <span className="text-xs font-semibold text-purple-300">{t('kycAiComplete')}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] text-white/40">{t('kycAiConfidence')}</span>
-                            <span className={`text-xs font-bold ${
-                              aiVerification.overall_score >= 85 ? 'text-green-400'
-                                : aiVerification.overall_score >= 50 ? 'text-yellow-400'
-                                : 'text-red-400'
-                            }`}>
-                              {Math.round(aiVerification.overall_score)}%
-                            </span>
-                          </div>
-                          <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-                            <div
-                              className={`h-full rounded-full transition-all duration-500 ${
-                                aiVerification.overall_score >= 85 ? 'bg-green-500'
-                                  : aiVerification.overall_score >= 50 ? 'bg-yellow-500'
-                                  : 'bg-red-500'
-                              }`}
-                              style={{ width: `${Math.min(100, aiVerification.overall_score)}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-[10px] text-white/40">{t('kycAiPendingHuman')}</p>
-                    </div>
-                  )}
-                  {aiVerification && (aiVerification.status === 'processing' || aiVerification.status === 'pending') && (
-                    <div className="flex items-center gap-2 rounded-xl bg-purple-500/5 border border-purple-500/20 p-3">
-                      <Loader2 className="h-4 w-4 text-purple-400 animate-spin shrink-0" />
-                      <p className="text-xs text-purple-300">{t('kycAiAnalyzing')}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {(kycStatus === 'none' || kycStatus === 'rejected') && (
-                <div className="space-y-4">
-                  {kycStatus === 'rejected' && (
-                    <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 mb-4 space-y-2">
-                      <div className="flex items-center gap-3">
-                        <AlertTriangle className="h-5 w-5 text-red-400 shrink-0" />
-                        <p className="text-sm text-red-300">{t('kycRejectedMessage')}</p>
-                      </div>
-                      {kycRejectionReason && (
-                        <div className="ml-8 rounded-lg bg-red-500/5 border border-red-500/10 p-3">
-                          <p className="text-[10px] font-semibold text-red-400/70 uppercase tracking-wider mb-1">{t('kycRejectionReasonLabel')}</p>
-                          <p className="text-xs text-red-300/80">{kycRejectionReason}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Document quality tips */}
-                  <div className="rounded-xl bg-gold-500/5 border border-gold-500/15 p-4">
-                    <p className="text-xs font-semibold text-gold-400 mb-2">{t('kycDocTipsTitle')}</p>
-                    <ul className="space-y-1">
-                      <li className="text-[11px] text-white/50 flex items-start gap-2">
-                        <span className="text-gold-400/60 mt-0.5">•</span>
-                        {t('kycDocTip1')}
-                      </li>
-                      <li className="text-[11px] text-white/50 flex items-start gap-2">
-                        <span className="text-gold-400/60 mt-0.5">•</span>
-                        {t('kycDocTip2')}
-                      </li>
-                      <li className="text-[11px] text-white/50 flex items-start gap-2">
-                        <span className="text-gold-400/60 mt-0.5">•</span>
-                        {t('kycDocTip3')}
-                      </li>
-                      <li className="text-[11px] text-white/50 flex items-start gap-2">
-                        <span className="text-gold-400/60 mt-0.5">•</span>
-                        {t('kycDocTip4')}
-                      </li>
-                    </ul>
+                  {/* Display Name */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50">{t('displayName')} *</label>
+                    <Input
+                      value={displayName}
+                      onChange={(e) => { setDisplayName(e.target.value); setError(''); }}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                      placeholder="John Doe"
+                    />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    {KYC_DOCS.map((docName) => (
-                      <label
-                        key={docName}
-                        className={`relative flex flex-col items-center gap-2 rounded-xl border-2 border-dashed p-4 cursor-pointer transition-all hover:border-gold-500/50 ${
-                          kycFiles[docName]
-                            ? 'border-green-500/40 bg-green-500/5'
-                            : 'border-white/10 bg-white/[0.02]'
-                        }`}
-                      >
-                        {kycFiles[docName] ? (
-                          <FileCheck className="h-6 w-6 text-green-400" />
-                        ) : (
-                          <Upload className="h-6 w-6 text-white/30" />
-                        )}
-                        <span className="text-xs text-white/60 text-center font-medium">
-                          {kycDocLabels[docName]}
-                        </span>
-                        {kycFiles[docName] ? (
-                          <span className="text-[10px] text-green-400">{t('kycFileSelected')}</span>
-                        ) : (
-                          <span className="text-[10px] text-white/30">{t('kycUploadHint')}</span>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/png,image/jpeg,image/webp,application/pdf"
-                          className="absolute inset-0 opacity-0 cursor-pointer"
-                          onChange={(e) => handleKycFileChange(docName, e)}
-                        />
-                      </label>
-                    ))}
+                  {/* Display Name Chinese */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50">{t('displayNameZh')}</label>
+                    <Input
+                      value={displayNameZh}
+                      onChange={(e) => setDisplayNameZh(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                      placeholder={t('displayNameZhHelp')}
+                    />
                   </div>
 
-                  {kycError && <p className="text-xs text-red-400">{kycError}</p>}
+                  <Separator className="bg-white/[0.06]" />
 
+                  {/* Bio */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50">{t('bio')}</label>
+                    <textarea
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
+                      rows={3}
+                      className="w-full rounded-md bg-white/5 border border-white/10 text-white placeholder:text-white/30 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gold-500/50 resize-none"
+                      placeholder={t('bioPlaceholder')}
+                    />
+                  </div>
+
+                  {/* Bio Chinese */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50">{t('bioZh')}</label>
+                    <textarea
+                      value={bioZh}
+                      onChange={(e) => setBioZh(e.target.value)}
+                      rows={3}
+                      className="w-full rounded-md bg-white/5 border border-white/10 text-white placeholder:text-white/30 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gold-500/50 resize-none"
+                      placeholder={t('bioZhPlaceholder')}
+                    />
+                  </div>
+
+                  <Separator className="bg-white/[0.06]" />
+
+                  {/* Hendon Mob URL */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50 flex items-center gap-1">
+                      <Globe className="h-3 w-3" />
+                      {t('hendonMobUrl')}
+                    </label>
+                    <Input
+                      value={hendonMobUrl}
+                      onChange={(e) => setHendonMobUrl(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                      placeholder={t('hendonMobUrlPlaceholder')}
+                    />
+                    <p className="mt-1 text-[10px] text-white/30">{t('hendonMobUrlHelp')}</p>
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50 flex items-center gap-1">
+                      <Phone className="h-3 w-3" />
+                      {t('phone')}
+                    </label>
+                    <Input
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                      placeholder={t('phonePlaceholder')}
+                    />
+                  </div>
+
+                  <Separator className="bg-white/[0.06]" />
+
+                  {/* Region (read-only) */}
+                  <div>
+                    <label className="mb-1.5 block text-xs text-white/50">{t('region')}</label>
+                    <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-white/60">
+                      {regionOptions.find((r) => r.value === region)?.flag}{' '}
+                      {regionOptions.find((r) => r.value === region)?.label}
+                    </div>
+                  </div>
+
+                  {/* Error / Success */}
+                  {error && <p className="text-xs text-red-400">{error}</p>}
+                  {saved && (
+                    <div className="flex items-center gap-2 text-xs text-green-400">
+                      <CheckCircle className="h-3.5 w-3.5" />
+                      {t('saved')}
+                    </div>
+                  )}
+
+                  {/* Save Button */}
                   <Button
-                    onClick={handleKycSubmit}
-                    disabled={!allKycFilesSelected || kycSubmitting}
+                    onClick={handleSave}
+                    disabled={saving || !displayName.trim()}
                     className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400"
                   >
-                    {kycSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {kycSubmitting ? t('kycSubmitting') : kycStatus === 'rejected' ? t('kycResubmit') : t('kycSubmit')}
+                    {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {saving ? t('saving') : t('save')}
                   </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* ── KYC Tab ── */}
+            <TabsContent value="kyc">
+              <Card className="border-white/[0.06] bg-[#111318]">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white text-sm flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-gold-400" />
+                      {t('kycTitle')}
+                    </CardTitle>
+                    {kycBadge()}
+                  </div>
+                  <p className="text-xs text-white/40">{t('kycSubtitle')}</p>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* ── Approved State ── */}
+                  {kycStatus === 'approved' && (
+                    <div className="flex items-center gap-3 rounded-xl bg-green-500/10 border border-green-500/20 p-4">
+                      <CheckCircle className="h-5 w-5 text-green-400 shrink-0" />
+                      <p className="text-sm text-green-300">{t('kycApprovedMessage')}</p>
+                    </div>
+                  )}
+
+                  {/* ── Pending State ── */}
+                  {kycStatus === 'pending' && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 p-4">
+                        <Loader2 className="h-5 w-5 text-yellow-400 animate-spin shrink-0" />
+                        <p className="text-sm text-yellow-300">{t('kycPendingMessage')}</p>
+                      </div>
+
+                      {/* AI Verification Progress */}
+                      {aiLoading && (
+                        <div className="flex items-center gap-2 rounded-xl bg-purple-500/5 border border-purple-500/20 p-3">
+                          <Loader2 className="h-4 w-4 text-purple-400 animate-spin shrink-0" />
+                          <p className="text-xs text-purple-300">{t('kycAiAnalyzing')}</p>
+                        </div>
+                      )}
+                      {aiVerification && aiVerification.status === 'completed' && (
+                        <div className="rounded-xl bg-purple-500/5 border border-purple-500/20 p-4 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Shield className="h-4 w-4 text-purple-400" />
+                            <span className="text-xs font-semibold text-purple-300">{t('kycAiComplete')}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-[10px] text-white/40">{t('kycAiConfidence')}</span>
+                                <span className={`text-xs font-bold ${
+                                  aiVerification.overall_score >= 85 ? 'text-green-400'
+                                    : aiVerification.overall_score >= 50 ? 'text-yellow-400'
+                                    : 'text-red-400'
+                                }`}>
+                                  {Math.round(aiVerification.overall_score)}%
+                                </span>
+                              </div>
+                              <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full transition-all duration-500 ${
+                                    aiVerification.overall_score >= 85 ? 'bg-green-500'
+                                      : aiVerification.overall_score >= 50 ? 'bg-yellow-500'
+                                      : 'bg-red-500'
+                                  }`}
+                                  style={{ width: `${Math.min(100, aiVerification.overall_score)}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-[10px] text-white/40">{t('kycAiPendingHuman')}</p>
+                        </div>
+                      )}
+                      {aiVerification && (aiVerification.status === 'processing' || aiVerification.status === 'pending') && (
+                        <div className="flex items-center gap-2 rounded-xl bg-purple-500/5 border border-purple-500/20 p-3">
+                          <Loader2 className="h-4 w-4 text-purple-400 animate-spin shrink-0" />
+                          <p className="text-xs text-purple-300">{t('kycAiAnalyzing')}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── Upload / Resubmit State ── */}
+                  {(kycStatus === 'none' || kycStatus === 'rejected') && (
+                    <div className="space-y-4">
+                      {kycStatus === 'rejected' && (
+                        <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 space-y-2">
+                          <div className="flex items-center gap-3">
+                            <AlertTriangle className="h-5 w-5 text-red-400 shrink-0" />
+                            <p className="text-sm text-red-300">{t('kycRejectedMessage')}</p>
+                          </div>
+                          {kycRejectionReason && (
+                            <div className="ml-8 rounded-lg bg-red-500/5 border border-red-500/10 p-3">
+                              <p className="text-[10px] font-semibold text-red-400/70 uppercase tracking-wider mb-1">{t('kycRejectionReasonLabel')}</p>
+                              <p className="text-xs text-red-300/80">{kycRejectionReason}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Document quality tips */}
+                      <div className="rounded-xl bg-gold-500/5 border border-gold-500/15 p-4">
+                        <p className="text-xs font-semibold text-gold-400 mb-2">{t('kycDocTipsTitle')}</p>
+                        <ul className="space-y-1">
+                          <li className="text-[11px] text-white/50 flex items-start gap-2">
+                            <span className="text-gold-400/60 mt-0.5">•</span>
+                            {t('kycDocTip1')}
+                          </li>
+                          <li className="text-[11px] text-white/50 flex items-start gap-2">
+                            <span className="text-gold-400/60 mt-0.5">•</span>
+                            {t('kycDocTip2')}
+                          </li>
+                          <li className="text-[11px] text-white/50 flex items-start gap-2">
+                            <span className="text-gold-400/60 mt-0.5">•</span>
+                            {t('kycDocTip3')}
+                          </li>
+                          <li className="text-[11px] text-white/50 flex items-start gap-2">
+                            <span className="text-gold-400/60 mt-0.5">•</span>
+                            {t('kycDocTip4')}
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        {KYC_DOCS.map((docName) => (
+                          <label
+                            key={docName}
+                            className={`relative flex flex-col items-center gap-2 rounded-xl border-2 border-dashed p-4 cursor-pointer transition-all hover:border-gold-500/50 ${
+                              kycFiles[docName]
+                                ? 'border-green-500/40 bg-green-500/5'
+                                : 'border-white/10 bg-white/[0.02]'
+                            }`}
+                          >
+                            {kycFiles[docName] ? (
+                              <FileCheck className="h-6 w-6 text-green-400" />
+                            ) : (
+                              <Upload className="h-6 w-6 text-white/30" />
+                            )}
+                            <span className="text-xs text-white/60 text-center font-medium">
+                              {kycDocLabels[docName]}
+                            </span>
+                            {kycFiles[docName] ? (
+                              <span className="text-[10px] text-green-400">{t('kycFileSelected')}</span>
+                            ) : (
+                              <span className="text-[10px] text-white/30">{t('kycUploadHint')}</span>
+                            )}
+                            <input
+                              type="file"
+                              accept="image/png,image/jpeg,image/webp,application/pdf"
+                              className="absolute inset-0 opacity-0 cursor-pointer"
+                              onChange={(e) => handleKycFileChange(docName, e)}
+                            />
+                          </label>
+                        ))}
+                      </div>
+
+                      {kycError && <p className="text-xs text-red-400">{kycError}</p>}
+
+                      <Button
+                        onClick={handleKycSubmit}
+                        disabled={!allKycFilesSelected || kycSubmitting}
+                        className="w-full bg-gold-500 text-black font-semibold hover:bg-gold-400"
+                      >
+                        {kycSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {kycSubmitting ? t('kycSubmitting') : kycStatus === 'rejected' ? t('kycResubmit') : t('kycSubmit')}
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
 
-        {/* Preview Card */}
+        {/* Preview Sidebar */}
         <div className="lg:col-span-2">
           <div className="lg:sticky lg:top-20">
             <Card className="border-white/[0.06] bg-[#111318]">
@@ -696,30 +640,7 @@ export default function ProfilePage() {
                     {regionOptions.find((r) => r.value === region)?.flag}{' '}
                     {regionOptions.find((r) => r.value === region)?.label}
                   </Badge>
-                  <Badge variant="outline" className="border-gold-500/30 text-gold-400">
-                    {role === 'investor' ? t('roleInvestor') : role === 'player' ? t('rolePlayer') : t('roleBoth')}
-                  </Badge>
                 </div>
-
-                {(socialTwitter || socialInstagram || socialFacebook) && (
-                  <div className="flex justify-center gap-3">
-                    {socialTwitter && (
-                      <span className="text-white/40 hover:text-white/70 transition-colors" title={socialTwitter}>
-                        <Twitter className="h-4 w-4" />
-                      </span>
-                    )}
-                    {socialInstagram && (
-                      <span className="text-white/40 hover:text-white/70 transition-colors" title={socialInstagram}>
-                        <Instagram className="h-4 w-4" />
-                      </span>
-                    )}
-                    {socialFacebook && (
-                      <span className="text-white/40 hover:text-white/70 transition-colors" title={socialFacebook}>
-                        <Facebook className="h-4 w-4" />
-                      </span>
-                    )}
-                  </div>
-                )}
 
                 {hendonMobUrl && (
                   <div className="flex items-center justify-center">
@@ -729,6 +650,8 @@ export default function ProfilePage() {
                     </a>
                   </div>
                 )}
+
+                <Separator className="bg-white/[0.06]" />
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">

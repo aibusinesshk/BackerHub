@@ -266,6 +266,7 @@ export default function AdminKycPage() {
   const [promoteError, setPromoteError] = useState('');
   const [rerunningAi, setRerunningAi] = useState<string | null>(null);
   const [aiErrors, setAiErrors] = useState<Record<string, string>>({});
+  const [actionErrors, setActionErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (authLoading) return;
@@ -299,6 +300,7 @@ export default function AdminKycPage() {
 
   const handleApprove = async (userId: string) => {
     setProcessing(userId);
+    setActionErrors((prev) => { const next = { ...prev }; delete next[userId]; return next; });
     try {
       const res = await fetch('/api/admin/kyc', {
         method: 'POST',
@@ -307,7 +309,12 @@ export default function AdminKycPage() {
       });
       if (res.ok) {
         await fetchData();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setActionErrors((prev) => ({ ...prev, [userId]: data.error || `Approve failed (${res.status})` }));
       }
+    } catch {
+      setActionErrors((prev) => ({ ...prev, [userId]: 'Network error' }));
     } finally {
       setProcessing(null);
     }
@@ -315,6 +322,7 @@ export default function AdminKycPage() {
 
   const handleReject = async (userId: string) => {
     setProcessing(userId);
+    setActionErrors((prev) => { const next = { ...prev }; delete next[userId]; return next; });
     try {
       const res = await fetch('/api/admin/kyc', {
         method: 'POST',
@@ -325,7 +333,12 @@ export default function AdminKycPage() {
         setRejectingId(null);
         setRejectReason('');
         await fetchData();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setActionErrors((prev) => ({ ...prev, [userId]: data.error || `Reject failed (${res.status})` }));
       }
+    } catch {
+      setActionErrors((prev) => ({ ...prev, [userId]: 'Network error' }));
     } finally {
       setProcessing(null);
     }
@@ -561,6 +574,13 @@ export default function AdminKycPage() {
                         )}
                         {t('aiRerun')}
                       </Button>
+                    </div>
+                  )}
+
+                  {/* Action error feedback */}
+                  {actionErrors[submission.id] && (
+                    <div className="mt-2 rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+                      <p className="text-xs text-red-400">{actionErrors[submission.id]}</p>
                     </div>
                   )}
 
