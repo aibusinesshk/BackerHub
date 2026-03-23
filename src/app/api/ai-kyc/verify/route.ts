@@ -163,6 +163,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'AI verification service not configured' }, { status: 503 });
     }
 
+    const aiModel = process.env.AI_KYC_MODEL || 'claude-opus-4-6';
+    logger.info('AI KYC verification starting', {
+      route: '/api/ai-kyc/verify',
+      model: aiModel,
+      keyPrefix: apiKey.substring(0, 12) + '...',
+    });
+
     const admin = await createAdminClient();
 
     // Verify user exists and has pending KYC
@@ -246,7 +253,7 @@ export async function POST(request: Request) {
     // Call Claude Vision API
     const anthropic = new Anthropic({ apiKey });
     const response = await anthropic.messages.create({
-      model: process.env.AI_KYC_MODEL || 'claude-opus-4-6',
+      model: aiModel,
       max_tokens: 4096,
       system: ANALYSIS_PROMPT,
       messages: [
@@ -364,8 +371,14 @@ export async function POST(request: Request) {
       flags,
       processing_time_ms: processingTime,
     });
-  } catch (err) {
+  } catch (err: any) {
     logger.apiError('/api/ai-kyc/verify', 'POST', err);
+    // Anthropic SDK errors have status and error properties
+    if (err?.status && err?.error) {
+      return NextResponse.json({
+        error: `Anthropic API error (${err.status}): ${err.error?.message || 'Unknown error'}`,
+      }, { status: 502 });
+    }
     const message = err instanceof Error ? err.message : 'Internal server error';
     return NextResponse.json({ error: message }, { status: 500 });
   }
