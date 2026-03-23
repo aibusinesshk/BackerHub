@@ -163,7 +163,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'AI verification service not configured' }, { status: 503 });
     }
 
-    const aiModel = process.env.AI_KYC_MODEL || 'claude-opus-4-6';
+    const aiModel = process.env.AI_KYC_MODEL || 'claude-sonnet-4-20250514';
     logger.info('AI KYC verification starting', {
       route: '/api/ai-kyc/verify',
       model: aiModel,
