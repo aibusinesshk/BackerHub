@@ -117,38 +117,43 @@ export async function POST(request: Request) {
     const admin = await createAdminClient();
     const now = new Date().toISOString();
 
-    if (action === 'approve') {
-      await (admin.from('profiles') as any)
-        .update({
+    const updateData = action === 'approve'
+      ? {
           kyc_status: 'approved',
           is_verified: true,
           kyc_approved_at: now,
           kyc_rejection_reason: null,
           kyc_reviewed_by: adminUser.id,
           updated_at: now,
-        })
-        .eq('id', userId);
-    } else {
-      await (admin.from('profiles') as any)
-        .update({
+        }
+      : {
           kyc_status: 'rejected',
           is_verified: false,
           kyc_approved_at: null,
           kyc_rejection_reason: reason || null,
           kyc_reviewed_by: adminUser.id,
           updated_at: now,
-        })
-        .eq('id', userId);
+        };
+
+    const { error: updateError } = await (admin.from('profiles') as any)
+      .update(updateData)
+      .eq('id', userId);
+
+    if (updateError) {
+      logger.apiError('/api/admin/kyc', 'POST', updateError);
+      return NextResponse.json({ error: `Failed to ${action} KYC: ${updateError.message}` }, { status: 500 });
     }
 
-    // Write to audit log
+    // Write to audit log (non-blocking — don't fail the request if audit log fails)
     await (admin.from('kyc_audit_log') as any)
       .insert({
         user_id: userId,
         action,
         reviewed_by: adminUser.id,
         reason: reason || null,
-      });
+      })
+      .then(() => {})
+      .catch((err: any) => logger.apiError('/api/admin/kyc', 'audit_log', err));
 
     return NextResponse.json({ success: true, action });
   } catch (err) {
