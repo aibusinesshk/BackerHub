@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { createAdminClient } from '@/lib/supabase/server';
+import { createClient, createAdminClient } from '@/lib/supabase/server';
 import { logger } from '@/lib/logger';
 
 const KYC_BUCKET = 'kyc-documents';
@@ -96,25 +96,60 @@ async function fetchDocumentAsBase64(
   userId: string,
   docName: string,
 ): Promise<{ base64: string; mediaType: MediaType } | null> {
-  for (const ext of ['webp', 'pdf'] as const) {
-    const filePath = `${userId}/${docName}.${ext}`;
-    const { data } = await admin.storage.from(KYC_BUCKET).download(filePath);
-    if (data) {
-      const buffer = Buffer.from(await data.arrayBuffer());
-      const base64 = buffer.toString('base64');
-      // For PDFs, we skip AI vision analysis (Claude can't process PDFs as images)
-      if (ext === 'pdf') return null;
-      const mediaType: MediaType = 'image/webp';
-      return { base64, mediaType };
-    }
+  // Try image first (webp extension), skip PDFs (Claude can't process them as images)
+  const imagePath = `${userId}/${docName}.webp`;
+  const { data } = await admin.storage.from(KYC_BUCKET).download(imagePath);
+  if (data) {
+    const buffer = Buffer.from(await data.arrayBuffer());
+    const base64 = buffer.toString('base64');
+    // Detect actual media type from magic bytes instead of assuming webp
+    const mediaType: MediaType = detectImageType(buffer);
+    return { base64, mediaType };
+  }
+  // Check if a PDF version exists (for better error messages)
+  const pdfPath = `${userId}/${docName}.pdf`;
+  const { data: pdfData } = await admin.storage.from(KYC_BUCKET).download(pdfPath);
+  if (pdfData) {
+    // PDF exists but can't be analyzed as an image
+    return null;
   }
   return null;
+}
+
+function detectImageType(buffer: Buffer): MediaType {
+  // Check magic bytes for common image formats
+  if (buffer[0] === 0xFF && buffer[1] === 0xD8) return 'image/jpeg';
+  if (buffer[0] === 0x89 && buffer[1] === 0x50) return 'image/png';
+  if (buffer[0] === 0x47 && buffer[1] === 0x49) return 'image/gif';
+  // RIFF....WEBP
+  if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[8] === 0x57 && buffer[9] === 0x45) return 'image/webp';
+  // Default to webp since that's the stored extension
+  return 'image/webp';
 }
 
 export async function POST(request: Request) {
   const startTime = Date.now();
 
   try {
+    // Verify the caller is authorized (admin user OR internal service call)
+    const internalToken = request.headers.get('x-service-key');
+    const isInternalCall = internalToken === process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!isInternalCall) {
+      const supabase = await createClient();
+      const { data: { user: caller }, error: authError } = await supabase.auth.getUser();
+      if (authError || !caller) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      const { data: callerProfile } = await (supabase.from('profiles') as any)
+        .select('is_admin')
+        .eq('id', caller.id)
+        .single();
+      if (!callerProfile?.is_admin) {
+        return NextResponse.json({ error: 'Forbidden: admin access required' }, { status: 403 });
+      }
+    }
+
     const body = await request.json();
     const { userId } = body;
 
