@@ -76,7 +76,20 @@ export async function GET() {
           }
           if (!docs[docName]) docs[docName] = null;
         }
-        return { ...user, docs };
+
+        // Fetch AI verification results if available
+        let aiVerification = null;
+        const { data: aiResult } = await (admin.from('ai_kyc_verifications') as any)
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+        if (aiResult) {
+          aiVerification = aiResult;
+        }
+
+        return { ...user, docs, aiVerification };
       })
     );
 

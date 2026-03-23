@@ -65,6 +65,10 @@ export default function ProfilePage() {
   const [kycError, setKycError] = useState('');
   const [kycRejectionReason, setKycRejectionReason] = useState('');
 
+  // AI KYC Verification
+  const [aiVerification, setAiVerification] = useState<any>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+
   useEffect(() => {
     const controller = new AbortController();
     fetch('/api/profile', { signal: controller.signal })
@@ -215,6 +219,26 @@ export default function ProfilePage() {
       setKycSubmitting(false);
     }
   };
+
+  // Fetch AI verification status when KYC is pending
+  useEffect(() => {
+    if (kycStatus !== 'pending') return;
+    setAiLoading(true);
+    const fetchAiStatus = () => {
+      fetch('/api/ai-kyc/status')
+        .then((r) => r.json())
+        .then((data) => {
+          setAiVerification(data.verification);
+          setAiLoading(false);
+          // If still processing, poll again in 5 seconds
+          if (data.verification?.status === 'processing' || data.verification?.status === 'pending') {
+            setTimeout(fetchAiStatus, 5000);
+          }
+        })
+        .catch(() => setAiLoading(false));
+    };
+    fetchAiStatus();
+  }, [kycStatus]);
 
   const regionOptions = [
     { value: 'TW', label: t('regionTW'), flag: '\u{1F1F9}\u{1F1FC}' },
@@ -499,9 +523,58 @@ export default function ProfilePage() {
               )}
 
               {kycStatus === 'pending' && (
-                <div className="flex items-center gap-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 p-4">
-                  <Loader2 className="h-5 w-5 text-yellow-400 animate-spin shrink-0" />
-                  <p className="text-sm text-yellow-300">{t('kycPendingMessage')}</p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 p-4">
+                    <Loader2 className="h-5 w-5 text-yellow-400 animate-spin shrink-0" />
+                    <p className="text-sm text-yellow-300">{t('kycPendingMessage')}</p>
+                  </div>
+
+                  {/* AI Verification Progress */}
+                  {aiLoading && (
+                    <div className="flex items-center gap-2 rounded-xl bg-purple-500/5 border border-purple-500/20 p-3">
+                      <Loader2 className="h-4 w-4 text-purple-400 animate-spin shrink-0" />
+                      <p className="text-xs text-purple-300">{t('kycAiAnalyzing')}</p>
+                    </div>
+                  )}
+                  {aiVerification && aiVerification.status === 'completed' && (
+                    <div className="rounded-xl bg-purple-500/5 border border-purple-500/20 p-4 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-purple-400" />
+                        <span className="text-xs font-semibold text-purple-300">{t('kycAiComplete')}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] text-white/40">{t('kycAiConfidence')}</span>
+                            <span className={`text-xs font-bold ${
+                              aiVerification.overall_score >= 85 ? 'text-green-400'
+                                : aiVerification.overall_score >= 50 ? 'text-yellow-400'
+                                : 'text-red-400'
+                            }`}>
+                              {Math.round(aiVerification.overall_score)}%
+                            </span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all duration-500 ${
+                                aiVerification.overall_score >= 85 ? 'bg-green-500'
+                                  : aiVerification.overall_score >= 50 ? 'bg-yellow-500'
+                                  : 'bg-red-500'
+                              }`}
+                              style={{ width: `${Math.min(100, aiVerification.overall_score)}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-[10px] text-white/40">{t('kycAiPendingHuman')}</p>
+                    </div>
+                  )}
+                  {aiVerification && (aiVerification.status === 'processing' || aiVerification.status === 'pending') && (
+                    <div className="flex items-center gap-2 rounded-xl bg-purple-500/5 border border-purple-500/20 p-3">
+                      <Loader2 className="h-4 w-4 text-purple-400 animate-spin shrink-0" />
+                      <p className="text-xs text-purple-300">{t('kycAiAnalyzing')}</p>
+                    </div>
+                  )}
                 </div>
               )}
 

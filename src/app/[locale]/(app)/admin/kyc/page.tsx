@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import {
   Shield, Loader2, CheckCircle, XCircle, ExternalLink, AlertTriangle, Clock, User,
+  Brain, Eye, FileText, UserCheck, MapPin, Fingerprint, RefreshCw,
 } from 'lucide-react';
 import { formatDate } from '@/lib/format';
 
@@ -19,6 +20,236 @@ const DOC_LABELS_EN: Record<string, string> = {
   'selfie': 'Selfie',
   'proof-of-address': 'Address Proof',
 };
+
+function ScoreBadge({ score, label }: { score: number | null | undefined; label: string }) {
+  if (score == null) return null;
+  const color = score >= 85 ? 'green' : score >= 50 ? 'yellow' : 'red';
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="text-[10px] text-white/40">{label}</span>
+      <span className={`text-xs font-bold ${
+        color === 'green' ? 'text-green-400' : color === 'yellow' ? 'text-yellow-400' : 'text-red-400'
+      }`}>
+        {Math.round(score)}%
+      </span>
+    </div>
+  );
+}
+
+function ScoreBar({ score }: { score: number }) {
+  const color = score >= 85 ? 'bg-green-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+  return (
+    <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+      <div
+        className={`h-full rounded-full transition-all duration-500 ${color}`}
+        style={{ width: `${Math.min(100, Math.max(0, score))}%` }}
+      />
+    </div>
+  );
+}
+
+function AiVerificationPanel({ ai, t }: { ai: any; t: any }) {
+  if (!ai) return null;
+
+  const isProcessing = ai.status === 'processing' || ai.status === 'pending';
+  const isFailed = ai.status === 'failed';
+
+  if (isProcessing) {
+    return (
+      <div className="rounded-xl bg-blue-500/5 border border-blue-500/20 p-4 mb-4">
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 text-blue-400 animate-spin" />
+          <span className="text-xs font-medium text-blue-400">{t('aiProcessing')}</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isFailed) {
+    return (
+      <div className="rounded-xl bg-red-500/5 border border-red-500/20 p-4 mb-4">
+        <div className="flex items-center gap-2">
+          <AlertTriangle className="h-4 w-4 text-red-400" />
+          <span className="text-xs font-medium text-red-400">{t('aiFailed')}</span>
+        </div>
+        {ai.error_message && (
+          <p className="text-[10px] text-red-300/60 mt-1 ml-6">{ai.error_message}</p>
+        )}
+      </div>
+    );
+  }
+
+  const recColor = ai.recommendation === 'auto_approve' ? 'green'
+    : ai.recommendation === 'auto_reject' ? 'red' : 'yellow';
+
+  return (
+    <div className="rounded-xl bg-white/[0.02] border border-white/[0.08] p-4 mb-4 space-y-3">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Brain className="h-4 w-4 text-purple-400" />
+          <span className="text-xs font-semibold text-purple-300">{t('aiAnalysis')}</span>
+        </div>
+        <Badge className={`text-[10px] ${
+          recColor === 'green' ? 'bg-green-500/20 text-green-400 border-green-500/30'
+            : recColor === 'red' ? 'bg-red-500/20 text-red-400 border-red-500/30'
+            : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+        }`}>
+          {ai.recommendation === 'auto_approve' ? t('aiAutoApprove')
+            : ai.recommendation === 'auto_reject' ? t('aiAutoReject')
+            : t('aiManualReview')}
+        </Badge>
+      </div>
+
+      {/* Overall Score */}
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] text-white/40">{t('aiOverallScore')}</span>
+          <span className={`text-sm font-bold ${
+            ai.overall_score >= 85 ? 'text-green-400' : ai.overall_score >= 50 ? 'text-yellow-400' : 'text-red-400'
+          }`}>
+            {Math.round(ai.overall_score)}%
+          </span>
+        </div>
+        <ScoreBar score={ai.overall_score} />
+      </div>
+
+      {/* Document Scores Grid */}
+      <div className="grid grid-cols-2 gap-2">
+        {ai.id_front_analysis?.quality != null && (
+          <div className="rounded-lg bg-white/[0.03] p-2">
+            <div className="flex items-center gap-1 mb-1">
+              <FileText className="h-3 w-3 text-white/30" />
+              <span className="text-[10px] text-white/50">{t('idFront')}</span>
+            </div>
+            <ScoreBadge score={ai.id_front_analysis.quality} label={t('aiQuality')} />
+            <ScoreBadge score={ai.id_front_analysis.authenticity} label={t('aiAuth')} />
+          </div>
+        )}
+        {ai.id_back_analysis?.quality != null && (
+          <div className="rounded-lg bg-white/[0.03] p-2">
+            <div className="flex items-center gap-1 mb-1">
+              <FileText className="h-3 w-3 text-white/30" />
+              <span className="text-[10px] text-white/50">{t('idBack')}</span>
+            </div>
+            <ScoreBadge score={ai.id_back_analysis.quality} label={t('aiQuality')} />
+            <ScoreBadge score={ai.id_back_analysis.authenticity} label={t('aiAuth')} />
+          </div>
+        )}
+        {ai.selfie_analysis?.quality != null && (
+          <div className="rounded-lg bg-white/[0.03] p-2">
+            <div className="flex items-center gap-1 mb-1">
+              <Eye className="h-3 w-3 text-white/30" />
+              <span className="text-[10px] text-white/50">{t('selfie')}</span>
+            </div>
+            <ScoreBadge score={ai.selfie_analysis.quality} label={t('aiQuality')} />
+            {ai.selfie_analysis.face_visible != null && (
+              <span className={`text-[10px] ${ai.selfie_analysis.face_visible ? 'text-green-400' : 'text-red-400'}`}>
+                {ai.selfie_analysis.face_visible ? t('aiFaceDetected') : t('aiNoFace')}
+              </span>
+            )}
+          </div>
+        )}
+        {ai.address_proof_analysis?.quality != null && (
+          <div className="rounded-lg bg-white/[0.03] p-2">
+            <div className="flex items-center gap-1 mb-1">
+              <MapPin className="h-3 w-3 text-white/30" />
+              <span className="text-[10px] text-white/50">{t('proofOfAddress')}</span>
+            </div>
+            <ScoreBadge score={ai.address_proof_analysis.quality} label={t('aiQuality')} />
+            {ai.address_proof_analysis.appears_recent != null && (
+              <span className={`text-[10px] ${ai.address_proof_analysis.appears_recent ? 'text-green-400' : 'text-yellow-400'}`}>
+                {ai.address_proof_analysis.appears_recent ? t('aiRecent') : t('aiNotRecent')}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Face Match */}
+      {ai.face_match_score != null && (
+        <div className="flex items-center gap-2 rounded-lg bg-white/[0.03] p-2">
+          <UserCheck className="h-3.5 w-3.5 text-white/30" />
+          <span className="text-[10px] text-white/40">{t('aiFaceMatch')}</span>
+          <span className={`text-xs font-bold ml-auto ${
+            ai.face_match_score >= 80 ? 'text-green-400' : ai.face_match_score >= 50 ? 'text-yellow-400' : 'text-red-400'
+          }`}>
+            {Math.round(ai.face_match_score)}%
+          </span>
+        </div>
+      )}
+
+      {/* Extracted Data */}
+      {(ai.extracted_name || ai.extracted_doc_type) && (
+        <div className="rounded-lg bg-white/[0.03] p-2 space-y-1">
+          <div className="flex items-center gap-1 mb-1">
+            <Fingerprint className="h-3 w-3 text-white/30" />
+            <span className="text-[10px] font-medium text-white/50">{t('aiExtractedData')}</span>
+          </div>
+          {ai.extracted_name && (
+            <div className="flex justify-between text-[10px]">
+              <span className="text-white/30">{t('aiName')}</span>
+              <span className="text-white/60">{ai.extracted_name}</span>
+            </div>
+          )}
+          {ai.extracted_doc_type && (
+            <div className="flex justify-between text-[10px]">
+              <span className="text-white/30">{t('aiDocType')}</span>
+              <span className="text-white/60">{ai.extracted_doc_type}</span>
+            </div>
+          )}
+          {ai.extracted_id_number && (
+            <div className="flex justify-between text-[10px]">
+              <span className="text-white/30">{t('aiIdNumber')}</span>
+              <span className="text-white/60 font-mono">{ai.extracted_id_number}</span>
+            </div>
+          )}
+          {ai.extracted_dob && (
+            <div className="flex justify-between text-[10px]">
+              <span className="text-white/30">{t('aiDob')}</span>
+              <span className="text-white/60">{ai.extracted_dob}</span>
+            </div>
+          )}
+          {ai.extracted_doc_expiry && (
+            <div className="flex justify-between text-[10px]">
+              <span className="text-white/30">{t('aiExpiry')}</span>
+              <span className="text-white/60">{ai.extracted_doc_expiry}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Flags */}
+      {ai.flags && ai.flags.length > 0 && (
+        <div className="space-y-1">
+          {ai.flags.map((flag: any, i: number) => (
+            <div key={i} className={`flex items-start gap-1.5 rounded-lg p-2 text-[10px] ${
+              flag.severity === 'critical' ? 'bg-red-500/10 text-red-400'
+                : flag.severity === 'high' ? 'bg-red-500/5 text-red-300'
+                : flag.severity === 'medium' ? 'bg-yellow-500/5 text-yellow-400'
+                : 'bg-white/[0.03] text-white/50'
+            }`}>
+              <AlertTriangle className="h-3 w-3 shrink-0 mt-0.5" />
+              <span>{flag.message}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Summary */}
+      {ai.summary && (
+        <p className="text-[11px] text-white/50 leading-relaxed italic">{ai.summary}</p>
+      )}
+
+      {/* Processing time */}
+      {ai.processing_time_ms && (
+        <p className="text-[9px] text-white/20">
+          {t('aiProcessedIn', { seconds: (ai.processing_time_ms / 1000).toFixed(1) })}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function AdminKycPage() {
   const t = useTranslations('adminKyc');
@@ -33,6 +264,7 @@ export default function AdminKycPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [promoting, setPromoting] = useState(false);
   const [promoteError, setPromoteError] = useState('');
+  const [rerunningAi, setRerunningAi] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -95,6 +327,23 @@ export default function AdminKycPage() {
       }
     } finally {
       setProcessing(null);
+    }
+  };
+
+  const handleRerunAi = async (userId: string) => {
+    setRerunningAi(userId);
+    try {
+      const res = await fetch('/api/ai-kyc/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      if (res.ok) {
+        // Wait briefly then refresh to get updated results
+        setTimeout(() => fetchData(), 1000);
+      }
+    } finally {
+      setRerunningAi(null);
     }
   };
 
@@ -217,6 +466,9 @@ export default function AdminKycPage() {
                     </Badge>
                   </div>
 
+                  {/* AI Verification Results */}
+                  <AiVerificationPanel ai={submission.aiVerification} t={t} />
+
                   {/* Document Links */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
                     {(['id-front', 'id-back', 'selfie', 'proof-of-address'] as const).map((docName) => (
@@ -287,6 +539,20 @@ export default function AdminKycPage() {
                       >
                         <XCircle className="mr-1 h-3 w-3" />
                         {t('reject')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 ml-auto"
+                        onClick={() => handleRerunAi(submission.id)}
+                        disabled={rerunningAi === submission.id}
+                      >
+                        {rerunningAi === submission.id ? (
+                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                        ) : (
+                          <RefreshCw className="mr-1 h-3 w-3" />
+                        )}
+                        {t('aiRerun')}
                       </Button>
                     </div>
                   )}

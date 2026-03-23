@@ -36,6 +36,7 @@ export type Database = {
           social_instagram: string | null;
           social_facebook: string | null;
           color_tone: string | null;
+          ai_kyc_verification_id: string | null;
           member_since: string;
           created_at: string;
           updated_at: string;
@@ -63,6 +64,7 @@ export type Database = {
           social_instagram?: string | null;
           social_facebook?: string | null;
           color_tone?: string | null;
+          ai_kyc_verification_id?: string | null;
           member_since?: string;
           created_at?: string;
           updated_at?: string;
@@ -87,6 +89,7 @@ export type Database = {
           social_instagram?: string | null;
           social_facebook?: string | null;
           color_tone?: string | null;
+          ai_kyc_verification_id?: string | null;
           updated_at?: string;
         };
       };
@@ -590,6 +593,80 @@ export type Database = {
           reason?: string | null;
         };
       };
+      ai_kyc_verifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          overall_score: number;
+          recommendation: 'auto_approve' | 'manual_review' | 'auto_reject';
+          summary: string | null;
+          id_front_analysis: Record<string, unknown>;
+          id_back_analysis: Record<string, unknown>;
+          selfie_analysis: Record<string, unknown>;
+          address_proof_analysis: Record<string, unknown>;
+          extracted_name: string | null;
+          extracted_id_number: string | null;
+          extracted_dob: string | null;
+          extracted_address: string | null;
+          extracted_doc_type: string | null;
+          extracted_doc_expiry: string | null;
+          face_match_score: number | null;
+          flags: Array<{ code: string; severity: string; message: string }>;
+          status: 'pending' | 'processing' | 'completed' | 'failed';
+          error_message: string | null;
+          model_used: string | null;
+          processing_time_ms: number | null;
+          created_at: string;
+          completed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          overall_score?: number;
+          recommendation?: 'auto_approve' | 'manual_review' | 'auto_reject';
+          summary?: string | null;
+          id_front_analysis?: Record<string, unknown>;
+          id_back_analysis?: Record<string, unknown>;
+          selfie_analysis?: Record<string, unknown>;
+          address_proof_analysis?: Record<string, unknown>;
+          extracted_name?: string | null;
+          extracted_id_number?: string | null;
+          extracted_dob?: string | null;
+          extracted_address?: string | null;
+          extracted_doc_type?: string | null;
+          extracted_doc_expiry?: string | null;
+          face_match_score?: number | null;
+          flags?: Array<{ code: string; severity: string; message: string }>;
+          status?: 'pending' | 'processing' | 'completed' | 'failed';
+          error_message?: string | null;
+          model_used?: string | null;
+          processing_time_ms?: number | null;
+          created_at?: string;
+          completed_at?: string | null;
+        };
+        Update: {
+          overall_score?: number;
+          recommendation?: 'auto_approve' | 'manual_review' | 'auto_reject';
+          summary?: string | null;
+          id_front_analysis?: Record<string, unknown>;
+          id_back_analysis?: Record<string, unknown>;
+          selfie_analysis?: Record<string, unknown>;
+          address_proof_analysis?: Record<string, unknown>;
+          extracted_name?: string | null;
+          extracted_id_number?: string | null;
+          extracted_dob?: string | null;
+          extracted_address?: string | null;
+          extracted_doc_type?: string | null;
+          extracted_doc_expiry?: string | null;
+          face_match_score?: number | null;
+          flags?: Array<{ code: string; severity: string; message: string }>;
+          status?: 'pending' | 'processing' | 'completed' | 'failed';
+          error_message?: string | null;
+          model_used?: string | null;
+          processing_time_ms?: number | null;
+          completed_at?: string | null;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -610,6 +687,7 @@ export type Escrow = Database['public']['Tables']['escrow']['Row'];
 export type Testimonial = Database['public']['Tables']['testimonials']['Row'];
 export type TournamentResultRecord = Database['public']['Tables']['tournament_results']['Row'];
 export type KycAuditLog = Database['public']['Tables']['kyc_audit_log']['Row'];
+export type AiKycVerification = Database['public']['Tables']['ai_kyc_verifications']['Row'];
 
 // Joined types for API responses
 export type ListingWithDetails = Listing & {

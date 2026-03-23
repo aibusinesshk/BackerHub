@@ -93,6 +93,22 @@ export async function POST(request: Request) {
       })
       .eq('id', user.id);
 
+    // Trigger AI verification in the background (fire-and-forget)
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+    fetch(`${baseUrl}/api/ai-kyc/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: user.id }),
+    }).catch((err) => {
+      logger.error('Failed to trigger AI KYC verification', err, {
+        route: '/api/profile/kyc',
+        action: 'trigger-ai',
+        userId: user.id,
+      });
+    });
+
     return NextResponse.json({ success: true, kyc_status: 'pending' });
   } catch (err) {
     logger.apiError('/api/profile/kyc', 'POST', err);
