@@ -211,7 +211,7 @@ export async function POST(request: Request) {
     // Call Claude Vision API
     const anthropic = new Anthropic({ apiKey });
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: process.env.AI_KYC_MODEL || 'claude-opus-4-6',
       max_tokens: 4096,
       system: ANALYSIS_PROMPT,
       messages: [
