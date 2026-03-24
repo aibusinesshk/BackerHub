@@ -3,13 +3,13 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { ScrollReveal } from '@/components/shared/scroll-reveal';
-import { ShieldCheck, Lock, Eye, Headphones } from 'lucide-react';
+import { ScanFace, Lock, Eye, Headphones } from 'lucide-react';
 
 export function TrustBadges() {
   const t = useTranslations('trust');
 
   const items = [
-    { icon: ShieldCheck, title: t('verified'), desc: t('verifiedDesc'), color: 'gold' },
+    { icon: ScanFace, title: t('verified'), desc: t('verifiedDesc'), color: 'gold' },
     { icon: Lock, title: t('secure'), desc: t('secureDesc'), color: 'green' },
     { icon: Eye, title: t('transparent'), desc: t('transparentDesc'), color: 'blue' },
     { icon: Headphones, title: t('support'), desc: t('supportDesc'), color: 'purple' },

@@ -9,6 +9,7 @@ import { FeaturedPlayers } from '@/components/landing/featured-players';
 import { Testimonials } from '@/components/landing/testimonials';
 import { PaymentMethods } from '@/components/landing/payment-methods';
 import { TrustBadges } from '@/components/landing/trust-badges';
+import { AiVerification } from '@/components/landing/ai-verification';
 import { CtaSection } from '@/components/landing/cta-section';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -21,6 +22,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <main className="pt-16 pb-28 md:pb-0 overflow-hidden">
         <HeroSection />
         <FeaturedPlayers />
+        <AiVerification />
         <HowItWorks />
         <StatsCounter />
         <Testimonials />
