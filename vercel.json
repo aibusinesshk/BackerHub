@@ -1,9 +1,9 @@
 {
-  "regions": ["hkg1"],
+  "regions": ["hnd1"],
   "functions": {
     "src/app/api/ai-kyc/**/*.ts": {
       "maxDuration": 60,
-      "regions": ["hkg1"]
+      "regions": ["hnd1"]
     }
   },
   "crons": [
