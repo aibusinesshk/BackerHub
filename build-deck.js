@@ -139,10 +139,10 @@ async function main() {
   });
 
   const solutions = [
-    { icon: "shield", title: "Escrow-Protected Funds", desc: "Backer money is never sent directly to players. Held in escrow until admin-verified milestones." },
-    { icon: "userCheck", title: "Identity Verified Players", desc: "All players pass KYC. Performance tracked with reliability scores and settlement history." },
-    { icon: "check", title: "Multi-Step Verification", desc: "Registration proof, result validation, and prize deposit confirmation \u2014 all admin-verified." },
-    { icon: "map", title: "Built for Asia", desc: "ECPay, LINE Pay, JKoPay, AlipayHK, FPS. English + Traditional Chinese. Local tournaments." },
+    { icon: "shield", title: "Escrow-Protected Funds", desc: "Backer money is never sent directly to players. Held in escrow until AI-verified milestones are confirmed." },
+    { icon: "userCheck", title: "AI-Powered KYC", desc: "Claude Vision AI analyzes ID documents, selfies, and proof-of-address. Auto-scores with 85%+ auto-approval. No expensive third-party KYC providers." },
+    { icon: "check", title: "AI Proof Verification", desc: "Tournament registration and prize screenshots analyzed by AI. Data consistency checks, face matching, and fraud detection \u2014 all automated." },
+    { icon: "map", title: "Crypto-Native for Asia", desc: "USDT & USDC on TRC-20 (lowest fees). No bank dependencies. English + Traditional Chinese. Regional tournament coverage." },
   ];
 
   for (let i = 0; i < solutions.length; i++) {
@@ -202,7 +202,7 @@ async function main() {
   const tailwinds = [
     { icon: "shield", title: "Legal Clarity", stats: "Supreme Court (Feb 2025)", desc: "Taiwan confirmed poker tournaments as \"mind sport\" \u2014 not gambling. CTP Club is #1 venue globally with 302,505 registered players." },
     { icon: "trophy", title: "Tournament Boom", stats: "$54M+ prizes in Taipei (2025)", desc: "APT Taipei: 22,909 entries, $20M prizes. APT Championship: 28,000+ entries, $34M+ prizes. 40%+ YoY growth." },
-    { icon: "money", title: "Payment Explosion", stats: "$112.5B fintech market (2025)", desc: "LINE Pay: 13.1M users, $25B volume. Government targeting 8B non-cash transactions by 2026. 80%+ mobile adoption." },
+    { icon: "money", title: "Stablecoin Explosion", stats: "$190B+ stablecoin market cap (2026)", desc: "USDT dominates Asia remittance. TRC-20 fees under $1. Crypto adoption 34%+ in Vietnam, Philippines, Thailand. Borderless by design." },
   ];
 
   for (let i = 0; i < tailwinds.length; i++) {
@@ -250,9 +250,9 @@ async function main() {
   s7.addText("Institutional-Grade Risk Management", { x: 0.7, y: 0.75, w: 9, h: 0.6, fontSize: 26, fontFace: FONT_H, color: C.white, margin: 0 });
 
   const features = [
-    { icon: "lock", title: "Escrow Protection", desc: "Funds never go directly to players. All money held in escrow until milestones verified." },
-    { icon: "userCheck", title: "KYC Verified Players", desc: "Identity verified with tracked stats, ROI history, and cash rates." },
-    { icon: "check", title: "Admin Verification", desc: "Registration, results, and deposits all verified against official records." },
+    { icon: "lock", title: "Escrow Protection", desc: "Funds never go directly to players. All money held in escrow until AI-verified milestones." },
+    { icon: "userCheck", title: "AI KYC (Claude Vision)", desc: "ID + selfie + address analyzed by AI. Face matching, tampering detection. 85%+ = auto-approved." },
+    { icon: "check", title: "AI Proof Verification", desc: "Buy-in & prize screenshots analyzed by Claude Vision. Data consistency scoring against listing info." },
     { icon: "clock", title: "Enforced Deadlines", desc: "48h registration, 3-day results, 14-day deposit. Missed = admin review." },
     { icon: "star", title: "Reliability Scoring", desc: "Player scores based on on-time settlements vs defaults. Public and transparent." },
     { icon: "shield", title: "Withdrawal Lock", desc: "Players can't withdraw during pending prize deposits. Prevents post-win escape." },
@@ -282,7 +282,7 @@ async function main() {
   s8.addText("Revenue Streams", { x: 0.7, y: 1.65, w: 4.1, h: 0.35, fontSize: 15, fontFace: FONT_H, color: C.gold, align: "center", margin: 0 });
   const streams = [
     { pct: "2%", name: "Platform Fee", desc: "On every backer transaction (0% pre-launch)" },
-    { pct: "1-3%", name: "Payment Processing", desc: "Pass-through from ECPay, LINE Pay, etc." },
+    { pct: "$0", name: "Payment Processing", desc: "Crypto-native: no processor fees. Users pay ~$1 TRC-20 network fee only." },
     { pct: "TBD", name: "Premium Listings", desc: "Featured placement, priority in marketplace" },
     { pct: "TBD", name: "Data & Analytics", desc: "Advanced player insights for backers (Pro tier)" },
   ];
@@ -337,15 +337,14 @@ async function main() {
   const tableData = [
     headers,
     [rowStyleL("Asia Focus"), rowStyle("\u2713", true), rowStyle("\u2717", false), rowStyle("\u2717", false), rowStyle("Partial", false)],
-    [rowStyleL("Local Payments (TW/HK)"), rowStyle("\u2713", true), rowStyle("\u2717", false), rowStyle("\u2717", false), rowStyle("\u2717", false)],
+    [rowStyleL("Crypto-Native (USDT/USDC)"), rowStyle("\u2713", true), rowStyle("\u2713", false), rowStyle("\u2713", false), rowStyle("\u2717", false)],
     [rowStyleL("Chinese Language"), rowStyle("\u2713", true), rowStyle("\u2717", false), rowStyle("\u2717", false), rowStyle("\u2713", false)],
     [rowStyleL("Escrow Protection"), rowStyle("\u2713", true), rowStyle("\u2713", false), rowStyle("\u2713", false), rowStyle("N/A", false)],
     [rowStyleL("Live Tournament Support"), rowStyle("\u2713", true), rowStyle("\u2713", false), rowStyle("\u2713", false), rowStyle("\u2717", false)],
-    [rowStyleL("Identity Verification"), rowStyle("\u2713", true), rowStyle("Limited", false), rowStyle("Limited", false), rowStyle("\u2713", false)],
+    [rowStyleL("AI-Powered KYC"), rowStyle("\u2713", true), rowStyle("Limited", false), rowStyle("Limited", false), rowStyle("\u2713", false)],
+    [rowStyleL("AI Proof Verification"), rowStyle("\u2713", true), rowStyle("\u2717", false), rowStyle("\u2717", false), rowStyle("\u2717", false)],
     [rowStyleL("Reliability Scoring"), rowStyle("\u2713", true), rowStyle("\u2717", false), rowStyle("\u2717", false), rowStyle("\u2717", false)],
-    [rowStyleL("Admin Verification"), rowStyle("\u2713", true), rowStyle("\u2717", false), rowStyle("\u2717", false), rowStyle("Auto", false)],
     [rowStyleL("Platform Fee"), rowStyle("2%", true), rowStyle("1-10%", false), rowStyle("Undisclosed", false), rowStyle("0%", false)],
-    [rowStyleL("Crypto Support"), rowStyle("\u2713", true), rowStyle("\u2713", false), rowStyle("\u2713", false), rowStyle("\u2717", false)],
   ];
 
   s9.addTable(tableData, {
@@ -364,11 +363,11 @@ async function main() {
   card(s10, pres, 0.7, 1.4, 4.1, 2.25);
   s10.addText("Pre-Launch Status", { x: 0.7, y: 1.48, w: 4.1, h: 0.3, fontSize: 14, fontFace: FONT_H, color: C.gold, align: "center", margin: 0 });
   const status = [
-    "\u2713  Full platform built (Next.js + Supabase)",
+    "\u2713  Full platform built (Next.js 16 + Supabase)",
     "\u2713  Complete staking lifecycle implemented",
     "\u2713  Bilingual (EN + zh-TW) with i18n",
-    "\u2713  7 payment integrations configured",
-    "\u2713  Player directory with 13+ verified players",
+    "\u2713  Crypto payments live (USDT/USDC on TRC-20)",
+    "\u2713  AI KYC & AI Proof verification deployed",
     "\u2713  0% fee pre-launch campaign live",
   ];
   for (let i = 0; i < status.length; i++) {
@@ -378,9 +377,9 @@ async function main() {
   card(s10, pres, 5.2, 1.4, 4.1, 2.25);
   s10.addText("2026 Roadmap", { x: 5.2, y: 1.48, w: 4.1, h: 0.3, fontSize: 14, fontFace: FONT_H, color: C.gold, align: "center", margin: 0 });
   const roadmap = [
-    { q: "Q1", items: "Platform launch, CTP partnership, seed users" },
-    { q: "Q2", items: "First APT event coverage, 500 users" },
-    { q: "Q3", items: "Hong Kong expansion, crypto payments live" },
+    { q: "Q1", items: "Platform + AI + crypto live, seed users" },
+    { q: "Q2", items: "CTP partnership, first APT event, 500 users" },
+    { q: "Q3", items: "HK/Macau expansion, BTC/ETH support" },
     { q: "Q4", items: "2,000+ users, premium features, Series A prep" },
   ];
   for (let i = 0; i < roadmap.length; i++) {
@@ -411,8 +410,8 @@ async function main() {
   s11.addText("Land, Expand, Dominate", { x: 0.7, y: 0.75, w: 9, h: 0.5, fontSize: 28, fontFace: FONT_H, color: C.white, margin: 0 });
 
   const phases = [
-    { phase: "PHASE 1", timeline: "Q1\u2013Q2 2026", title: "Taiwan Launch", items: ["CTP Club partnership (302K players)", "APT Taipei event sponsorship", "0% fee pre-launch acquisition", "ECPay + LINE Pay + JKoPay", "Target: 500 users, $500K GTV"] },
-    { phase: "PHASE 2", timeline: "Q3\u2013Q4 2026", title: "Hong Kong Expansion", items: ["AlipayHK, PayMe, FPS, Octopus", "Macau tournament coverage", "Cross-border staking support", "Crypto payments (BTC/ETH/USDT)", "Target: 2,000 users, $2M GTV"] },
+    { phase: "PHASE 1", timeline: "Q1\u2013Q2 2026", title: "Taiwan Launch", items: ["CTP Club partnership (302K players)", "APT Taipei event sponsorship", "0% fee pre-launch acquisition", "Crypto live (USDT/USDC on TRC-20)", "Target: 500 users, $500K GTV"] },
+    { phase: "PHASE 2", timeline: "Q3\u2013Q4 2026", title: "HK + Macau Expansion", items: ["Macau & HK tournament coverage", "Cross-border crypto staking", "BTC & ETH payment support", "AI verification at scale", "Target: 2,000 users, $2M GTV"] },
     { phase: "PHASE 3", timeline: "2027+", title: "Asia-Pacific Scale", items: ["Japan, South Korea, Philippines", "WPT & WSOP Asia events", "API for tournament organizers", "Mobile app (iOS + Android)", "Target: 10,000 users, $20M GTV"] },
   ];
 
@@ -523,8 +522,8 @@ async function main() {
     finRow("Users", "2,000", "8,000", "25,000", false),
     finRow("Listings", "200", "1,200", "4,500", false),
     finRow("Revenue", "$40K", "$360K", "$1.35M", true),
-    finRow("Costs", "$180K", "$400K", "$650K", false),
-    finRow("Net", "-$140K", "-$40K", "$700K", true),
+    finRow("Costs", "$85K", "$250K", "$500K", false),
+    finRow("Net", "-$45K", "$110K", "$850K", true),
   ], {
     x: 5.35, y: 1.82, w: 3.8, colW: [1.05, 0.88, 0.88, 0.99],
     border: { pt: 0.3, color: C.line },
@@ -532,7 +531,7 @@ async function main() {
   });
 
   s13.addText("Key Assumptions", { x: 0.7, y: 4.1, w: 9, h: 0.22, fontSize: 11, fontFace: FONT_H, color: C.white, margin: 0 });
-  s13.addText("2% platform fee (post-launch)  \u00b7  Avg listing: $10K buy-in  \u00b7  50% action sold  \u00b7  1-3% payment margin  \u00b7  Break-even by Year 2", {
+  s13.addText("2% platform fee (post-launch)  \u00b7  Avg listing: $10K buy-in  \u00b7  50% action sold  \u00b7  Zero payment processor fees  \u00b7  Break-even by Year 2", {
     x: 0.7, y: 4.32, w: 8.6, h: 0.3, fontSize: 9.5, fontFace: FONT_L, color: C.gray, margin: 0
   });
   addFooter(s13, pres, false);
@@ -544,24 +543,24 @@ async function main() {
   s14.addText("Back Players. Share Victories.", { x: 1, y: 0.6, w: 8, h: 0.55, fontSize: 28, fontFace: FONT_L, color: C.gold, align: "center", margin: 0 });
 
   s14.addText("Seed Round", { x: 1, y: 1.4, w: 8, h: 0.35, fontSize: 14, fontFace: FONT_L, color: C.gray, align: "center", margin: 0 });
-  s14.addText("$500K", { x: 1, y: 1.7, w: 8, h: 0.65, fontSize: 48, fontFace: FONT_H, color: C.white, align: "center", margin: 0 });
+  s14.addText("$300K", { x: 1, y: 1.7, w: 8, h: 0.65, fontSize: 48, fontFace: FONT_H, color: C.white, align: "center", margin: 0 });
 
   // Use of funds with progress bars
   card(s14, pres, 1.5, 2.55, 7.0, 1.65);
   s14.addText("Use of Funds", { x: 1.5, y: 2.6, w: 7.0, h: 0.28, fontSize: 13, fontFace: FONT_H, color: C.gold, align: "center", margin: 0 });
 
   const funds = [
-    { pct: 40, use: "Engineering & Product", desc: "Mobile app, API integrations, data feeds" },
-    { pct: 25, use: "Business Development", desc: "CTP partnership, sponsorships, acquisition" },
-    { pct: 20, use: "Marketing & Growth", desc: "Community, content, event presence" },
-    { pct: 15, use: "Operations & Legal", desc: "Compliance, licensing, team expansion" },
+    { pct: 35, use: "Engineering & Product", desc: "Mobile app, BTC/ETH support, API integrations" },
+    { pct: 30, use: "Business Development", desc: "CTP partnership, tournament sponsorships, player acquisition" },
+    { pct: 25, use: "Marketing & Growth", desc: "Community building, event presence, content" },
+    { pct: 10, use: "Operations & Infra", desc: "Supabase, Vercel, Anthropic API, compliance" },
   ];
   for (let i = 0; i < funds.length; i++) {
     const fy = 2.97 + i * 0.28;
     // Progress bar background
     s14.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 1.75, y: fy + 0.01, w: 0.9, h: 0.16, rectRadius: 0.03, fill: { color: C.bgCard2 } });
     // Progress bar fill
-    s14.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 1.75, y: fy + 0.01, w: 0.9 * (funds[i].pct / 40), h: 0.16, rectRadius: 0.03, fill: { color: C.gold } });
+    s14.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 1.75, y: fy + 0.01, w: 0.9 * (funds[i].pct / 35), h: 0.16, rectRadius: 0.03, fill: { color: C.gold } });
     s14.addText(funds[i].pct + "%", { x: 2.75, y: fy, w: 0.5, h: 0.22, fontSize: 10, fontFace: FONT_H, color: C.gold, margin: 0 });
     s14.addText(funds[i].use, { x: 3.3, y: fy, w: 2.0, h: 0.22, fontSize: 10, fontFace: FONT_H, color: C.white, margin: 0 });
     s14.addText(funds[i].desc, { x: 5.35, y: fy, w: 3.0, h: 0.22, fontSize: 9.5, fontFace: FONT_L, color: C.gray, margin: 0 });
@@ -579,7 +578,7 @@ async function main() {
   addFooter(s14, pres, true);
 
   // Write file
-  await pres.writeFile({ fileName: "D:\\SnapAllin-master\\SnapAllin-master\\BackerHub_Pitch_Deck_2026.pptx" });
+  await pres.writeFile({ fileName: "BackerHub_Pitch_Deck_2026.pptx" });
   console.log("Pitch deck created successfully!");
 }
 
