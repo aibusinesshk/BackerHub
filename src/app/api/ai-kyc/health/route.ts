@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 
-// Simple health check to verify the Anthropic API key and model work.
-// GET /api/ai-kyc/health
+// Models to try, in order of preference (newest to oldest).
+// This helps find which models the API key has access to.
+const MODELS_TO_TRY = [
+  'claude-sonnet-4-20250514',
+  'claude-3-5-sonnet-20241022',
+  'claude-3-5-sonnet-20240620',
+  'claude-3-sonnet-20240229',
+  'claude-3-haiku-20240307',
+];
+
+// GET /api/ai-kyc/health — test API key against multiple models
 export async function GET() {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -12,34 +21,45 @@ export async function GET() {
     }, { status: 503 });
   }
 
-  const model = process.env.AI_KYC_MODEL || 'claude-sonnet-4-20250514';
+  const override = process.env.AI_KYC_MODEL;
+  const modelsToTest = override ? [override, ...MODELS_TO_TRY] : MODELS_TO_TRY;
 
-  try {
-    const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model,
-      max_tokens: 32,
-      messages: [{ role: 'user', content: 'Reply with just the word "ok".' }],
-    });
+  const anthropic = new Anthropic({ apiKey });
+  const results: Array<{ model: string; status: string; reply?: string; error?: string }> = [];
 
-    const text = response.content
-      .filter((b): b is Anthropic.Messages.TextBlock => b.type === 'text')
-      .map((b) => b.text)
-      .join('');
+  for (const model of modelsToTest) {
+    try {
+      const response = await anthropic.messages.create({
+        model,
+        max_tokens: 32,
+        messages: [{ role: 'user', content: 'Reply with just the word "ok".' }],
+      });
 
-    return NextResponse.json({
-      status: 'ok',
-      model: response.model,
-      keyPrefix: apiKey.substring(0, 15) + '...',
-      reply: text,
-    });
-  } catch (err: any) {
-    return NextResponse.json({
-      status: 'error',
-      httpStatus: err?.status,
-      message: err?.error?.error?.message || err?.error?.message || err?.message || 'Unknown error',
-      model,
-      keyPrefix: apiKey.substring(0, 15) + '...',
-    }, { status: 502 });
+      const text = response.content
+        .filter((b): b is Anthropic.Messages.TextBlock => b.type === 'text')
+        .map((b) => b.text)
+        .join('');
+
+      results.push({ model, status: 'ok', reply: text });
+      // Found a working model — no need to test more
+      break;
+    } catch (err: any) {
+      results.push({
+        model,
+        status: 'error',
+        error: `${err?.status}: ${err?.error?.error?.message || err?.error?.message || err?.message || 'Unknown'}`,
+      });
+    }
   }
+
+  const working = results.find((r) => r.status === 'ok');
+
+  return NextResponse.json({
+    keyPrefix: apiKey.substring(0, 15) + '...',
+    workingModel: working?.model || null,
+    results,
+    hint: working
+      ? `Set AI_KYC_MODEL=${working.model} in your env vars`
+      : 'No models worked — check your API key at console.anthropic.com',
+  }, { status: working ? 200 : 502 });
 }

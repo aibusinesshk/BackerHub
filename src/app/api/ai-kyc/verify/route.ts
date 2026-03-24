@@ -10,7 +10,7 @@ const AUTO_APPROVE_THRESHOLD = 85;
 const AUTO_REJECT_THRESHOLD = 30;
 
 // Use a known-valid model ID. Override with AI_KYC_MODEL env var if needed.
-const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
+const DEFAULT_MODEL = 'claude-3-5-sonnet-20241022';
 
 const ANALYSIS_PROMPT = `You are an expert KYC (Know Your Customer) document verification analyst. Analyze the provided identity documents and return a structured JSON assessment.
 
