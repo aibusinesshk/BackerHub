@@ -139,6 +139,7 @@ export async function POST(request: Request) {
       if (authError || !caller) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: callerProfile } = await (supabase.from('profiles') as any)
         .select('is_admin')
         .eq('id', caller.id)
@@ -171,6 +172,7 @@ export async function POST(request: Request) {
     const admin = await createAdminClient();
 
     // Verify user exists and has pending KYC
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: profile } = await (admin.from('profiles') as any)
       .select('id, kyc_status, display_name')
       .eq('id', userId)
@@ -185,6 +187,7 @@ export async function POST(request: Request) {
     }
 
     // Create a pending verification record
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: verification, error: insertError } = await (admin.from('ai_kyc_verifications') as any)
       .insert({
         user_id: userId,
@@ -212,6 +215,7 @@ export async function POST(request: Request) {
     }
 
     if (documents.length === 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (admin.from('ai_kyc_verifications') as any)
         .update({
           status: 'failed',
@@ -266,6 +270,7 @@ export async function POST(request: Request) {
       .map((block) => block.text)
       .join('');
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let analysis: any;
     try {
       try {
@@ -284,6 +289,7 @@ export async function POST(request: Request) {
         action: 'parse',
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (admin.from('ai_kyc_verifications') as any)
         .update({
           status: 'failed',
@@ -321,6 +327,7 @@ export async function POST(request: Request) {
     const processingTime = Date.now() - startTime;
 
     // Update verification record with results
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (admin.from('ai_kyc_verifications') as any)
       .update({
         overall_score: overallScore,
@@ -346,6 +353,7 @@ export async function POST(request: Request) {
       .eq('id', verification.id);
 
     // Link verification to profile
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (admin.from('profiles') as any)
       .update({ ai_kyc_verification_id: verification.id })
       .eq('id', userId);
@@ -366,15 +374,16 @@ export async function POST(request: Request) {
       flags,
       processing_time_ms: processingTime,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     logger.apiError('/api/ai-kyc/verify', 'POST', err);
 
     // Anthropic SDK errors — provide actionable info
-    if (err?.status) {
-      const errMsg = err?.error?.error?.message || err?.error?.message || err?.message || 'Unknown API error';
+    const apiErr = err as { status?: number; error?: { error?: { message?: string }; message?: string }; message?: string };
+    if (apiErr?.status) {
+      const errMsg = apiErr?.error?.error?.message || apiErr?.error?.message || apiErr?.message || 'Unknown API error';
       const model = process.env.AI_KYC_MODEL || DEFAULT_MODEL;
       return NextResponse.json({
-        error: `AI service error (${err.status}): ${errMsg}. Model: ${model}`,
+        error: `AI service error (${apiErr.status}): ${errMsg}. Model: ${model}`,
       }, { status: 502 });
     }
 

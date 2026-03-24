@@ -43,11 +43,12 @@ export async function GET() {
       results.push({ model, status: 'ok', reply: text });
       // Found a working model — no need to test more
       break;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const e = err as { status?: number; error?: { error?: { message?: string }; message?: string }; message?: string };
       results.push({
         model,
         status: 'error',
-        error: `${err?.status}: ${err?.error?.error?.message || err?.error?.message || err?.message || 'Unknown'}`,
+        error: `${e?.status}: ${e?.error?.error?.message || e?.error?.message || e?.message || 'Unknown'}`,
       });
     }
   }

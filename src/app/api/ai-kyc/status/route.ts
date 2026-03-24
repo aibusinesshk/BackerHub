@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     const targetUserId = request.nextUrl.searchParams.get('userId') || user.id;
 
     if (targetUserId !== user.id) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: profile } = await (supabase.from('profiles') as any)
         .select('is_admin')
         .eq('id', user.id)
@@ -26,6 +27,7 @@ export async function GET(request: NextRequest) {
     const admin = await createAdminClient();
 
     // Get the latest AI verification for this user
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: verification } = await (admin.from('ai_kyc_verifications') as any)
       .select('*')
       .eq('user_id', targetUserId)
