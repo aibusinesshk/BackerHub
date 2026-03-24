@@ -360,6 +360,7 @@ export async function POST(request: Request) {
 
     // Auto-approve KYC if AI confidence >= 85%
     let autoApproved = false;
+    let autoRejected = false;
     if (recommendation === 'auto_approve') {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (admin.from('profiles') as any)
@@ -376,12 +377,28 @@ export async function POST(request: Request) {
         userId,
         score: overallScore,
       });
+    } else if (recommendation === 'auto_reject') {
+      const rejectionReason = analysis.summary || 'AI verification confidence too low. Documents may be unclear, incomplete, or inconsistent.';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (admin.from('profiles') as any)
+        .update({
+          kyc_status: 'rejected',
+          kyc_rejection_reason: rejectionReason,
+        })
+        .eq('id', userId);
+
+      autoRejected = true;
+      logger.info('AI KYC auto-rejected', {
+        route: '/api/ai-kyc/verify',
+        userId,
+        score: overallScore,
+      });
     }
 
     logger.info('AI KYC verification completed', {
       route: '/api/ai-kyc/verify',
       userId,
-      action: autoApproved ? 'auto_approved' : 'complete',
+      action: autoApproved ? 'auto_approved' : autoRejected ? 'auto_rejected' : 'complete',
     });
 
     return NextResponse.json({
@@ -390,6 +407,7 @@ export async function POST(request: Request) {
       overall_score: overallScore,
       recommendation,
       auto_approved: autoApproved,
+      auto_rejected: autoRejected,
       summary: analysis.summary,
       face_match_score: analysis.face_match_score,
       flags,
