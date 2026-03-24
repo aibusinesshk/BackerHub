@@ -3,7 +3,7 @@
   "functions": {
     "src/app/api/ai-kyc/**/*.ts": {
       "maxDuration": 60,
-      "regions": ["sin1"]
+      "regions": ["tpe1"]
     }
   },
   "crons": [
