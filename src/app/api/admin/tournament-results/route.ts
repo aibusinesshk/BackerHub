@@ -121,11 +121,20 @@ export async function GET() {
   return NextResponse.json({ pending, history });
 }
 
-// PUT — Admin approves or rejects a tournament result
+// PUT — Admin (or AI auto-approve via service key) approves or rejects a tournament result
 export async function PUT(request: Request) {
-  const supabase = await createClient();
-  const user = await checkAdmin(supabase);
-  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  // Allow internal service calls (from AI auto-approve)
+  const serviceKey = request.headers.get('x-service-key');
+  const isInternalCall = serviceKey === process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  let user;
+  if (isInternalCall) {
+    user = { id: 'ai-auto-approve' };
+  } else {
+    const supabase = await createClient();
+    user = await checkAdmin(supabase);
+    if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
 
   const body = await request.json();
   const { resultId, action, rejectionReason } = body;

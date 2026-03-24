@@ -235,10 +235,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to parse AI analysis' }, { status: 500 });
     }
 
-    // Score and recommendation
+    // Score and recommendation (score is the single source of truth)
     const overallScore = Math.min(100, Math.max(0, analysis.overall_score || 0));
-    let recommendation = analysis.recommendation || 'manual_review';
-    if (overallScore >= AUTO_APPROVE_THRESHOLD && recommendation === 'auto_approve') {
+    let recommendation: string;
+    if (overallScore >= AUTO_APPROVE_THRESHOLD) {
       recommendation = 'auto_approve';
     } else if (overallScore < AUTO_REJECT_THRESHOLD) {
       recommendation = 'auto_reject';
@@ -300,16 +300,91 @@ export async function POST(request: Request) {
       .eq('id', verification.id);
 
     // Link verification to the record
+    let autoApproved = false;
+
     if (proofType === 'buyin') {
       await admin
         .from('listings')
         .update({ ai_registration_proof_id: verification.id })
         .eq('id', listingId);
+
+      // Auto-confirm registration if AI score >= 85%
+      if (recommendation === 'auto_approve') {
+        // Fetch tournament date for deadline calculation
+        const { data: fullListing } = await admin
+          .from('listings')
+          .select('*, tournaments(date)')
+          .eq('id', listingId)
+          .single();
+
+        if (fullListing && fullListing.status === 'buy_in_released') {
+          const tournamentDate = new Date(fullListing.tournaments?.date || fullListing.tournament_date);
+          const deadlineResult = new Date(tournamentDate);
+          deadlineResult.setDate(deadlineResult.getDate() + 3);
+
+          await admin
+            .from('listings')
+            .update({
+              status: 'registered',
+              registration_confirmed_at: new Date().toISOString(),
+              deadline_result: deadlineResult.toISOString(),
+            })
+            .eq('id', listingId);
+
+          autoApproved = true;
+          logger.info('AI auto-confirmed registration', {
+            route: '/api/ai-proof/verify',
+            listingId,
+            score: overallScore,
+          });
+        }
+      }
     } else {
       await admin
         .from('tournament_results')
         .update({ ai_proof_verification_id: verification.id })
         .eq('listing_id', listingId);
+
+      // Auto-approve tournament result if AI score >= 85%
+      // Only for loss/cancelled (no financial settlement risk) or when data consistency is also high
+      if (recommendation === 'auto_approve') {
+        const { data: result } = await admin
+          .from('tournament_results')
+          .select('*')
+          .eq('listing_id', listingId)
+          .eq('status', 'pending_review')
+          .maybeSingle();
+
+        if (result) {
+          const canAutoApprove =
+            result.tournament_result === 'loss' ||
+            result.tournament_result === 'cancelled' ||
+            (result.tournament_result === 'win' && dataConsistencyScore !== null && dataConsistencyScore >= 80);
+
+          if (canAutoApprove) {
+            // Call the admin approval logic via internal request
+            const internalRes = await fetch(new URL('/api/admin/tournament-results', request.url).toString(), {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-service-key': process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+              },
+              body: JSON.stringify({ resultId: result.id, action: 'approve' }),
+            });
+
+            if (internalRes.ok) {
+              autoApproved = true;
+              logger.info('AI auto-approved tournament result', {
+                route: '/api/ai-proof/verify',
+                listingId,
+                resultType: result.tournament_result,
+                score: overallScore,
+                dataConsistency: dataConsistencyScore,
+              });
+            }
+          }
+        }
+      }
     }
 
     return NextResponse.json({
@@ -317,6 +392,7 @@ export async function POST(request: Request) {
       verification_id: verification.id,
       overall_score: overallScore,
       recommendation,
+      auto_approved: autoApproved,
       summary: analysis.summary,
       data_consistency_score: dataConsistencyScore,
       flags: analysis.flags || [],
