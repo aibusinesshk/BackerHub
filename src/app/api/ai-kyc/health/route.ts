@@ -4,10 +4,10 @@ import Anthropic from '@anthropic-ai/sdk';
 // Models to try, in order of preference (newest to oldest).
 // This helps find which models the API key has access to.
 const MODELS_TO_TRY = [
+  'claude-opus-4-6',
+  'claude-sonnet-4-6',
   'claude-sonnet-4-20250514',
   'claude-3-5-sonnet-20241022',
-  'claude-3-5-sonnet-20240620',
-  'claude-3-sonnet-20240229',
   'claude-3-haiku-20240307',
 ];
 
