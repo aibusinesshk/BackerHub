@@ -188,6 +188,32 @@ export interface PackageEntry {
   createdAt: string;
 }
 
+export interface AIProofVerification {
+  id: string;
+  listingId: string;
+  userId: string;
+  proofType: 'buyin' | 'prize';
+  overallScore: number;
+  recommendation: 'auto_approve' | 'manual_review' | 'auto_reject';
+  summary: string | null;
+  extractedTournamentName: string | null;
+  extractedBuyIn: number | null;
+  extractedPrizeAmount: number | null;
+  extractedFinishPosition: number | null;
+  extractedTotalEntries: number | null;
+  extractedDate: string | null;
+  extractedPlayerName: string | null;
+  dataConsistencyScore: number | null;
+  imageAnalysis: { quality: number; authenticity: number };
+  flags: Array<{ code: string; severity: string; message: string }>;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  errorMessage: string | null;
+  modelUsed: string | null;
+  processingTimeMs: number | null;
+  createdAt: string;
+  completedAt: string | null;
+}
+
 export interface PlatformStats {
   totalBacked: number;
   tournamentsStaked: number;
