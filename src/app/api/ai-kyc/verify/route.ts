@@ -9,6 +9,9 @@ const DOC_NAMES = ['id-front', 'id-back', 'selfie', 'proof-of-address'] as const
 const AUTO_APPROVE_THRESHOLD = 85;
 const AUTO_REJECT_THRESHOLD = 30;
 
+// Use a known-valid model ID. Override with AI_KYC_MODEL env var if needed.
+const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
+
 const ANALYSIS_PROMPT = `You are an expert KYC (Know Your Customer) document verification analyst. Analyze the provided identity documents and return a structured JSON assessment.
 
 You will receive up to 4 documents:
@@ -102,7 +105,6 @@ async function fetchDocumentAsBase64(
   if (data) {
     const buffer = Buffer.from(await data.arrayBuffer());
     const base64 = buffer.toString('base64');
-    // Detect actual media type from magic bytes instead of assuming webp
     const mediaType: MediaType = detectImageType(buffer);
     return { base64, mediaType };
   }
@@ -110,20 +112,16 @@ async function fetchDocumentAsBase64(
   const pdfPath = `${userId}/${docName}.pdf`;
   const { data: pdfData } = await admin.storage.from(KYC_BUCKET).download(pdfPath);
   if (pdfData) {
-    // PDF exists but can't be analyzed as an image
     return null;
   }
   return null;
 }
 
 function detectImageType(buffer: Buffer): MediaType {
-  // Check magic bytes for common image formats
   if (buffer[0] === 0xFF && buffer[1] === 0xD8) return 'image/jpeg';
   if (buffer[0] === 0x89 && buffer[1] === 0x50) return 'image/png';
   if (buffer[0] === 0x47 && buffer[1] === 0x49) return 'image/gif';
-  // RIFF....WEBP
   if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[8] === 0x57 && buffer[9] === 0x45) return 'image/webp';
-  // Default to webp since that's the stored extension
   return 'image/webp';
 }
 
@@ -163,7 +161,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'AI verification service not configured' }, { status: 503 });
     }
 
-    const aiModel = process.env.AI_KYC_MODEL || 'claude-sonnet-4-20250514';
+    const aiModel = process.env.AI_KYC_MODEL || DEFAULT_MODEL;
     logger.info('AI KYC verification starting', {
       route: '/api/ai-kyc/verify',
       model: aiModel,
@@ -228,13 +226,11 @@ export async function POST(request: Request) {
     // Build the Claude API message with document images
     const contentBlocks: Anthropic.Messages.ContentBlockParam[] = [];
 
-    // Add text introduction
     contentBlocks.push({
       type: 'text',
       text: `Analyze these KYC documents for user "${profile.display_name}". ${missingDocs.length > 0 ? `Note: The following documents are missing or in unsupported format (PDF): ${missingDocs.join(', ')}.` : 'All 4 documents are provided.'}`,
     });
 
-    // Add each document image
     for (const doc of documents) {
       contentBlocks.push({
         type: 'text',
@@ -272,7 +268,6 @@ export async function POST(request: Request) {
 
     let analysis: any;
     try {
-      // Try parsing directly, then try extracting from code fences
       try {
         analysis = JSON.parse(responseText);
       } catch {
@@ -373,17 +368,16 @@ export async function POST(request: Request) {
     });
   } catch (err: any) {
     logger.apiError('/api/ai-kyc/verify', 'POST', err);
-    // Anthropic SDK errors have status and error properties
+
+    // Anthropic SDK errors — provide actionable info
     if (err?.status) {
-      const detail = JSON.stringify(err?.error || err?.message || err?.body || 'no detail');
-      const keyHint = process.env.ANTHROPIC_API_KEY
-        ? `key=${process.env.ANTHROPIC_API_KEY.substring(0, 15)}...`
-        : 'key=MISSING';
-      const modelHint = process.env.AI_KYC_MODEL || 'claude-opus-4-6 (default)';
+      const errMsg = err?.error?.error?.message || err?.error?.message || err?.message || 'Unknown API error';
+      const model = process.env.AI_KYC_MODEL || DEFAULT_MODEL;
       return NextResponse.json({
-        error: `Anthropic ${err.status}: ${detail} [${keyHint}, model=${modelHint}]`,
+        error: `AI service error (${err.status}): ${errMsg}. Model: ${model}`,
       }, { status: 502 });
     }
+
     const message = err instanceof Error ? err.message : 'Internal server error';
     return NextResponse.json({ error: message }, { status: 500 });
   }
