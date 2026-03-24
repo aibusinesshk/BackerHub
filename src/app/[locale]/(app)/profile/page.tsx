@@ -219,6 +219,21 @@ export default function ProfilePage() {
         .then((data) => {
           setAiVerification(data.verification);
           setAiLoading(false);
+
+          if (data.verification?.status === 'completed') {
+            // If AI auto-approved, update KYC status to approved
+            if (data.verification.recommendation === 'auto_approve') {
+              setKycStatus('approved');
+            }
+            // If AI auto-rejected, update KYC status to rejected
+            if (data.verification.recommendation === 'auto_reject') {
+              setKycStatus('rejected');
+              setKycRejectionReason(
+                data.verification.summary || t('kycAiRejectedReason')
+              );
+            }
+          }
+
           // If still processing, poll again in 5 seconds
           if (data.verification?.status === 'processing' || data.verification?.status === 'pending') {
             setTimeout(fetchAiStatus, 5000);
@@ -227,7 +242,7 @@ export default function ProfilePage() {
         .catch(() => setAiLoading(false));
     };
     fetchAiStatus();
-  }, [kycStatus]);
+  }, [kycStatus, t]);
 
   const regionOptions = [
     { value: 'TW', label: t('regionTW'), flag: '\u{1F1F9}\u{1F1FC}' },
@@ -507,7 +522,13 @@ export default function ProfilePage() {
                               </div>
                             </div>
                           </div>
-                          <p className="text-[10px] text-white/40">{t('kycAiPendingHuman')}</p>
+                          <p className="text-[10px] text-white/40">
+                            {aiVerification.recommendation === 'auto_approve'
+                              ? t('kycAiAutoApproved')
+                              : aiVerification.recommendation === 'auto_reject'
+                                ? t('kycAiAutoRejected')
+                                : t('kycAiPendingHuman')}
+                          </p>
                         </div>
                       )}
                       {aiVerification && (aiVerification.status === 'processing' || aiVerification.status === 'pending') && (
