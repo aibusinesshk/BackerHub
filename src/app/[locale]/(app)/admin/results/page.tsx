@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatCurrency, formatDate } from '@/lib/format';
 import {
   Trophy, Loader2, CheckCircle, XCircle, ExternalLink, AlertTriangle,
-  Unlock, ClipboardCheck, DollarSign, Clock, ShieldCheck, ArrowRight,
+  Unlock, ClipboardCheck, DollarSign, Clock, ShieldCheck, ArrowRight, Brain, ImageIcon, RefreshCw,
 } from 'lucide-react';
 
 export default function AdminResultsPage() {
@@ -32,6 +32,9 @@ export default function AdminResultsPage() {
   const [confirmDepositId, setConfirmDepositId] = useState<string | null>(null);
   const [confirmReleaseId, setConfirmReleaseId] = useState<string | null>(null);
   const [forbidden, setForbidden] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [aiProofData, setAiProofData] = useState<Record<string, any>>({});
+  const [aiRunningFor, setAiRunningFor] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAll();
@@ -66,6 +69,34 @@ export default function AdminResultsPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function fetchAiProof(listingId: string) {
+    try {
+      const res = await fetch(`/api/ai-proof/status?listingId=${listingId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.verification) {
+          setAiProofData(prev => ({ ...prev, [listingId]: data.verification }));
+        }
+      }
+    } catch { /* ignore */ }
+  }
+
+  async function handleRerunAi(listingId: string, proofType: 'buyin' | 'prize') {
+    setAiRunningFor(listingId);
+    try {
+      const res = await fetch('/api/ai-proof/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId, proofType }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAiProofData(prev => ({ ...prev, [listingId]: data }));
+      }
+    } catch { /* ignore */ }
+    finally { setAiRunningFor(null); }
   }
 
   async function handleAction(resultId: string, action: 'approve' | 'reject') {
@@ -457,11 +488,115 @@ export default function AdminResultsPage() {
                             </div>
                           )}
 
-                          {result.proofUrl && (
-                            <a href={result.proofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-gold-400 hover:text-gold-300">
-                              <ExternalLink className="h-3 w-3" /> {t('viewProof')}
-                            </a>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            {result.proofUrl && (
+                              <a href={result.proofUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-gold-400 hover:text-gold-300">
+                                <ExternalLink className="h-3 w-3" /> {t('viewProof')}
+                              </a>
+                            )}
+                            {result.proofImagePaths?.length > 0 && (
+                              <span className="inline-flex items-center gap-1 text-xs text-purple-400">
+                                <ImageIcon className="h-3 w-3" /> {result.proofImagePaths.length} image(s) uploaded
+                              </span>
+                            )}
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-purple-400 hover:text-purple-300 text-[10px] h-6 px-2"
+                              onClick={() => {
+                                if (aiProofData[result.listingId]) {
+                                  setAiProofData(prev => { const n = { ...prev }; delete n[result.listingId]; return n; });
+                                } else {
+                                  fetchAiProof(result.listingId);
+                                }
+                              }}
+                            >
+                              <Brain className="mr-1 h-3 w-3" /> AI Analysis
+                            </Button>
+                            {(result.proofImagePaths?.length > 0) && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-purple-400 hover:text-purple-300 text-[10px] h-6 px-2"
+                                onClick={() => handleRerunAi(result.listingId, 'prize')}
+                                disabled={aiRunningFor === result.listingId}
+                              >
+                                {aiRunningFor === result.listingId ? (
+                                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                ) : (
+                                  <RefreshCw className="mr-1 h-3 w-3" />
+                                )}
+                                Rerun AI
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* AI Proof Analysis Panel */}
+                          {aiProofData[result.listingId] && (
+                            <div className={`rounded-lg border p-3 space-y-2 ${
+                              (aiProofData[result.listingId].overall_score || aiProofData[result.listingId].overall_score) >= 85
+                                ? 'border-green-500/20 bg-green-500/5'
+                                : (aiProofData[result.listingId].overall_score || aiProofData[result.listingId].overall_score) >= 50
+                                ? 'border-yellow-500/20 bg-yellow-500/5'
+                                : 'border-red-500/20 bg-red-500/5'
+                            }`}>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Brain className="h-4 w-4 text-purple-400" />
+                                  <span className="text-xs font-medium text-white">AI Proof Verification</span>
+                                </div>
+                                <Badge variant="outline" className={`text-[10px] ${
+                                  (aiProofData[result.listingId].overall_score) >= 85 ? 'border-green-500/30 text-green-400' :
+                                  (aiProofData[result.listingId].overall_score) >= 50 ? 'border-yellow-500/30 text-yellow-400' :
+                                  'border-red-500/30 text-red-400'
+                                }`}>
+                                  {aiProofData[result.listingId].overall_score}/100
+                                </Badge>
+                              </div>
+                              {aiProofData[result.listingId].summary && (
+                                <p className="text-[11px] text-white/50">{aiProofData[result.listingId].summary}</p>
+                              )}
+                              {aiProofData[result.listingId].extracted_tournament_name && (
+                                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                                  {aiProofData[result.listingId].extracted_tournament_name && (
+                                    <div><span className="text-white/30">Tournament:</span> <span className="text-white/60">{aiProofData[result.listingId].extracted_tournament_name}</span></div>
+                                  )}
+                                  {aiProofData[result.listingId].extracted_prize_amount != null && (
+                                    <div><span className="text-white/30">Prize:</span> <span className="text-white/60">{formatCurrency(aiProofData[result.listingId].extracted_prize_amount)}</span></div>
+                                  )}
+                                  {aiProofData[result.listingId].extracted_finish_position != null && (
+                                    <div><span className="text-white/30">Position:</span> <span className="text-white/60">#{aiProofData[result.listingId].extracted_finish_position}</span></div>
+                                  )}
+                                  {aiProofData[result.listingId].extracted_total_entries != null && (
+                                    <div><span className="text-white/30">Entries:</span> <span className="text-white/60">{aiProofData[result.listingId].extracted_total_entries}</span></div>
+                                  )}
+                                  {aiProofData[result.listingId].data_consistency_score != null && (
+                                    <div><span className="text-white/30">Data Match:</span> <span className={`${
+                                      aiProofData[result.listingId].data_consistency_score >= 80 ? 'text-green-400' :
+                                      aiProofData[result.listingId].data_consistency_score >= 50 ? 'text-yellow-400' : 'text-red-400'
+                                    }`}>{aiProofData[result.listingId].data_consistency_score}%</span></div>
+                                  )}
+                                </div>
+                              )}
+                              {aiProofData[result.listingId].flags?.length > 0 && (
+                                <div className="space-y-1">
+                                  {aiProofData[result.listingId].flags.map((flag: { severity: string; message: string }, i: number) => (
+                                    <div key={i} className={`flex items-center gap-1.5 text-[10px] ${
+                                      flag.severity === 'critical' || flag.severity === 'high' ? 'text-red-400' :
+                                      flag.severity === 'medium' ? 'text-yellow-400' : 'text-white/40'
+                                    }`}>
+                                      <AlertTriangle className="h-2.5 w-2.5 shrink-0" />
+                                      {flag.message}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              <div className="flex items-center gap-1 text-[10px] text-purple-400/50">
+                                <span>Recommendation: <strong>{aiProofData[result.listingId].recommendation}</strong></span>
+                              </div>
+                            </div>
                           )}
+
                           {result.notes && (
                             <p className="text-xs text-white/30 italic">&ldquo;{result.notes}&rdquo;</p>
                           )}

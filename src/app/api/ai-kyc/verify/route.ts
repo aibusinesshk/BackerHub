@@ -303,10 +303,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to parse AI analysis' }, { status: 500 });
     }
 
-    // Determine recommendation based on score
+    // Determine recommendation based on score (score is the single source of truth)
     const overallScore = Math.min(100, Math.max(0, analysis.overall_score || 0));
-    let recommendation = analysis.recommendation || 'manual_review';
-    if (overallScore >= AUTO_APPROVE_THRESHOLD && recommendation === 'auto_approve') {
+    let recommendation: string;
+    if (overallScore >= AUTO_APPROVE_THRESHOLD) {
       recommendation = 'auto_approve';
     } else if (overallScore < AUTO_REJECT_THRESHOLD) {
       recommendation = 'auto_reject';
@@ -358,10 +358,30 @@ export async function POST(request: Request) {
       .update({ ai_kyc_verification_id: verification.id })
       .eq('id', userId);
 
+    // Auto-approve KYC if AI confidence >= 85%
+    let autoApproved = false;
+    if (recommendation === 'auto_approve') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (admin.from('profiles') as any)
+        .update({
+          kyc_status: 'approved',
+          kyc_approved_at: new Date().toISOString(),
+          kyc_reviewed_by: null, // AI auto-approved
+        })
+        .eq('id', userId);
+
+      autoApproved = true;
+      logger.info('AI KYC auto-approved', {
+        route: '/api/ai-kyc/verify',
+        userId,
+        score: overallScore,
+      });
+    }
+
     logger.info('AI KYC verification completed', {
       route: '/api/ai-kyc/verify',
       userId,
-      action: 'complete',
+      action: autoApproved ? 'auto_approved' : 'complete',
     });
 
     return NextResponse.json({
@@ -369,6 +389,7 @@ export async function POST(request: Request) {
       verification_id: verification.id,
       overall_score: overallScore,
       recommendation,
+      auto_approved: autoApproved,
       summary: analysis.summary,
       face_match_score: analysis.face_match_score,
       flags,

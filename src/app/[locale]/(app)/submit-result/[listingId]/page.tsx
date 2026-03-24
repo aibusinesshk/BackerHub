@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Trophy, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
+import { Trophy, AlertTriangle, CheckCircle, Loader2, Upload, X, ImageIcon, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +39,17 @@ export default function SubmitResultPage() {
   const [proofUrl, setProofUrl] = useState('');
   const [notes, setNotes] = useState('');
 
+  const [proofFiles, setProofFiles] = useState<File[]>([]);
+  const [uploadingProof, setUploadingProof] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<{
+    overall_score: number;
+    recommendation: string;
+    summary: string;
+    extracted_data: Record<string, unknown>;
+    flags: Array<{ code: string; severity: string; message: string }>;
+  } | null>(null);
+  const [aiAnalyzing, setAiAnalyzing] = useState(false);
+
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -73,6 +84,72 @@ export default function SubmitResultPage() {
     return () => controller.abort();
   }, [listingId, tc]);
 
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files || []);
+    const valid = files.filter(f => f.size <= 5 * 1024 * 1024 && f.type.startsWith('image/'));
+    setProofFiles(prev => [...prev, ...valid].slice(0, 3));
+    e.target.value = '';
+  }
+
+  function removeFile(index: number) {
+    setProofFiles(prev => prev.filter((_, i) => i !== index));
+    setAiAnalysis(null);
+  }
+
+  async function handleUploadAndAnalyze() {
+    if (proofFiles.length === 0) return;
+    setUploadingProof(true);
+    setAiAnalyzing(false);
+    setSubmitError(null);
+
+    try {
+      // Upload files
+      const formData = new FormData();
+      formData.append('listingId', listingId);
+      formData.append('proofType', 'prize');
+      proofFiles.forEach(f => formData.append('files', f));
+
+      const uploadRes = await fetch('/api/proof/upload', { method: 'POST', body: formData });
+      if (!uploadRes.ok) {
+        const data = await uploadRes.json().catch(() => ({}));
+        throw new Error(data.error || 'Upload failed');
+      }
+
+      setUploadingProof(false);
+      setAiAnalyzing(true);
+
+      // Trigger AI analysis
+      const aiRes = await fetch('/api/ai-proof/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId, proofType: 'prize' }),
+      });
+
+      if (aiRes.ok) {
+        const aiData = await aiRes.json();
+        setAiAnalysis(aiData);
+
+        // Auto-fill extracted data if available
+        if (aiData.extracted_data) {
+          if (aiData.extracted_data.prize_amount && !prizeAmount) {
+            setPrizeAmount(String(aiData.extracted_data.prize_amount));
+          }
+          if (aiData.extracted_data.finish_position && !finishPosition) {
+            setFinishPosition(String(aiData.extracted_data.finish_position));
+          }
+          if (aiData.extracted_data.total_entries && !totalEntries) {
+            setTotalEntries(String(aiData.extracted_data.total_entries));
+          }
+        }
+      }
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setUploadingProof(false);
+      setAiAnalyzing(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!tournamentResult) return;
@@ -81,6 +158,15 @@ export default function SubmitResultPage() {
     setSubmitError(null);
 
     try {
+      // Upload proof files if not already uploaded
+      if (proofFiles.length > 0 && !aiAnalysis) {
+        const formData = new FormData();
+        formData.append('listingId', listingId);
+        formData.append('proofType', 'prize');
+        proofFiles.forEach(f => formData.append('files', f));
+        await fetch('/api/proof/upload', { method: 'POST', body: formData });
+      }
+
       const body: Record<string, unknown> = {
         listingId,
         tournamentResult,
@@ -106,6 +192,15 @@ export default function SubmitResultPage() {
           throw new Error(t('alreadySubmitted'));
         }
         throw new Error(data.error || tc('failedToSubmitResult'));
+      }
+
+      // Trigger AI analysis in background if files were uploaded but not yet analyzed
+      if (proofFiles.length > 0 && !aiAnalysis) {
+        fetch('/api/ai-proof/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ listingId, proofType: 'prize' }),
+        }).catch(() => {});
       }
 
       setSubmitted(true);
@@ -283,18 +378,127 @@ export default function SubmitResultPage() {
                 </div>
               )}
 
-              {/* Proof URL */}
-              <div className="space-y-1.5">
+              {/* Proof Upload */}
+              <div className="space-y-3">
                 <label className="block text-sm font-medium text-white/70">
-                  {t('proofUrl')}
+                  <ImageIcon className="inline h-4 w-4 mr-1 -mt-0.5" />
+                  {t('proofScreenshot')}
                 </label>
-                <input
-                  type="url"
-                  value={proofUrl}
-                  onChange={(e) => setProofUrl(e.target.value)}
-                  placeholder={t('proofUrlPlaceholder')}
-                  className={inputClassName}
-                />
+
+                {/* File drop zone */}
+                <label className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-white/10 bg-white/[0.02] px-4 py-6 cursor-pointer hover:border-gold-500/30 hover:bg-gold-500/[0.02] transition-colors">
+                  <Upload className="h-6 w-6 text-white/30 mb-2" />
+                  <span className="text-xs text-white/40">{t('dropOrClick')}</span>
+                  <span className="text-[10px] text-white/20 mt-1">{t('maxFiles')}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileSelect}
+                    className="sr-only"
+                    disabled={proofFiles.length >= 3}
+                  />
+                </label>
+
+                {/* File previews */}
+                {proofFiles.length > 0 && (
+                  <div className="flex gap-2 flex-wrap">
+                    {proofFiles.map((file, i) => (
+                      <div key={i} className="relative group rounded-lg overflow-hidden border border-white/10 w-20 h-20">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={file.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeFile(i)}
+                          className="absolute top-0.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/70 text-white/80 hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* AI Analyze button */}
+                {proofFiles.length > 0 && !aiAnalysis && (
+                  <Button
+                    type="button"
+                    onClick={handleUploadAndAnalyze}
+                    disabled={uploadingProof || aiAnalyzing}
+                    variant="outline"
+                    className="w-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-xs"
+                  >
+                    {uploadingProof ? (
+                      <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" /> {t('uploading')}</>
+                    ) : aiAnalyzing ? (
+                      <><Brain className="mr-1.5 h-3 w-3 animate-pulse" /> {t('aiAnalyzing')}</>
+                    ) : (
+                      <><Brain className="mr-1.5 h-3 w-3" /> {t('analyzeWithAi')}</>
+                    )}
+                  </Button>
+                )}
+
+                {/* AI Analysis Result */}
+                {aiAnalysis && (
+                  <div className={`rounded-lg border p-3 space-y-2 ${
+                    aiAnalysis.overall_score >= 85 ? 'border-green-500/20 bg-green-500/5' :
+                    aiAnalysis.overall_score >= 50 ? 'border-yellow-500/20 bg-yellow-500/5' :
+                    'border-red-500/20 bg-red-500/5'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Brain className={`h-4 w-4 ${
+                          aiAnalysis.overall_score >= 85 ? 'text-green-400' :
+                          aiAnalysis.overall_score >= 50 ? 'text-yellow-400' : 'text-red-400'
+                        }`} />
+                        <span className="text-xs font-medium text-white">{t('aiVerification')}</span>
+                      </div>
+                      <Badge variant="outline" className={`text-[10px] ${
+                        aiAnalysis.overall_score >= 85 ? 'border-green-500/30 text-green-400' :
+                        aiAnalysis.overall_score >= 50 ? 'border-yellow-500/30 text-yellow-400' :
+                        'border-red-500/30 text-red-400'
+                      }`}>
+                        {aiAnalysis.overall_score}/100
+                      </Badge>
+                    </div>
+                    {aiAnalysis.summary && (
+                      <p className="text-[11px] text-white/50">{aiAnalysis.summary}</p>
+                    )}
+                    {aiAnalysis.flags.length > 0 && (
+                      <div className="space-y-1">
+                        {aiAnalysis.flags.map((flag, i) => (
+                          <div key={i} className={`flex items-center gap-1.5 text-[10px] ${
+                            flag.severity === 'critical' || flag.severity === 'high' ? 'text-red-400' :
+                            flag.severity === 'medium' ? 'text-yellow-400' : 'text-white/40'
+                          }`}>
+                            <AlertTriangle className="h-2.5 w-2.5 shrink-0" />
+                            {flag.message}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {aiAnalysis.extracted_data && (
+                      <p className="text-[10px] text-purple-300/60">{t('aiAutoFilled')}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Fallback URL input */}
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] text-white/40">
+                    {t('orPasteUrl')}
+                  </label>
+                  <input
+                    type="url"
+                    value={proofUrl}
+                    onChange={(e) => setProofUrl(e.target.value)}
+                    placeholder={t('proofUrlPlaceholder')}
+                    className={inputClassName}
+                  />
+                </div>
               </div>
 
               {/* Notes */}

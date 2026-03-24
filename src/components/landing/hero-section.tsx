@@ -1,37 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useAuth } from '@/providers/auth-provider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, TrendingUp, Users, Trophy, Sparkles } from 'lucide-react';
-import { formatNumber, formatCurrency } from '@/lib/format';
-import type { PlatformStats } from '@/types';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 export function HeroSection() {
   const t = useTranslations('hero');
   const { user } = useAuth();
-  const [platformStats, setPlatformStats] = useState<PlatformStats>({
-    totalBacked: 0, tournamentsStaked: 0, activePlayers: 0, avgROI: 0, prizeDistributions: 0, countriesServed: 0,
-  });
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch('/api/stats', { signal: controller.signal })
-      .then((r) => r.json())
-      .then((data) => setPlatformStats(data))
-      .catch(() => {});
-    return () => controller.abort();
-  }, []);
-
-  const stats = [
-    { label: t('statInvested'), value: formatCurrency(platformStats.totalBacked), icon: TrendingUp },
-    { label: t('statPlayers'), value: `${platformStats.activePlayers}+`, icon: Users },
-    { label: t('statTournaments'), value: formatNumber(platformStats.tournamentsStaked), icon: Trophy },
-  ];
 
   return (
     <section className="relative flex min-h-[calc(100dvh-4rem)] items-center justify-center overflow-hidden pb-24 md:pb-0">
@@ -126,19 +105,6 @@ export function HeroSection() {
             </Button>
           </div>
 
-          <div className="mt-8 sm:mt-16 flex overflow-x-auto scrollbar-hide snap-x snap-mandatory gap-3 px-2 -mx-2 sm:flex-wrap sm:justify-center sm:gap-6 md:gap-8 sm:overflow-visible sm:px-0 sm:mx-0">
-            {stats.map((stat, i) => (
-              <div key={stat.label} className="group/stat flex items-center gap-3 glass-card-premium rounded-xl px-5 py-3.5 snap-center flex-shrink-0 min-w-[170px] sm:min-w-0 sm:flex-shrink transition-all duration-300 hover:border-gold-500/15 hover:shadow-[0_0_30px_rgba(245,184,28,0.06)]" style={{ animationDelay: `${i * 0.15}s` }}>
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-500/10 transition-all duration-300 group-hover/stat:bg-gold-500/20 group-hover/stat:scale-110 flex-shrink-0">
-                  <stat.icon className="h-5 w-5 text-gold-400" />
-                </div>
-                <div>
-                  <p className="text-xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-white/40 whitespace-nowrap">{stat.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
