@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient, createAdminClient } from '@/lib/supabase/server';
+import { approveTournamentResult } from '@/lib/tournament-result-approval';
 import { logger } from '@/lib/logger';
 
 const PROOF_BUCKET = 'proof-documents';
@@ -362,17 +363,9 @@ export async function POST(request: Request) {
             (result.tournament_result === 'win' && dataConsistencyScore !== null && dataConsistencyScore >= 80);
 
           if (canAutoApprove) {
-            // Call the admin approval logic via internal request
-            const internalRes = await fetch(new URL('/api/admin/tournament-results', request.url).toString(), {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-service-key': process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-              },
-              body: JSON.stringify({ resultId: result.id, action: 'approve' }),
-            });
+            const approvalResult = await approveTournamentResult(result.id, 'ai-auto-approve');
 
-            if (internalRes.ok) {
+            if (approvalResult.success) {
               autoApproved = true;
               logger.info('AI auto-approved tournament result', {
                 route: '/api/ai-proof/verify',
