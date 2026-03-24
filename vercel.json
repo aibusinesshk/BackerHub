@@ -1,5 +1,11 @@
 {
   "regions": ["hkg1"],
+  "functions": {
+    "src/app/api/ai-kyc/**/*.ts": {
+      "maxDuration": 60,
+      "regions": ["sin1"]
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/lifecycle",
