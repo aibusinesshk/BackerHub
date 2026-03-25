@@ -75,6 +75,9 @@ export async function GET(request: Request) {
           avgFinish: row.avg_finish,
           biggestWin: Number(row.biggest_win),
           monthlyROI: [],
+          reliabilityScore: Number(row.reliability_score ?? 100),
+          tournamentsSettledOnTime: row.tournaments_settled_on_time || 0,
+          tournamentsDefaulted: row.tournaments_defaulted || 0,
         },
       };
     });
@@ -127,7 +130,10 @@ export async function GET(request: Request) {
         avgFinish: stats.avg_finish,
         biggestWin: Number(stats.biggest_win),
         monthlyROI: [],
-      } : { lifetimeROI: 0, totalTournaments: 0, cashRate: 0, totalStakedValue: 0, avgFinish: 'N/A', biggestWin: 0, monthlyROI: [] },
+        reliabilityScore: Number(stats.reliability_score ?? 100),
+        tournamentsSettledOnTime: stats.tournaments_settled_on_time || 0,
+        tournamentsDefaulted: stats.tournaments_defaulted || 0,
+      } : { lifetimeROI: 0, totalTournaments: 0, cashRate: 0, totalStakedValue: 0, avgFinish: 'N/A', biggestWin: 0, monthlyROI: [], reliabilityScore: 100, tournamentsSettledOnTime: 0, tournamentsDefaulted: 0 },
     };
   });
 

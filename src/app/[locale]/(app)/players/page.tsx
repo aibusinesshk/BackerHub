@@ -10,7 +10,7 @@ import { formatCurrency, formatPercent } from '@/lib/format';
 import { PlayerAvatar } from '@/components/shared/player-avatar';
 import { getPlayerColorTone } from '@/lib/player-colors';
 import {
-  Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink, Spade, Sparkles,
+  Search, Check, TrendingUp, Trophy, Users, Loader2, ExternalLink, Spade, Sparkles, ShieldCheck,
 } from 'lucide-react';
 import type { Player } from '@/types';
 
@@ -203,6 +203,17 @@ export default function PlayersPage() {
                           </span>
                         </div>
                       )}
+
+                      {/* Reliability score */}
+                      <div className="mb-3 rounded-lg bg-white/[0.03] px-3 py-2 flex items-center justify-between">
+                        <span className="text-xs text-white/40 flex items-center gap-1">
+                          <ShieldCheck className="h-3 w-3" />
+                          {t('reliabilityScore')}
+                        </span>
+                        <span className={`text-sm font-semibold ${(player.stats.reliabilityScore ?? 100) >= 90 ? 'text-green-400' : (player.stats.reliabilityScore ?? 100) >= 70 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {player.stats.reliabilityScore ?? 100}%
+                        </span>
+                      </div>
                     </>
                   ) : (
                     /* New player — no stats yet */
