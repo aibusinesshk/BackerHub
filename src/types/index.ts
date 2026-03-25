@@ -27,6 +27,9 @@ export interface PlayerStats {
   avgFinish: string;
   biggestWin: number;
   monthlyROI: MonthlyROI[];
+  reliabilityScore: number;
+  tournamentsSettledOnTime: number;
+  tournamentsDefaulted: number;
 }
 
 export interface MonthlyROI {

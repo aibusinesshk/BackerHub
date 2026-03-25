@@ -11,7 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatPercent, formatDate, formatMarkup } from '@/lib/format';
 import { getPlayerColorTone } from '@/lib/player-colors';
-import { Check, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2, Sparkles } from 'lucide-react';
+import { Check, Star, TrendingUp, Trophy, Target, DollarSign, BarChart3, Loader2, Sparkles, ShieldCheck } from 'lucide-react';
 import type { Player, StakingListing, Review } from '@/types';
 
 export default function PlayerProfilePage({ params }: { params: Promise<{ id: string }> }) {
@@ -55,11 +55,14 @@ export default function PlayerProfilePage({ params }: { params: Promise<{ id: st
   const tone = getPlayerColorTone(player.colorTone);
   const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
 
+  const reliabilityScore = player.stats.reliabilityScore ?? 100;
+  const reliabilityColor = reliabilityScore >= 90 ? 'text-green-400' : reliabilityScore >= 70 ? 'text-yellow-400' : 'text-red-400';
+
   const stats = [
     { label: t('lifetimeROI'), value: formatPercent(player.stats.lifetimeROI), icon: TrendingUp, color: 'text-green-400' },
     { label: t('totalTournaments'), value: String(player.stats.totalTournaments), icon: Trophy, color: 'text-gold-400' },
     { label: t('cashRate'), value: `${player.stats.cashRate}%`, icon: Target, color: 'text-blue-400' },
-    { label: t('totalStaked'), value: formatCurrency(player.stats.totalStakedValue), icon: DollarSign, color: 'text-white' },
+    { label: t('reliabilityScore'), value: `${reliabilityScore}%`, icon: ShieldCheck, color: reliabilityColor },
     { label: t('biggestWin'), value: formatCurrency(player.stats.biggestWin), icon: Trophy, color: 'text-gold-400' },
     { label: t('avgFinish'), value: player.stats.avgFinish, icon: BarChart3, color: 'text-purple-400' },
   ];

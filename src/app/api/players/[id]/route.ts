@@ -59,6 +59,9 @@ export async function GET(
       avgFinish: stats ? stats.avg_finish : 'N/A',
       biggestWin: stats ? Number(stats.biggest_win) : 0,
       monthlyROI: (monthlyRoi || []).map((m: any) => ({ month: m.month, roi: Number(m.roi) })),
+      reliabilityScore: stats ? Number(stats.reliability_score) : 100,
+      tournamentsSettledOnTime: stats ? (stats.tournaments_settled_on_time || 0) : 0,
+      tournamentsDefaulted: stats ? (stats.tournaments_defaulted || 0) : 0,
     },
   };
 
