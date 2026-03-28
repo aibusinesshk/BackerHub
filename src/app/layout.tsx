@@ -21,12 +21,13 @@ const notoSansTC = Noto_Sans_TC({
   display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhubasia.vercel.app';
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhub.com';
 
 export const metadata: Metadata = {
   title: {
     template: '%s | BackerHub',
-    default: 'BackerHub - Back Players. Share Victories.',
+    default: 'BackerHub \u2014 Back Players. Share Victories.',
   },
   icons: {
     icon: [
@@ -50,18 +51,27 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'BackerHub',
-    title: 'BackerHub - Back Players. Share Victories.',
+    title: 'BackerHub \u2014 Back Players. Share Victories.',
     description:
       "Asia's premier poker tournament staking platform. Back skilled players, share in their victories.",
     url: siteUrl,
     locale: 'en',
     alternateLocale: ['zh-TW', 'zh-HK'],
+    images: [
+      {
+        url: `${siteUrl}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "BackerHub - Asia's Poker Backing Platform",
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BackerHub - Back Players. Share Victories.',
+    title: 'BackerHub \u2014 Back Players. Share Victories.',
     description:
       "Asia's premier poker tournament staking platform. Back skilled players, share in their victories.",
+    images: [`${siteUrl}/opengraph-image`],
   },
   robots: {
     index: true,

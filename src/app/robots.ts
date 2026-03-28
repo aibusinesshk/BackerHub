@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhubasia.vercel.app';
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhub.com';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -12,10 +13,13 @@ export default function robots(): MetadataRoute.Robots {
           '/api/',
           '/admin/',
           '/dashboard/',
+          '/profile/',
           '/profile',
-          '/create-listing',
           '/checkout/',
+          '/create-listing',
           '/submit-result/',
+          '/settings/',
+          '/wallet/',
         ],
       },
     ],
