@@ -1334,5 +1334,20 @@
     "ctaSubtitle": "零平台手續費。完整託管保護。撲克質押最安全的方式——現在不用額外花一分錢。",
     "ctaBacker": "開始贊助選手",
     "ctaPlayer": "出售比賽份額"
+  },
+  "seo": {
+    "title": "SEO 管理",
+    "subtitle": "透過 AI 建議分析和優化頁面中繼資料。",
+    "generate": "生成",
+    "generateAll": "生成所有建議",
+    "aiSuggestions": "AI 建議",
+    "suggestedTitle": "建議標題",
+    "suggestedDescription": "建議描述",
+    "keywords": "關鍵字",
+    "improvements": "改進建議",
+    "loginRequired": "請先登入。",
+    "forbidden": "需要管理員權限。",
+    "generateFailed": "生成建議失敗。",
+    "networkError": "網路錯誤，請重試。"
   }
 }

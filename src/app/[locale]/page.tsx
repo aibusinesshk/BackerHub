@@ -15,7 +15,7 @@ import { CtaSection } from '@/components/landing/cta-section';
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/json-ld';
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhubasia.vercel.app';
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhub.com';
 
 const metaByLocale: Record<string, { title: string; description: string }> = {
   en: {

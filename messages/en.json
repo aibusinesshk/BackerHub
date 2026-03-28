@@ -1334,5 +1334,20 @@
     "ctaSubtitle": "Zero platform fees. Full escrow protection. The safest way to stake in poker — and right now, it costs you nothing extra.",
     "ctaBacker": "Start Backing Players",
     "ctaPlayer": "Sell Your Action"
+  },
+  "seo": {
+    "title": "SEO Management",
+    "subtitle": "Analyze and optimize page metadata with AI-powered suggestions.",
+    "generate": "Generate",
+    "generateAll": "Generate All Suggestions",
+    "aiSuggestions": "AI Suggestions",
+    "suggestedTitle": "Suggested Title",
+    "suggestedDescription": "Suggested Description",
+    "keywords": "Keywords",
+    "improvements": "Improvements",
+    "loginRequired": "Please log in first.",
+    "forbidden": "Admin access required.",
+    "generateFailed": "Failed to generate suggestions.",
+    "networkError": "Network error. Please try again."
   }
 }
