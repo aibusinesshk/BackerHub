@@ -4,7 +4,7 @@
  */
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhubasia.vercel.app';
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://backerhub.com';
 
 // ─── Organization ──────────────────────────────────────────────────────
 export function OrganizationJsonLd() {
