@@ -56,12 +56,21 @@ export const metadata: Metadata = {
     url: siteUrl,
     locale: 'en',
     alternateLocale: ['zh-TW', 'zh-HK'],
+    images: [
+      {
+        url: `${siteUrl}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "BackerHub - Asia's Poker Backing Platform",
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'BackerHub - Back Players. Share Victories.',
     description:
       "Asia's premier poker tournament staking platform. Back skilled players, share in their victories.",
+    images: [`${siteUrl}/opengraph-image`],
   },
   robots: {
     index: true,
